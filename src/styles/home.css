@@ -172,29 +172,27 @@
 .feature-lead__media img { display: block; width: 100%; height: auto; }
 
 /* Eight features, two per row from 768. */
-/* Row spacing in the original is not uniform. Measured boundaries between
- * the four feature rows: 24 / 0 / 0 / 24 below 1280, and 24 throughout at
- * 1280+. Stacked below 768, the two cards inside a row sit 30px apart.
- * Reproduced literally rather than averaged. */
+/* Row spacing.
+ *
+ * The original is not uniform here: measured card gaps are 30/0/30/0/30/24/30
+ * below 768 and 13/22/24 between rows at 768-1279, so several pairs of cards
+ * touch with no gap at all. That is authoring drift, not a design — the same
+ * grid uses 30px between some cards and 0 between others.
+ *
+ * Reproduced literally at first; now normalised as a content fix (A1
+ * decision): 30px between cards in the single column, 24px between rows once
+ * there are two columns, matching the 1280+ value. See NOTES.md.
+ */
 .feature-grid {
   list-style: none;
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
   column-gap: 20px;
-  row-gap: 0;
+  row-gap: 30px;
 }
-@media (min-width: 768px)  { .feature-grid { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 1280px) { .feature-grid { row-gap: 24px; margin-bottom: 24px; } }
-
-@media (max-width: 1279px) {
-  .feature-grid > .feature:nth-child(7),
-  .feature-grid > .feature:nth-child(8) { margin-top: 24px; }
-}
-@media (max-width: 767px) {
-  .feature-grid > .feature:nth-child(2n) { margin-top: 30px; }
-  .feature-grid > .feature:nth-child(7)  { margin-top: 24px; }
-}
+@media (min-width: 768px)  { .feature-grid { grid-template-columns: 1fr 1fr; row-gap: 24px; } }
+@media (min-width: 1280px) { .feature-grid { margin-bottom: 24px; } }
 
 /* Each feature is a card: 16px radius, padding 40px 0 0 40px, so the image
  * runs flush to the card's right and bottom edges. The text block carries a

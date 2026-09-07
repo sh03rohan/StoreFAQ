@@ -285,6 +285,7 @@ _Pending §A1 decision. Items 4, 7, 8, 10, 11 are fixed regardless (guide §B7).
 ## Known differences from the original, with justification
 
 - `/category/news/` not built — category is empty (0 posts)
+- **Feature card gaps normalised on mobile.** The original's card gaps are `30/0/30/0/30/24/30` below 768 and `13/22/24` between rows at 768-1279, so several pairs of cards touch with no gap at all while others have 30px. Reproduced literally at first, then normalised as a content fix: **30px** between cards in the single column, **24px** between rows once there are two columns (matching the 1280+ value). Adds 65px at 360, 64px at 480, 48px at 768/1024; 1280 and above are unchanged.
 - **Pending sign-off:** "Changelog" nav item normalised from Sora 16px to IBM Plex Sans 18px, matching every other nav item (see Phase 2). Avoids shipping a font family for one word.
 - Google Fonts request reduced from 7 families / 126 faces to 4 self-hosted families at the ~6 used weights. Rendering identical; removes a render-blocking third-party request.
 
@@ -568,3 +569,13 @@ The scan also picked up two buttons in sections not yet built, recorded here so 
 
 - **"Read More Reviews"** (testimonials) — 185x44, 1px `#16250E`, radius 8px, background `#16250E`, padding 12px 20px
 - **"Try StoreFAQ Today"** (CTA band) — 163x24, no border, transparent background, padding `0 0 5px` — a text link with an underline rule, not a filled button
+
+### Feature card gaps — reported and fixed
+
+Flagged in review: on mobile some feature cards touched with no gap.
+
+Verified against the live site first — the original does the same thing, so the build was faithful. But it is clearly drift rather than design: the same grid uses 30px between some pairs and 0 between others, and at 768-1279 the row gaps are 13/22/24. Normalised per the A1 "fix content bugs" decision.
+
+Card cells still match the reference exactly at every viewport; only the gaps between them changed.
+
+**Near-miss worth recording:** the edit that replaced the row-spacing block was anchored on a start and end string, and the `.feature` card rule (background, radius, padding) sat between them — so it was silently deleted and every card lost its background. Caught by the crop, not by the geometry diff, which still reported cells as exact. Anchor block edits on their own boundaries, and re-check a crop after any range-based CSS replacement.
