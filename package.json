@@ -1,0 +1,35 @@
+{
+  "name": "storefaq-astro",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "capture:reference": "node scripts/capture-reference.mjs",
+    "capture:motion": "node scripts/capture-motion.mjs",
+    "tokens": "node scripts/extract-tokens.mjs && node scripts/extract-tokens-visible.mjs",
+    "assert:clean": "bash scripts/assert-clean.sh",
+    "test": "playwright test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "playwright": "^1.63.0",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^8.0.0",
+    "@astrojs/sitemap": "^3.7.4",
+    "@astrojs/vercel": "^11.0.10",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.1",
+    "node-html-parser": "^9.0.4",
+    "tailwindcss": "^4.3.3"
+  },
+  "private": true
+}

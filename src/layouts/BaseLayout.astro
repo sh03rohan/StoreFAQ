@@ -1,0 +1,54 @@
+---
+import '../styles/tokens.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  robots?: string;
+  type?: 'website' | 'article';
+}
+
+const {
+  title,
+  description = '',
+  canonical,
+  ogImage,
+  robots = 'index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large',
+  type = 'website',
+} = Astro.props;
+
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content="en_US" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+
+    <link rel="alternate" type="application/rss+xml" title="StoreFAQ" href="/feed/" />
+
+    <!-- Preload only the two families used above the fold. -->
+    <link rel="preload" href="/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/IBMPlexSans-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body class="bg-page text-ink font-body text-base antialiased">
+    <slot />
+  </body>
+</html>

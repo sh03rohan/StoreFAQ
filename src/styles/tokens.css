@@ -1,0 +1,93 @@
+/* StoreFAQ design tokens — Tailwind v4 theme.
+ *
+ * Every value below is traceable to reference/TOKENS-visible.md (rendered
+ * elements only), reference/MOTION.md or reference/BREAKPOINTS.md.
+ * "×N" is the occurrence count in the captured computed styles.
+ * Per guide §B3: the Tailwind default theme is REPLACED, not extended.
+ */
+@import 'tailwindcss';
+@import './fonts.css';
+
+@theme {
+  /* ---- Reset Tailwind's defaults so only our scale exists (§B3) ---- */
+  --font-*: initial;
+  --color-*: initial;
+  --text-*: initial;
+  --spacing-*: initial;
+  --radius-*: initial;
+  --breakpoint-*: initial;
+  --shadow-*: initial;
+  --ease-*: initial;
+
+  /* ---- Families — from @font-face + eb-block-fonts (§B3) ---- */
+  --font-body: Inter, ui-sans-serif, system-ui, sans-serif;              /* ×4826 */
+  --font-heading: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; /* ×563  */
+  --font-accent: 'DM Sans', ui-sans-serif, system-ui, sans-serif;        /* ×55 footer col headings */
+  --font-quote: Manrope, ui-sans-serif, system-ui, sans-serif;           /* ×6 testimonial company */
+
+  /* ---- Type scale — size / line-height pairs measured on the page ---- */
+  --text-xs: 0.875rem;      --text-xs--line-height: 1.25;   /* 14px  ×72  */
+  --text-sm: 1rem;          --text-sm--line-height: 1.6;    /* 16px  ×354 buttons, nav */
+  --text-base: 1.05rem;     --text-base--line-height: 1.55; /* 16.8/26.04 body ×4623 */
+  --text-lg: 1.125rem;      --text-lg--line-height: 1.6;    /* 18/28.8 section copy ×243 */
+  --text-xl: 1.25rem;       --text-xl--line-height: 1.5;    /* 20px  ×193 */
+  --text-2xl: 1.5rem;       --text-2xl--line-height: 1.4;   /* 24px  ×48  */
+  --text-3xl: 1.75rem;      --text-3xl--line-height: 1.35;  /* 28px  ×12 price */
+  --text-4xl: 2rem;         --text-4xl--line-height: 1.3;   /* 32px  ×9   */
+  --text-5xl: 2.5rem;       --text-5xl--line-height: 1.25;  /* 40px  ×65 section h2 */
+  --text-6xl: 3rem;         --text-6xl--line-height: 1.2;   /* 48px  ×18 */
+  --text-7xl: 3.27rem;      --text-7xl--line-height: 1.15;  /* 52.32px ×4 hero h1 */
+
+  /* ---- Colour — ink ---- */
+  --color-ink: #111111;        /* ×4540 body text            */
+  --color-ink-strong: #101828; /* ×81                        */
+  --color-ink-mid: #1D2939;    /* ×225 card titles           */
+  --color-body: #45503F;       /* ×87 section paragraph copy */
+  --color-muted: #475467;      /* ×93                        */
+  --color-subtle: #667085;     /* ×22                        */
+
+  /* ---- Colour — brand ---- */
+  --color-brand: #548B2F;      /* bg ×48 primary button      */
+  --color-brand-dark: #16250E; /* bg ×13 / text ×82          */
+  --color-brand-mid: #6AA63C;  /* bg ×11                     */
+  --color-lime: #91B947;       /* ×36                        */
+  --color-check: #00A416;      /* ×100 feature tick icons    */
+
+  /* ---- Colour — surface ---- */
+  --color-white: #FFFFFF;      /* ×98                        */
+  --color-page: #F9F9F9;       /* body background            */
+  --color-cream: #F9F7EC;      /* bg ×55                     */
+  --color-cream-deep: #F3EED6; /* bg ×18 popular plan        */
+  --color-mint: #F3F9EC;       /* bg ×11                     */
+  --color-gray-50: #F9FAFB;    /* bg ×38                     */
+  --color-gray-100: #F2F4F7;   /* bg ×8                      */
+  --color-border: #EAECF0;     /* bg ×4                      */
+
+  /* ---- Radius — no shadows: every captured box-shadow is transparent ---- */
+  --radius-sm: 4px;   /* ×45 */
+  --radius-md: 8px;   /* ×81 buttons, cards */
+  --radius-lg: 16px;  /* ×29 */
+  --radius-pill: 30px;/* ×32 */
+
+  /* ---- Layout ---- */
+  --container: 1170px;      /* ×44 eb-row-wrapper            */
+  --container-narrow: 620px;/* ×29 privacy / prose           */
+
+  /* ---- Motion — from reference/MOTION.md (main capture zeroes these) ---- */
+  --ease-default: ease;               /* ×5093 */
+  --duration-fast: 0.3s;              /* ×327 buttons */
+  --duration-slow: 0.5s;              /* accordion, blocks */
+
+  /* ---- Breakpoints — the four real ones from BREAKPOINTS.md ---- */
+  --breakpoint-sm: 481px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1025px;
+  --breakpoint-xl: 1280px;
+}
+
+/* Spacing: the site is on a 5px grid (15px ×502, 20px ×390, 10px ×285,
+ * 25px ×73, 30px). Tailwind's `--spacing` multiplier gives the whole
+ * scale from one value: spacing-1 = 5px, spacing-3 = 15px, spacing-4 = 20px. */
+@theme {
+  --spacing: 5px;
+}
