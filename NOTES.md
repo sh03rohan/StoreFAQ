@@ -448,3 +448,30 @@ The hero declares three background images. Only one loads:
 Worth telling the team: those 16 references are dead weight in the CSS, and if that staging host is ever re-registered by someone else it becomes a live third-party asset on the production site. Recommend stripping them at source.
 
 `R.png` is 228 KB for a soft gradient — a good candidate for re-export or a CSS gradient later, but not a migration concern.
+
+### Feature stack — done
+
+Section, lead card and all 8 feature cards match at **all 7 viewports**.
+
+The guide describes "11 alternating feature sections". The live page has **9**: one lead feature in a mint card, then 8 in a 2-up grid. They do not alternate.
+
+Values that only measurement gave:
+
+- Each feature is a **card**: 16px radius, padding `40px 0 0 40px`, so the image runs flush to the card's right and bottom edges.
+- The text block carries a **further 40px right margin** that the image does not. This is what makes titles wrap earlier than the card width suggests — without it the 1280 column was 41px short.
+- Card backgrounds are set per card, not alternating cleanly: sky `#ECF6F9` ×2, cream `#F9F7EC` ×2, mint `#F3F9EC` ×2, cream ×2.
+- The subtitle-to-image gap is 30px on six cards but **20px and 16px** on two. Stored per feature rather than averaged.
+- The lead card's media column has a **45px left gutter** that the sparkle sits in, so the image is 45px narrower than its column.
+- The lead card never stacks its text above its image below 768 the way a naive grid would — it wraps, with a 0 column gap.
+- **`text-transform: capitalize`** on hero and feature titles (not on pricing or subtitles). Without it "AI Chatbot **for** Smart Help Desk" renders with a lowercase "for".
+
+**Row spacing in the original is not uniform.** Measured gaps between the four feature rows: `24 / 0 / 0 / 24` below 1280, but `24 / 24 / 24 / 24` at 1280+. Section padding-bottom is 40px below 1280 and 50px above, and only above 1280 is there a trailing 24px. Stacked below 768, the two cards inside a row sit 30px apart. All reproduced literally — averaging it put the section 82px out.
+
+### §B7 findings
+
+- **Item 1 confirmed.** The sentence "Improve user experience by adding an advanced live search bar so your visitors can find helpful documentation articles easily." is used verbatim in **three** features: Design FAQ Page With Flexibility, Import & Export FAQs Easily, Create Stunning FAQ Pages. Flagged in the data as `placeholder: true`.
+- **Item 2 does not reproduce.** "Add Instant Answer" and "Add FAQs With Drag‑&‑Drop" each appear exactly once.
+- **Item 5 confirmed.** The lead feature reads "Frequently **Answered** Questions", highlighted in `#88C15A`.
+- **Item 8 confirmed.** Every feature image has `alt=""` on the original. Real alt text written in `src/data/home-features.ts` — invisible, so applied now.
+
+Four §B7 items now look stale: **2, 3, 4, 13**.

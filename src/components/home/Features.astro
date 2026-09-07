@@ -1,0 +1,54 @@
+---
+import { Image } from 'astro:assets';
+import Container from '../Container.astro';
+import swoosh from '../../assets/home/Group-39473.png';
+import { leadFeature, features } from '../../data/home-features';
+
+/** Split the lead title so the middle phrase can carry the accent colour. */
+const { title, highlight } = leadFeature;
+const at = highlight ? title.indexOf(highlight) : -1;
+const lead = at >= 0
+  ? { before: title.slice(0, at), mark: highlight!, after: title.slice(at + highlight!.length) }
+  : { before: title, mark: '', after: '' };
+---
+<section class="features">
+  <Container>
+    <!-- Lead feature: mint card, 16px radius, 50px padding -->
+    <div class="feature-lead">
+      <div class="feature-lead__text">
+        <Image class="feature-lead__swoosh" src={swoosh} alt="" width={58} height={54} loading="lazy" />
+        <h2 class="feature-lead__title">
+          {lead.before}<mark>{lead.mark}</mark>{lead.after}
+        </h2>
+        <p class="feature-lead__sub">{leadFeature.sub}</p>
+      </div>
+      <div class="feature-lead__media">
+        <Image
+          src={leadFeature.image}
+          alt={leadFeature.alt}
+          widths={[675, 1240]}
+          sizes="(min-width: 1280px) 675px, 100vw"
+          loading="lazy"
+        />
+      </div>
+    </div>
+
+    <!-- Eight features, two per row -->
+    <ul class="feature-grid">
+      {features.map((f) => (
+        <li class="feature" style={`--card-bg:${f.bg ?? 'var(--color-cream)'};--card-gap:${f.gap ?? 30}px`}>
+          <h2 class="feature__title">{f.title}</h2>
+          <p class="feature__sub">{f.sub}</p>
+          <Image
+            class="feature__media"
+            src={f.image}
+            alt={f.alt}
+            widths={[610, 1220]}
+            sizes="(min-width: 1280px) 610px, 100vw"
+            loading="lazy"
+          />
+        </li>
+      ))}
+    </ul>
+  </Container>
+</section>

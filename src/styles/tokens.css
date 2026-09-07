@@ -53,6 +53,7 @@
   --color-brand-dark: #16250E; /* bg ×13 / text ×82          */
   --color-brand-mid: #6AA63C;  /* bg ×11                     */
   --color-lime: #91B947;       /* ×36                        */
+  --color-accent: #88C15A;     /* highlighted phrase in headings */
   --color-check: #00A416;      /* ×100 feature tick icons    */
 
   /* ---- Colour — surface ---- */
@@ -61,6 +62,7 @@
   --color-cream: #F9F7EC;      /* bg ×55                     */
   --color-cream-deep: #F3EED6; /* bg ×18 popular plan        */
   --color-mint: #F3F9EC;       /* bg ×11                     */
+  --color-sky: #ECF6F9;        /* feature card bg            */
   --color-gray-50: #F9FAFB;    /* bg ×38                     */
   --color-gray-100: #F2F4F7;   /* bg ×8                      */
   --color-border: #EAECF0;     /* bg ×4                      */

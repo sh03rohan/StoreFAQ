@@ -64,6 +64,9 @@
 
 .hero__title {
   margin-top: 18px;
+  /* The original capitalises hero and feature headings in CSS, so words
+     like "for" and "to" render capitalised despite the source text. */
+  text-transform: capitalize;
   font-family: var(--font-heading);
   font-size: 1.875rem;                  /* 30px */
   line-height: 1.3;
@@ -91,3 +94,141 @@
 .hero__content { padding-bottom: 27px; }
 
 .hero__media img { width: 100%; height: auto; }
+
+/* ---------- feature stack ---------- */
+.features {
+  background: var(--color-white);
+  padding: 20px 0 40px;                    /* 50px bottom from 1280 */
+}
+@media (min-width: 1280px) { .features { padding-bottom: 50px; } }
+
+/* Lead feature: mint card, 16px radius, 50px padding, 480/720 columns
+ * with a 20px gap and centre alignment (measured 1220 inner at 1440). */
+/* Measured: padding 30px 0 0 30px below 768 (image runs to the card edge,
+ * as on the feature cards), 50px above. Columns stack below 768, 50/50 to
+ * 1279, then 40/60 — 448/672 at 1280, 480/720 at 1440. */
+.feature-lead {
+  background: var(--color-mint);          /* #F3F9EC */
+  border-radius: var(--radius-lg);        /* 16px */
+  padding: 30px 0 0 30px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;                                  /* 20px once side by side */
+  align-items: center;
+  overflow: hidden;
+}
+@media (min-width: 768px)  { .feature-lead { padding: 50px; grid-template-columns: 1fr 1fr; gap: 20px; } }
+@media (min-width: 1280px) { .feature-lead { grid-template-columns: 40fr 60fr; } }
+
+/* The swoosh sits at ~48.7% of the text column at every width
+ * (141 of 290 at 360, 148 of 304 at 768, 236 of 480 at 1440). */
+.feature-lead__swoosh { display: block; width: 58px; height: 54px; margin-left: 48.7%; }
+
+.feature-lead__title {
+  margin-top: 19px;
+  text-transform: capitalize;
+  font-family: var(--font-heading);
+  font-size: 1.625rem;                     /* 26px below 1280 */
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--color-ink-mid);
+}
+@media (min-width: 1280px) { .feature-lead__title { font-size: 2.5rem; } }  /* 40/52 */
+
+.feature-lead__title mark {
+  background: none;
+  color: var(--color-accent);              /* #88C15A */
+}
+
+.feature-lead__sub {
+  margin-top: 15px;
+  margin-bottom: 30px;                     /* trailing space on the text block */
+  font-family: var(--font-heading);
+  font-size: 0.875rem;                     /* 14px below 1280 */
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--color-body);
+}
+@media (min-width: 1280px) { .feature-lead__sub { font-size: 1.125rem; } }  /* 18/28.8 */
+
+/* Sparkle sits at the left edge of the media column, vertically centred. */
+.feature-lead { margin-bottom: 24px; }
+
+/* Below 768 the card is padded 30px 0 0 30px, so the text carries a matching
+ * right margin while the image stays full-bleed. */
+@media (max-width: 767px) {
+  .feature-lead__title,
+  .feature-lead__sub { margin-right: 30px; }
+}
+
+/* The media column has a 45px left gutter that the sparkle sits in, so the
+ * image is 45px narrower than its column: 675 of 720 at 1440, 627 of 672 at
+ * 1280, 259 of 304 at 768, 245 of 290 at 360. */
+.feature-lead__media {
+  padding-left: 45px;
+  background: url('/decor/newsletter-sparkle.png') no-repeat 0% 50%;
+  background-size: 60px auto;
+}
+.feature-lead__media img { display: block; width: 100%; height: auto; }
+
+/* Eight features, two per row from 768. */
+/* Row spacing in the original is not uniform. Measured boundaries between
+ * the four feature rows: 24 / 0 / 0 / 24 below 1280, and 24 throughout at
+ * 1280+. Stacked below 768, the two cards inside a row sit 30px apart.
+ * Reproduced literally rather than averaged. */
+.feature-grid {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: 20px;
+  row-gap: 0;
+}
+@media (min-width: 768px)  { .feature-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1280px) { .feature-grid { row-gap: 24px; margin-bottom: 24px; } }
+
+@media (max-width: 1279px) {
+  .feature-grid > .feature:nth-child(7),
+  .feature-grid > .feature:nth-child(8) { margin-top: 24px; }
+}
+@media (max-width: 767px) {
+  .feature-grid > .feature:nth-child(2n) { margin-top: 30px; }
+  .feature-grid > .feature:nth-child(7)  { margin-top: 24px; }
+}
+
+/* Each feature is a card: 16px radius, padding 40px 0 0 40px, so the image
+ * runs flush to the card's right and bottom edges. The text block carries a
+ * further 40px right margin that the image does not — this is what makes the
+ * title wrap earlier than the card width suggests. Background and the
+ * subtitle-to-image gap are set per card on the original. */
+.feature {
+  background: var(--card-bg, var(--color-cream));
+  border-radius: var(--radius-lg);
+  padding: 40px 0 0 40px;
+  overflow: hidden;
+}
+
+.feature__title,
+.feature__sub { margin-right: 40px; }
+
+.feature__title {
+  text-transform: capitalize;
+  font-family: var(--font-heading);
+  font-size: 1.625rem;                     /* 26px below 1280 */
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--color-ink-mid);
+}
+@media (min-width: 1280px) { .feature__title { font-size: 2rem; } }  /* 32/41.6 */
+
+.feature__sub {
+  margin-top: 15px;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--color-body);
+}
+@media (min-width: 1280px) { .feature__sub { font-size: 1rem; } }  /* 16/25.6 */
+
+.feature__media { display: block; width: 100%; height: auto; margin-top: var(--card-gap, 30px); }
