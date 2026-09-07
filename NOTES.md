@@ -287,3 +287,69 @@ _Pending §A1 decision. Items 4, 7, 8, 10, 11 are fixed regardless (guide §B7).
 - `/category/news/` not built — category is empty (0 posts)
 - **Pending sign-off:** "Changelog" nav item normalised from Sora 16px to IBM Plex Sans 18px, matching every other nav item (see Phase 2). Avoids shipping a font family for one word.
 - Google Fonts request reduced from 7 families / 126 faces to 4 self-hosted families at the ~6 used weights. Rendering identical; removes a render-blocking third-party request.
+
+---
+
+## Phase 3 — scaffold (complete)
+
+Gate **met**. `npm run build` succeeds; measured against the reference at 1440px:
+
+| | Reference | Build |
+|---|---|---|
+| body | Inter 16.8px / 26.04px `#111` | identical |
+| section copy | IBM Plex Sans 18px / 28.8px `rgb(69,80,63)` | identical |
+| h1 | 52.32px | identical |
+| page background | `#F9F9F9` | identical |
+| container | 1170px | identical |
+
+Tailwind's defaults are confirmed purged from the built CSS (`--color-red-500`, `--font-mono`, `--breakpoint-2xl` all absent) and the 5px grid resolves (`px-6` → 30px).
+
+**Astro 7**, not the guide's Astro 5 — decided explicitly. The v7 upgrade guide lists no breaking change touching this project's patterns. Watch items: Vite 8, a new default Markdown processor, `compressHTML` now `'jsx'`.
+
+Fonts self-hosted: `Inter-Variable` (the theme's own file), plus `IBMPlexSans-Variable`, `DMSans-Variable`, `Manrope-Variable` (the same Google files the site loads — variable, so one file covers 500/600/700). 396 KB total, replacing a 126-face render-blocking request.
+
+---
+
+## Phase 6 groundwork — done early (both have lead time)
+
+### `wordpress/storefaq-headless.php`
+
+The mu-plugin resolving the SEO blocker. PHP syntax verified locally. **Needs deploying to `cms.storefaq.io/wp-content/mu-plugins/`.** It:
+
+1. Registers one `seo` REST field on posts/pages/docs, resolved by buffering `wp_head()` in a front-end context and parsing what ThinkRank actually rendered — post meta alone yields nothing, since the override fields are empty.
+2. Applies per-post ThinkRank overrides where an editor has set one.
+3. Rewrites canonicals onto the frontend, honouring the `/blog/` move.
+4. Caches per post for an hour, busted on `save_post`.
+5. Restricts blog editors to core blocks (guide §B1 guardrail).
+6. Purges on publish via Vercel ISR revalidation (guide §B6, rewritten from Netlify) — needs `STOREFAQ_VERCEL_BYPASS_TOKEN` in `wp-config.php`.
+
+### `src/lib/wp-html.ts` — sanitiser, validated against real content
+
+Tested against the longest post (`faq-schema-and-product-schema-shopify-ai-search`, 42 KB, and the one to style `.prose` against). It contains tables, `<details>`/`<summary>`, figures, and a `<script>` — a good worst case.
+
+Result: 0 surviving `wp-`/`eb-` classes, 0 inline styles, 0 scripts, 0 `data-*`. Output 18% smaller.
+
+**Two corrections to the guide's §B1 code:**
+
+1. **`KILL_CLASS` is too narrow.** After running the guide's exact regex, these still survived: `is-style-stripes`, `has-fixed-layout`, `aligncenter`, and five `thinkrank-faq*` classes. All are WordPress markup, and all would have **passed the guide's enforcement gate**, which only greps `wp-|eb-|elementor|is-layout-`. Extended to cover `is-style-*`, `has-fixed-layout`, `thinkrank`, `betterdocs`, `ff-`, `fluentform`, `notificationx`, `nx-`.
+2. **Some plugin classes carry real structure.** The `thinkrank-faq__question` / `__answer` pair is a genuine FAQ block. Stripping it loses the semantics; it is **renamed** to `faq__question` / `faq__answer` instead, along with `aligncenter` → `align-center`. Semantics survive, plugin identity does not.
+
+Also: the unwrap pass now runs innermost-first so nested wrappers collapse in one pass, and upload URLs are made relative whichever host WP returns, so they route through the `/wp-content/*` proxy.
+
+`.prose` must cover: tables, `<details>`/`<summary>`, figures + figcaptions, and the `faq__*` block.
+
+### `scripts/assert-clean.sh`
+
+Strengthened to match the widened `KILL_CLASS`, and extended to also fail on a leaked CMS domain, WP paths, and plugin/theme stylesheets. Checks `dist/` by default, or takes URLs for SSR pages. Verified it both passes clean output and catches planted bad markup.
+
+---
+
+## Outstanding — needs you
+
+1. **Deploy `wordpress/storefaq-headless.php`** to `cms.storefaq.io` as an mu-plugin. Phase 6 is blocked on it.
+2. **Confirm access**: WP admin, SFTP to `/wp-content/uploads/`, DNS, GSC + GA4.
+3. **Logo SVG** — `headerLogo.png` is 357x120 and will be soft at 2x. Needed from the design source before Phase 4.
+4. **Sign off the "Changelog" nav normalisation** (Sora 16px → IBM Plex Sans 18px).
+5. **Token count** — 47 vs the gate's 40. Say if you want them collapsed.
+6. **BetterDocs feedback widget** ("What are your feelings") — keep or drop? Check the data first.
+7. **NotificationX popups** — keep post-migration?
