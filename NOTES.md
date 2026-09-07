@@ -546,3 +546,25 @@ Section deltas after this pass: **-1px** at 768, 1024, 1440 and 1920; -3px at 12
 One further detail: on the original the "Popular" badge and the Growth column meet as a single continuous tint with **no rule between them**, while the border is visible across every other column. Reproduced by raising that one header cell above the frame.
 
 §B7 item 12 confirmed: only Enterprise shows a yearly price, and Free's "Additional View" reads "Not Applicable" with no context.
+
+### Button audit (all buttons, 1600px)
+
+Compared every button against the live site. Two bugs found and fixed:
+
+1. **Pricing outline buttons had the wrong border colour** — I had used the light rule colour `#EAECF0`; the original uses **`#16250E`**, the brand dark. Clearly visible: the buttons read as barely-outlined boxes instead of crisp dark outlines.
+2. **Newsletter "Subscribe" had no padding** — fixed size only. The original is `10px 20px`.
+
+Verified matching after the fix:
+
+| Button | Size | Border | Radius | Background | Padding |
+|---|---|---|---|---|---|
+| Header "Install Now" | 172x51 | none | 8px | `#548B2F` | 15px 30px |
+| Hero "Get Started" | 144x47 | none | 8px | `#16250E` | 15px 30px 14px |
+| Pricing "Get Started" | 209x43 | 1px `#16250E` | 8px | white | 12px 30px |
+| Pricing (popular) | 208x43 | 1px `#16250E` | 8px | `#16250E` | 12px 30px |
+| Newsletter "Subscribe" | 113x46 | 1px `#548B2F` | 8px | `#548B2F` | 10px 20px |
+
+The scan also picked up two buttons in sections not yet built, recorded here so they are not missed:
+
+- **"Read More Reviews"** (testimonials) — 185x44, 1px `#16250E`, radius 8px, background `#16250E`, padding 12px 20px
+- **"Try StoreFAQ Today"** (CTA band) — 163x24, no border, transparent background, padding `0 0 5px` — a text link with an underline rule, not a filled button
