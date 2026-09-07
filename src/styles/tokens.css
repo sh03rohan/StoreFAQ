@@ -8,6 +8,7 @@
 @import 'tailwindcss';
 @import './fonts.css';
 @import './chrome.css';
+@import './home.css';
 
 @theme {
   /* ---- Reset Tailwind's defaults so only our scale exists (§B3) ---- */

@@ -1,0 +1,96 @@
+[
+  {
+    "i": 0,
+    "y": 92,
+    "h": 667,
+    "bg": "rgb(255, 255, 255)",
+    "bgImage": "url(\"https://storefaq.io/wp-content/uploads/2026/01/R.png\")",
+    "pad": "120px 20px",
+    "heading": "Shopify FAQ Builder App",
+    "headings": [
+      "Shopify FAQ Builder App",
+      "Grab The Ultimate Shopify FAQ Builder App For Your Store"
+    ],
+    "imgCount": 2,
+    "firstImg": "Frame.png"
+  },
+  {
+    "i": 1,
+    "y": 759,
+    "h": 3008,
+    "bg": "rgb(255, 255, 255)",
+    "bgImage": null,
+    "pad": "20px 20px 50px",
+    "heading": "Write Frequently Answered Questions With The Magic Of AI",
+    "headings": [
+      "Write Frequently Answered Questions With The Magic Of AI",
+      "Add Instant Answer In A Few Clicks",
+      "AI Chatbot for Smart Help Desk",
+      "Add Live Chat to Your Shopify Store"
+    ],
+    "imgCount": 10,
+    "firstImg": "Group-39473.png"
+  },
+  {
+    "i": 2,
+    "y": 3767,
+    "h": 1609,
+    "bg": "rgb(255, 255, 255)",
+    "bgImage": null,
+    "pad": "64px 20px",
+    "heading": "Choose The Plan That Best Fits Your Store’s Requirements",
+    "headings": [
+      "Choose The Plan That Best Fits Your Store’s Requirements",
+      "FAQ Page Views",
+      "Additional View",
+      "Unlimited FAQs & FAQ Groups"
+    ],
+    "imgCount": 0,
+    "firstImg": null
+  },
+  {
+    "i": 3,
+    "y": 5375,
+    "h": 685,
+    "bg": "rgb(255, 255, 255)",
+    "bgImage": null,
+    "pad": "60px 20px 70px",
+    "heading": "Ready To Build Stunning FAQs? Get Started With StoreFAQ Toda",
+    "headings": [
+      "Ready To Build Stunning FAQs? Get Started With StoreFAQ Toda"
+    ],
+    "imgCount": 2,
+    "firstImg": "Group-39473.png"
+  },
+  {
+    "i": 4,
+    "y": 6060,
+    "h": 1109,
+    "bg": "rgb(255, 255, 255)",
+    "bgImage": null,
+    "pad": "60px 20px",
+    "heading": "Here’s What Our Users Say",
+    "headings": [
+      "Here’s What Our Users Say"
+    ],
+    "imgCount": 0,
+    "firstImg": null
+  },
+  {
+    "i": 5,
+    "y": 7169,
+    "h": 825,
+    "bg": "rgb(255, 255, 255)",
+    "bgImage": null,
+    "pad": "50px 20px 60px",
+    "heading": "Frequently Asked Questions",
+    "headings": [
+      "Frequently Asked Questions",
+      "How to create a FAQ in Shopify?",
+      "What is the best FAQ accordion app for Shopify?",
+      "Does Shopify store have a default FAQ page?"
+    ],
+    "imgCount": 1,
+    "firstImg": "Group-39473.png"
+  }
+]

@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets';
+import Container from '../Container.astro';
+import hero from '../../assets/home/hero.webp';
+import badgeIcon from '../../assets/home/badge-icon.png';
+import { external } from '../../lib/routes';
+---
+<section class="hero">
+  <Container class="hero__row">
+    <div class="hero__content">
+      <!-- The original marks this label up as <h2>, which is why the page
+           had no <h1> (§B7 item 7). It is a label, so it is a <p> here and
+           the real heading below is the <h1>. Invisible change. -->
+      <p class="hero__badge">
+        <Image src={badgeIcon} alt="" width={15} height={15} loading="eager" />
+        <span>Shopify FAQ Builder App</span>
+      </p>
+
+      <h1 class="hero__title">Grab The Ultimate Shopify FAQ Builder App For Your Store</h1>
+
+      <p class="hero__sub">
+        Get the simplest Shopify FAQ Builder to answer your customer queries with
+        interactive accordion tabs
+      </p>
+
+      <a class="btn btn--dark hero__cta" href={external.shopifyApp} target="_blank" rel="noopener noreferrer">
+        Get Started
+      </a>
+    </div>
+
+    <div class="hero__media">
+      <Image
+        src={hero}
+        alt="StoreFAQ FAQ page builder shown on a Shopify storefront"
+        widths={[360, 715, 1430]}
+        sizes="(min-width: 1280px) 55vw, (min-width: 768px) 50vw, 100vw"
+        loading="eager"
+      />
+    </div>
+  </Container>
+</section>

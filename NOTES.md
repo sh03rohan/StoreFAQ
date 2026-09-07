@@ -404,3 +404,47 @@ Essential Blocks renders **two** copies of the newsletter heading — one hidden
 ### Newsletter backend
 
 `src/pages/api/subscribe.ts` posts to FluentCRM `/subscribers` with `status: 'pending'` (double opt-in), using an application password held server-side. Already-subscribed addresses return a friendly 200 rather than an error. Needs `FLUENTCRM_*` set in Vercel before it works end to end.
+
+---
+
+## Phase 5 — Home
+
+Section map (1440): hero 667 / feature stack 3008 / pricing 1609 / CTA band 685 / testimonials 1109 / FAQ 825.
+
+There is **no separate stats-counter section** on the live page, though the guide's Phase 5 order lists one and §B7 item 3 refers to "0+ Number of Users". Checked while mapping — the section does not exist. Item 3 may be stale, like items 4 and 13.
+
+New tooling: `scripts/map-sections.mjs` (segments a page), `scripts/inspect.mjs` (dumps rendered elements in a y-range), `scripts/diff-section.mjs` (per-section geometry diff), `scripts/crop.mjs` (side-by-side crops).
+
+### Hero — done
+
+Within 2px at all 7 viewports; exact except the badge pill (190x42 vs 192x44).
+
+- Section padding 70/20/30 below 768, 70/20 to 1279, 120/20 above
+- Columns stacked below 768, 50/50 to 1279, **45/55** above, `align-items: center`, 20px gap
+- Title 30/39 w600 below 1280, 48/62.4 above, `#1D2939`
+- Subtitle 14/22.4 **w300** below 1280, 18/28.8 above, `#45503F`
+- CTA 144x47, 16/17.6 w500 on `#16250E`, links to `apps.shopify.com/storefaq`
+- Badge pill 192x44 on `#F3F9EC`: its height comes from inheriting the body's 16.8/26.04 strut while the label is 12px DM Sans. Reproduced as a mechanism rather than a fixed height; still 2px short, which is inside tolerance.
+- The text column carries **27px of trailing space** below the button. Under `center` alignment this offsets the whole column, so it must be reproduced — without it every child sat ~14px low.
+
+### §B7 item 4 does not reproduce
+
+The guide says the hero's "Install Now" and "View Demo" buttons have empty `href`. The live hero has **one** button, "Get Started", with a valid href to the app listing. There is a hidden `.eb-button-anchor` labelled "Install Now" in the DOM (zero size), which is probably what the audit saw. Nothing to fix.
+
+That makes **three** §B7 items that do not reproduce: 4, 13, and probably 3.
+
+### Broken assets pointing at a dead staging domain
+
+The hero declares three background images. Only one loads:
+
+| Asset | Host | Result |
+|---|---|---|
+| `R.png` | storefaq.io | **200**, 228 KB — the visible gradient |
+| `Rbg.jpg` | `harmonious-storm-595.wp1.site` | **dead** — host does not resolve |
+| `Vector334.png` | `harmonious-storm-595.wp1.site` | **dead** |
+
+`harmonious-storm-595.wp1.site` is a leftover staging domain. It appears **16 times** in the site's stylesheets. Every reference is dead and renders nothing, so the rebuild reproduces only `R.png` and the result is visually identical.
+
+Worth telling the team: those 16 references are dead weight in the CSS, and if that staging host is ever re-registered by someone else it becomes a live third-party asset on the production site. Recommend stripping them at source.
+
+`R.png` is 228 KB for a soft gradient — a good candidate for re-export or a CSS gradient later, but not a migration concern.

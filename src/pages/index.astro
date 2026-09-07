@@ -2,9 +2,15 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Hero from '../components/home/Hero.astro';
 ---
-<BaseLayout title="StoreFAQ" description="Shopify FAQ builder app.">
+<BaseLayout
+  title="StoreFAQ - Shopify FAQ Builder App"
+  description="Get the simplest Shopify FAQ Builder to answer your customer queries with interactive accordion tabs"
+>
   <Header />
-  <main style="height:600px"></main>
+  <main>
+    <Hero />
+  </main>
   <Footer />
 </BaseLayout>
