@@ -475,3 +475,37 @@ Values that only measurement gave:
 - **Item 8 confirmed.** Every feature image has `alt=""` on the original. Real alt text written in `src/data/home-features.ts` — invisible, so applied now.
 
 Four §B7 items now look stale: **2, 3, 4, 13**.
+
+### Pricing table — done, with one documented limitation
+
+| Viewport | Section delta |
+|---|---|
+| 1440 / 1920 | **+3px** (all 4 plan columns and the label column exact at 1217, positions exact) |
+| 768 / 1024 | **-5px** (all plan cards exact) |
+| 1280 | -22px |
+| 360 | **-279px** — see below |
+
+The guide's §B3 warning ("feature labels sit in a column separate from the plan columns; check the 360px screenshot for reflow") is the important one here. The actual behaviour:
+
+- **1280+** — a comparison table: a 297px label column plus four 235px plan columns.
+- **Below 1280** — the label column is **hidden entirely** and the four plans **stack as cards**, each repeating its own row labels. That is why every plan cell carries a duplicate label in the markup.
+
+Building it as a naive table would have been wrong below 1280, and building it as stacked cards would have been wrong above.
+
+**Implementation:** one markup tree. At 1280+ the columns become `display: contents` so every cell is a direct grid child, placed by `grid-row` / `grid-column`. That lets the browser equalise row heights natively — which is what the original does with JavaScript.
+
+Other measured details:
+- Heading capped at **870px**, 28/36.4 below 768, 32/41.6 to 1279, 48/62.4 above.
+- Cells use a uniform **15px** padding; the header cell is **260px** at every breakpoint, contents centred vertically (this is what keeps Enterprise's button nearly aligned despite its extra yearly line).
+- The "Popular" badge is `position: absolute` at **every** breakpoint, always 61px above its column, so it never adds to the column height. Stacked, the popular card takes 42px extra top margin so the badge clears the card above it.
+- Below 1280 the table has a further 20px inset, and stacked cards are capped at 720px and centred.
+- Icons are `fa-check-circle` `#00A416` and, for Free's Multilingual FAQ row, `fa-circle-xmark` `#D32D2D`. Rebuilt as inline SVG with a visually-hidden "Included" / "Not included" label — the original conveys this by colour and glyph alone.
+- Label colours: most `#16250E` w500; "AI Chatbot" w700; **"Write with AI" and "Shopify Sidekick Integration" are `#CD93FF` w700**.
+
+**Limitation at 360px.** The pricing plugin writes explicit pixel heights onto every cell from JavaScript, equalising each row across all four *stacked* cards. Those heights are not derivable from content — a row whose tallest child is 25.6px is set to 59px. The measured values are stored per row and applied as **min-heights**, which reproduces 768-1920 to within a few pixels and lets rows still grow where text wraps.
+
+What cannot be done in CSS is equalising row *N* across four vertically stacked cards — only script can. Two rows at 360 ("AI Chatbot", "Dedicated Support") are therefore shorter than the original by 29px and 25px, and the cumulative section is 279px short.
+
+**This needs a decision.** Either (a) accept it — each card sizing to its own content is arguably better on mobile, with no arbitrary gaps; or (b) add a small equalisation script to match the original exactly. I would accept it, but it will show up in the Phase 9 diff at 360, so flagging rather than choosing silently.
+
+§B7 item 12 confirmed: only Enterprise shows a yearly price, and Free's "Additional View" reads "Not Applicable" with no context.

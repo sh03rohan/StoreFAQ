@@ -63,6 +63,14 @@
   --color-cream-deep: #F3EED6; /* bg ×18 popular plan        */
   --color-mint: #F3F9EC;       /* bg ×11                     */
   --color-sky: #ECF6F9;        /* feature card bg            */
+  --color-plan: #F9FCFF;       /* pricing column bg          */
+  --color-plan-rule: #EAECF0;  /* pricing cell rule          */
+  --color-badge: #FFFCD4;      /* "Popular" badge            */
+  --color-badge-ink: #000131;  /* "Popular" text             */
+  --color-period: #869180;     /* "/mo"                      */
+  --color-warn: #FF7930;       /* yearly price note          */
+  --color-violet: #CD93FF;     /* AI feature labels          */
+  --color-danger: #D32D2D;     /* cross icon                 */
   --color-gray-50: #F9FAFB;    /* bg ×38                     */
   --color-gray-100: #F2F4F7;   /* bg ×8                      */
   --color-border: #EAECF0;     /* bg ×4                      */

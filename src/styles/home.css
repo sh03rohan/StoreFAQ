@@ -232,3 +232,221 @@
 @media (min-width: 1280px) { .feature__sub { font-size: 1rem; } }  /* 16/25.6 */
 
 .feature__media { display: block; width: 100%; height: auto; margin-top: var(--card-gap, 30px); }
+
+/* ---------- pricing ---------- */
+.pricing { background: var(--color-white); padding: 64px 0; }
+
+/* Measured: capped at 870px and centred; 28/36.4 below 768, 32/41.6 to
+ * 1279, 48/62.4 above. */
+.pricing__heading {
+  max-width: 870px;
+  margin-inline: auto;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 1.75rem;                      /* 28/36.4 */
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--color-brand-dark);          /* #16250E */
+}
+@media (min-width: 768px)  { .pricing__heading { font-size: 2rem; } }   /* 32/41.6 */
+@media (min-width: 1280px) { .pricing__heading { font-size: 3rem; } }   /* 48/62.4 */
+
+/* Stacked plan cards below 1280 — the label column is hidden and each card
+ * repeats its own labels, as on the original. Cards are capped at 720px and
+ * centred (measured 720@152 at 1024), inside a further 20px inset. */
+.pricing__table {
+  margin-top: 126px;                       /* measured heading-to-table gap */
+  padding-inline: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: 30px;
+}
+.pricing__labels { display: none; }
+
+.pricing__plan {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  background: var(--plan-bg, var(--color-plan));
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Out of flow at every breakpoint — measured 61px above its column at 360,
+ * 768 and 1280 alike, so it never adds to the column's height. */
+.pricing__badge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -61px;
+  height: 61px;
+  border-radius: 10px 10px 0 0;
+  background: var(--color-badge);          /* #FFFCD4 */
+  padding: 20px;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--color-badge-ink);           /* #000131 */
+}
+
+/* Stacked: extra top margin so the badge clears the card above it
+ * (measured gap 72px before the popular card vs 30px elsewhere). */
+.pricing__plan.is-popular { margin-top: 42px; }
+
+.pricing__cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 20px;
+  min-height: var(--row-h-md);
+}
+
+/* 260px at every breakpoint, contents centred vertically — this is what
+ * keeps Enterprise's button nearly aligned with the others despite its
+ * extra yearly-price line. */
+.pricing__cell--header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 260px;
+  padding: 30px 20px;
+  text-align: center;
+}
+.pricing__cell--label { display: none; }
+
+.pricing__plan-name {
+  font-family: var(--font-body);
+  font-size: 1.25rem;                      /* 20/24 */
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--color-brand-dark);
+}
+
+.pricing__price {
+  margin-top: 6px;
+  font-family: var(--font-heading);
+  font-size: 1.75rem;                      /* 28/33.6 */
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.pricing__period {
+  font-size: 1.25rem;                      /* 20/24 */
+  font-weight: 500;
+  color: var(--color-period);              /* #869180 */
+}
+
+.pricing__yearly {
+  margin-top: 8px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;                     /* 14/22.4 */
+  font-weight: 500;
+  color: var(--color-warn);                /* #FF7930 */
+}
+
+.pricing__cta {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 30px;
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  border: 1px solid var(--color-plan-rule);
+  font-family: var(--font-heading);
+  font-size: 0.875rem;                     /* 14/16.8 */
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--color-brand-dark);
+  transition: background-color var(--duration-fast) var(--ease-default),
+              color var(--duration-fast) var(--ease-default);
+}
+.pricing__cta:hover { background: var(--color-brand-dark); color: var(--color-white); }
+.is-popular .pricing__cta { background: var(--color-brand-dark); color: #EDEDED; border-color: var(--color-brand-dark); }
+.is-popular .pricing__cta:hover { background: var(--color-brand); border-color: var(--color-brand); color: var(--color-white); }
+
+.pricing__label,
+.pricing__cell-label {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;                     /* 18/23.4 */
+  line-height: 1.3;
+  font-weight: 500;
+  color: var(--color-brand-dark);
+}
+.pricing__label.is-bold, .pricing__cell-label.is-bold { font-weight: 700; }
+.pricing__label.is-accent, .pricing__cell-label.is-accent { font-weight: 700; color: var(--color-violet); }
+
+/* Block, not inline-flex: as a shrinkable flex item it wrapped one-line
+ * values onto two lines. The icon is inline so text-align centres it. */
+.pricing__value {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 1rem;                         /* 16/25.6 */
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--color-brand-dark);
+  text-align: right;
+}
+
+.pricing__icon { color: var(--color-check); }        /* #00A416 */
+.pricing__icon.is-x { color: var(--color-danger); }  /* #D32D2D */
+
+.pricing__tip {
+  display: inline-flex;
+  margin-left: 6px;
+  color: var(--color-period);
+}
+
+/* ---- 1280+: one grid, columns become `display: contents` so the browser
+ * equalises row heights the way the original does in JavaScript. ---- */
+@media (min-width: 1280px) {
+  .pricing__table {
+    /* 16px below the heading, then a 61px band for the "Popular" badge. */
+    margin-top: 77px;
+    padding-inline: 0;
+    justify-items: stretch;                /* the stacked layout centres items */
+    grid-template-columns: 297fr 235fr 235fr 235fr 235fr;
+    grid-auto-rows: min-content;
+    gap: 0;
+  }
+  .pricing__labels { display: contents; }
+  .pricing__plan   { display: contents; }
+
+  .pricing__cell {
+    grid-row: var(--row);
+    grid-column: var(--col);
+    justify-content: center;
+    /* Measured: uniform 15px padding, and the row heights the plugin
+       computes in JS as min-heights so rows can still grow when text wraps
+       at narrower columns — which is what the original does at 1280. */
+    padding: 15px;
+    min-height: var(--row-h);
+    background: var(--plan-bg, var(--color-plan));
+  }
+  .pricing__labels .pricing__cell {
+    grid-column: 1;
+    justify-content: flex-start;
+    padding-left: 21px;
+    background: none;
+  }
+  .pricing__labels .pricing__cell--header { min-height: 260px; }
+  .pricing__cell--label { display: flex; }
+  .pricing__cell-label { display: none; }
+
+  .pricing__cell--header { min-height: 260px; padding: 30px 20px; }
+  .pricing__labels .pricing__cell--header { background: none; }
+
+  .pricing__plan.is-popular { margin-top: 0; }
+  /* The badge band is grid row 1; `display: contents` on the plan means the
+     badge is positioned against the table, so place it as a grid item. */
+  .pricing__badge {
+    position: static;
+    grid-row: 1;
+    grid-column: var(--col);
+    margin: 0;
+  }
+  .pricing__value { text-align: center; }
+}

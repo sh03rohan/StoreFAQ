@@ -1,0 +1,74 @@
+---
+import Container from '../Container.astro';
+import { plans, pricingRows } from '../../data/home-pricing';
+import { go } from '../../lib/routes';
+
+const check = 'M12 2a10 10 0 100 20 10 10 0 000-20zm-1.2 14.3l-4-4 1.4-1.4 2.6 2.6 5.4-5.4 1.4 1.4-6.8 6.8z';
+const cross = 'M12 2a10 10 0 100 20 10 10 0 000-20zm3.5 12.1l-1.4 1.4-2.1-2.1-2.1 2.1-1.4-1.4 2.1-2.1-2.1-2.1 1.4-1.4 2.1 2.1 2.1-2.1 1.4 1.4-2.1 2.1 2.1 2.1z';
+
+/* Grid rows: 1 = "Popular" badge band, 2 = plan header, 3.. = features.
+ * At 1280+ the columns become `display: contents` so every cell is a direct
+ * grid child, which lets the browser equalise row heights the way the
+ * original does with JavaScript. */
+const HEADER_ROW = 2;
+---
+<section class="pricing">
+  <Container>
+    <h2 class="pricing__heading">Choose The Plan That Best Fits Your Store’s Requirements</h2>
+
+    <div class="pricing__table">
+      <!-- Label column: shown only at 1280+. Below that each plan card
+           repeats its own labels, as on the original. -->
+      <div class="pricing__labels">
+        <div class="pricing__cell pricing__cell--header" style={`--row:${HEADER_ROW}`}></div>
+        {pricingRows.map((r, i) => (
+          <div class="pricing__cell pricing__cell--label" style={`--row:${HEADER_ROW + 1 + i};--row-h:${r.height}px;--row-h-md:${r.heightMd}px`}>
+            <span class:list={['pricing__label', r.bold && 'is-bold', r.accent && 'is-accent']}>{r.label}</span>
+            {r.tip && (
+              <span class="pricing__tip" role="note" aria-label={r.tip} title={r.tip}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+                  <path d="M12 11v5M12 7.5v.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {plans.map((plan, pi) => (
+        <div class:list={['pricing__plan', plan.popular && 'is-popular']} style={`--col:${pi + 2}`}>
+          {plan.popular && <p class="pricing__badge">Popular</p>}
+
+          <div class="pricing__cell pricing__cell--header" style={`--row:${HEADER_ROW}`}>
+            <h3 class="pricing__plan-name">{plan.name}</h3>
+            <p class="pricing__price">
+              <span class="pricing__currency">{plan.currency}</span>{plan.price}<span class="pricing__period">{plan.period}</span>
+            </p>
+            {plan.yearly && <p class="pricing__yearly">{plan.yearly}</p>}
+            <a class="pricing__cta" href={go.getStarted()}>Get Started</a>
+          </div>
+
+          {pricingRows.map((r, i) => {
+            const cell = r.cells[pi]!;
+            return (
+              <div class="pricing__cell" style={`--row:${HEADER_ROW + 1 + i};--row-h:${r.height}px;--row-h-md:${r.heightMd}px`}>
+                <span class:list={['pricing__cell-label', r.bold && 'is-bold', r.accent && 'is-accent']}>{r.label}</span>
+                <span class="pricing__value">
+                  {cell.icon ? (
+                    <>
+                      <svg class:list={['pricing__icon', cell.icon === 'x' && 'is-x']} width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d={cell.icon === 'x' ? cross : check} />
+                      </svg>
+                      <span class="sr-only">{cell.icon === 'x' ? 'Not included' : 'Included'}</span>
+                    </>
+                  ) : cell.text}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  </Container>
+</section>
