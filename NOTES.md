@@ -508,4 +508,21 @@ What cannot be done in CSS is equalising row *N* across four vertically stacked 
 
 **This needs a decision.** Either (a) accept it — each card sizing to its own content is arguably better on mobile, with no arbitrary gaps; or (b) add a small equalisation script to match the original exactly. I would accept it, but it will show up in the Phase 9 diff at 360, so flagging rather than choosing silently.
 
+### Correction pass after review
+
+A screenshot of the live section showed detail the geometry-only extraction had missed. The first pass measured boxes and type but not paint, and read `border-top/left/right` while the rules live on `border-bottom`. Added:
+
+- **Row and column rules**, `#E3E3E3`. Painted as **inset box-shadows, not borders** — as real borders each row grew 1px and the column ran 10px long.
+- **The popular column is a gradient**, `linear-gradient(#FFFEEC 28%, #FFFFFF 100%)` over `#F9FCFF`, with its own rule colour `#EFE0A1` on both sides.
+- **Table shell**: `1px solid #E3E3E3`, radius `12px 0 0 12px`.
+- **Growth CTA shadow**: `rgba(0,0,0,.4) 0 8px 12px 1px`.
+- **A star glyph** before "Popular".
+- **Sparkle and info glyphs** on the AI labels and the Additional View row. These are **background images with matching padding**, exactly as on the original — as inline `<img>` they wrapped onto a second line.
+- **"AI Chatbot" is gradient-filled text** (`background-clip: text`, `#CD93FF → #A741FF`), not a flat colour. "Write with AI" and "Shopify Sidekick Integration" are flat `#CD93FF`.
+- Check glyphs are Font Awesome's **regular (outlined)** circle, not the solid one.
+
+Result after the correction: plan columns **exact** at 768/1024, +2px at 1280, +4px at 1440/1920. The 360 shortfall improved from -279px to -147px, since rows now grow naturally the way the original's do.
+
+**Lesson for the remaining sections:** measure paint (backgrounds, borders on all four sides, gradients, pseudo-element and background-image glyphs) alongside geometry. A section can match to the pixel on boxes and still look wrong.
+
 §B7 item 12 confirmed: only Enterprise shows a yearly price, and Free's "Additional View" reads "Not Applicable" with no context.

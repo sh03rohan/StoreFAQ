@@ -14,6 +14,8 @@ export interface PlanCell {
   /** Text value, or undefined when the cell is an icon. */
   text?: string;
   icon?: 'check' | 'x';
+  /** Shows the info glyph after the value (Additional View row). */
+  tip?: boolean;
 }
 
 export interface PricingRow {
@@ -29,8 +31,10 @@ export interface PricingRow {
   height: number;      // 1280+
   heightMd: number;    // below 1280
   tip?: string;
-  bold?: boolean;
+  /** Purple label with a sparkle glyph. */
   accent?: boolean;
+  /** Purple gradient-filled label with a sparkle glyph (AI Chatbot). */
+  gradient?: boolean;
   cells: PlanCell[];
 }
 
@@ -84,7 +88,7 @@ export const pricingRows: PricingRow[] = [
     height: 57,
     heightMd: 59,
     tip: 'Extra charges apply if you exceed your monthly FAQ page view limit, based on your plan.',
-    cells: [{ text: 'Not Applicable' }, { text: '$0.0159/FAQ Page View' }, { text: '$0.0075/FAQ Page View' }, { text: 'No Charge' }],
+    cells: [{ text: 'Not Applicable' }, { text: '$0.0159/FAQ Page View', tip: true }, { text: '$0.0075/FAQ Page View', tip: true }, { text: 'No Charge', tip: true }],
   },
   {
     label: 'Unlimited FAQs & FAQ Groups',
@@ -96,7 +100,7 @@ export const pricingRows: PricingRow[] = [
     label: 'AI Chatbot',
     height: 82,
     heightMd: 59,
-    bold: true,
+    gradient: true,
     tip: 'Extra charges apply for each conversation after the limit.',
     cells: [{ text: 'AI Conversations 25(Lifetime)' }, { text: 'AI Conversations 50/mo' }, { text: 'AI Conversations 100/ mo' }, { text: 'AI Conversations 500/ mo' }],
   },

@@ -71,6 +71,9 @@
   --color-warn: #FF7930;       /* yearly price note          */
   --color-violet: #CD93FF;     /* AI feature labels          */
   --color-danger: #D32D2D;     /* cross icon                 */
+  --color-rule: #E3E3E3;       /* pricing table rules        */
+  --color-rule-active: #EFE0A1;/* rules beside the popular column */
+  --color-violet-2: #A741FF;   /* end of the AI label gradient */
   --color-gray-50: #F9FAFB;    /* bg ×38                     */
   --color-gray-100: #F2F4F7;   /* bg ×8                      */
   --color-border: #EAECF0;     /* bg ×4                      */
