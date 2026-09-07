@@ -541,4 +541,8 @@ Two metric bugs found while fixing this:
 
 Section deltas after this pass: **-1px** at 768, 1024, 1440 and 1920; -3px at 1280; -151px at 360 (the JS row-equalisation limitation above).
 
+**Third pass — the table's top border.** The frame drew the border but sat *below* the cells, so the plan columns' backgrounds covered its top edge and the rule was only visible across the empty label column. The frame now carries the border alone (no background — the section is already white) and paints **above** the cells.
+
+One further detail: on the original the "Popular" badge and the Growth column meet as a single continuous tint with **no rule between them**, while the border is visible across every other column. Reproduced by raising that one header cell above the frame.
+
 §B7 item 12 confirmed: only Enterprise shows a yearly price, and Free's "Additional View" reads "Not Applicable" with no context.
