@@ -16,6 +16,9 @@ const HEADER_ROW = 2;
     <h2 class="pricing__heading">Choose The Plan That Best Fits Your Store’s Requirements</h2>
 
     <div class="pricing__table">
+      <!-- Draws the table's border/radius from the header row down, so the
+           "Popular" badge sits outside the shell as it does on the original. -->
+      <div class="pricing__frame" aria-hidden="true"></div>
       <!-- Label column: shown only at 1280+. Below that each plan card
            repeats its own labels, as on the original. -->
       <div class="pricing__labels">

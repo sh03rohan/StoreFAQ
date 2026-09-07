@@ -525,4 +525,20 @@ Result after the correction: plan columns **exact** at 768/1024, +2px at 1280, +
 
 **Lesson for the remaining sections:** measure paint (backgrounds, borders on all four sides, gradients, pseudo-element and background-image glyphs) alongside geometry. A section can match to the pixel on boxes and still look wrong.
 
+### Second correction pass — the plan header band
+
+A second review pointed at the band between the heading and the first feature row. Two more things were wrong:
+
+1. **The header content is left-aligned, not centred.** Plan name, price, yearly note and button all sit at the column's left padding edge, and the button is **full width** of the content box (209 of a 249px column). I had centred all of it.
+2. **The table's border starts at the header row, not the badge row.** The "Popular" badge sits *outside* the bordered shell. My border wrapped the badge band too, drawing an empty bordered strip across the full table width above the header. Fixed with a `.pricing__frame` grid item spanning rows 2..19 that draws the border and radius, leaving row 1 (the badge band) outside it.
+   `grid-row: 2 / -1` does **not** work here — `-1` resolves against the *explicit* grid, and these rows are implicit, so it spanned from row 1. The end line has to be named explicitly.
+
+Measured header offsets within the 260px cell, now reproduced exactly for the three plans without a yearly line (name +30, price +60, button +179) and within 6px for Enterprise, whose block is centred lower to make room for its extra line.
+
+Two metric bugs found while fixing this:
+- The price box is **37px** tall — line-height **1.32**, not the 1.2 I had assumed from the font size.
+- The header cell was inheriting `gap: 16px` from `.pricing__cell`, which silently added 16px under the plan name and pushed the cell to 292px. Flex `gap` on a shared cell class is easy to inherit by accident.
+
+Section deltas after this pass: **-1px** at 768, 1024, 1440 and 1920; -3px at 1280; -151px at 360 (the JS row-equalisation limitation above).
+
 §B7 item 12 confirmed: only Enterprise shows a yearly price, and Free's "Additional View" reads "Not Applicable" with no context.
