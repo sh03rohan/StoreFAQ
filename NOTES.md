@@ -353,3 +353,54 @@ Strengthened to match the widened `KILL_CLASS`, and extended to also fail on a l
 5. **Token count** — 47 vs the gate's 40. Say if you want them collapsed.
 6. **BetterDocs feedback widget** ("What are your feelings") — keep or drop? Check the data first.
 7. **NotificationX popups** — keep post-migration?
+
+---
+
+## Phase 4 — shared chrome (header, mobile nav, footer, newsletter)
+
+Gate **met**: header, footer and newsletter match at all 7 viewports; mobile nav behaviour matches.
+
+Two scripts do the verification, because the Phase 1 capture only dumps computed styles at 1440 and says nothing about responsive behaviour:
+
+- `scripts/capture-chrome.mjs` → `reference/CHROME.json`, header geometry at every viewport
+- `scripts/diff-chrome.mjs` / `scripts/diff-footer.mjs` → diff the local build against the live site
+
+Final result: **0px delta** on every measured box at 360/480/768/1024/1280/1440/1920.
+
+### Corrections to what was assumed
+
+| Assumed | Actual |
+|---|---|
+| Nav: Home/Features/Docs/Blog/Changelog | Home/Features/**Documentation**/Blog/**Support**, with Changelog a submenu under Support. Support links off-site to storeware.io. |
+| Hamburger at 768 | **599/600px** |
+| Header CTA → `/go/get-started` | links straight to `apps.shopify.com/storefaq` |
+| Footer: Apps/Get Help/Company | **Apps / Get Help / Community**, plus a logo column. Community holds Facebook + LinkedIn icons. |
+| One container width | header/newsletter use a **1320px** row; the footer link row uses the **1170px** content row; the newsletter card's inner content is capped at **834px** |
+
+### Values that only a measurement would have given
+
+- Header columns are `fr`-based: `30/50/20` with no gap below 1280, `23.5/56.5/20` with a 20px gap above. Reproduces 218/364/146 at 768 through 301/723/256 at 1440.
+- Nav links 14px/1.2 below 1280, 18px/1.2 above; item spacing comes from 10px/15px `li` padding.
+- CTA is 12px / 128x46 below 1280 and 16px / 172x51 above.
+- A 1px `#DBE8D0` bottom border on the header — this was the constant +1px in early diffs.
+- Newsletter form: `max-width` 320 below 768 and 467 above, 11px right padding, gap 0 below 768 and 15px above. Input and button then land exactly.
+- Two decorative bitmaps: `Group-39470` (sparkle) as the card background at `40px 40px` (`97px 63px` from 1280), and `Group-39474` (swoosh) on `::before` at `92% 70%`.
+
+### Trap: the page ships hidden duplicate blocks
+
+Essential Blocks renders **two** copies of the newsletter heading — one hidden. Measuring `querySelectorAll(...)[0]` returns the hidden one, whose values are different (24/30/48px). The visible block is **28px below 1280, 48px above, line-height 1.2**, with a 16px/24.8px subtitle. An early pass used the hidden values and every card height was wrong.
+
+**Always filter to rendered elements when measuring this site.** Same root cause as the `TOKENS.md` → `TOKENS-visible.md` split in Phase 2.
+
+### §B7 findings from this phase
+
+- **Item 13 (duplicate copyright) does not reproduce.** The DOM holds several copies but only one renders at each viewport — they are hidden responsive variants. No fix needed; item can be closed.
+- **Item 11 (social links)**: the two social links are icon-only with `aria-label="social link"` on both. Named them "Facebook" and "LinkedIn" — invisible, so applied now.
+- **Item 10 (newsletter rendered 2-3x)**: confirmed. The rebuild renders it once.
+- **New — the Subscribe button overflows its form at 360px.** On the original the button runs past the white pill and is clipped at the card edge (button ends at x=349, pill ends at x=320). The rebuild keeps it inside. This is the one place the build deliberately differs at 360px.
+  Side effect: with the button inside, the input is 156px and the placeholder truncates to "Your Email Addres". The proper fix is to stack input and button below ~480px. **Needs sign-off** — flagged rather than redesigned.
+- **New — the header balloons to 325px tall between 600px and 767px**, because the nav wraps vertically. None of the 7 test viewports lands in that range, so it is not caught by the gate. Recommend keeping the hamburger up to 767px. **Needs sign-off.**
+
+### Newsletter backend
+
+`src/pages/api/subscribe.ts` posts to FluentCRM `/subscribers` with `status: 'pending'` (double opt-in), using an application password held server-side. Already-subscribed addresses return a friendly 200 rather than an error. Needs `FLUENTCRM_*` set in Vercel before it works end to end.

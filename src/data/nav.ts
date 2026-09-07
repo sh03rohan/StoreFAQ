@@ -34,3 +34,43 @@ export const headerCta: NavItem = {
   href: external.shopifyApp,
   external: true,
 };
+
+export interface FooterColumn {
+  heading: string;
+  items: NavItem[];
+}
+
+/** Read from the live footer, not assumed. */
+export const footerColumns: FooterColumn[] = [
+  {
+    heading: 'Apps',
+    items: [
+      { label: 'StoreSEO',               href: 'https://storeseo.com/',        external: true },
+      { label: 'BetterDocs for Shopify', href: 'https://betterdocs.co/shopify/', external: true },
+      { label: 'Trust.Sync',             href: 'https://trustsync.io/',        external: true },
+      { label: 'EasyFlow',               href: 'https://easy-flow.app/',       external: true },
+    ],
+  },
+  {
+    heading: 'Get Help',
+    items: [
+      { label: 'Support',        href: external.support, external: true },
+      { label: 'Documentation',  href: routes.docs() },
+      { label: 'Changelog',      href: routes.changelog() },
+      { label: 'Privacy Policy', href: routes.privacy() },
+    ],
+  },
+];
+
+export interface SocialLink {
+  label: string;
+  href: string;
+  icon: 'facebook' | 'linkedin';
+}
+
+/** The original labels both of these "social link"; naming them is an
+ *  accessibility fix that changes nothing visually (guide §B7 item 11). */
+export const socialLinks: SocialLink[] = [
+  { label: 'Facebook', href: 'https://www.facebook.com/StorewareApps',           icon: 'facebook' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/storewareapps/',  icon: 'linkedin' },
+];
