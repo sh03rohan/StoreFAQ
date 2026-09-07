@@ -1,0 +1,21 @@
+---
+/**
+ * Measured from reference/CHROME.json: the row is (viewport - 40px) capped
+ * at 1320px and centred — 728@20 at 768, 1240@20 at 1280, 1320@60 at 1440,
+ * 1320@300 at 1920. No inner padding; content starts at the row's edge.
+ *
+ * Page content uses the narrower 1170px row; pass width="content".
+ */
+export interface Props {
+  width?: 'wide' | 'content';
+  class?: string;
+  as?: string;
+}
+const { width = 'wide', class: className = '', as: Tag = 'div' } = Astro.props;
+const w = width === 'wide'
+  ? 'w-[min(100%-40px,1320px)]'
+  : 'w-[min(100%-40px,var(--container))]';
+---
+<Tag class:list={['mx-auto', w, className]}>
+  <slot />
+</Tag>

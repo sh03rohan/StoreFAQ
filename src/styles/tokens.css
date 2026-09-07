@@ -7,6 +7,7 @@
  */
 @import 'tailwindcss';
 @import './fonts.css';
+@import './chrome.css';
 
 @theme {
   /* ---- Reset Tailwind's defaults so only our scale exists (§B3) ---- */
@@ -62,6 +63,7 @@
   --color-gray-50: #F9FAFB;    /* bg ×38                     */
   --color-gray-100: #F2F4F7;   /* bg ×8                      */
   --color-border: #EAECF0;     /* bg ×4                      */
+  --color-border-brand: #DBE8D0; /* header rule                */
 
   /* ---- Radius — no shadows: every captured box-shadow is transparent ---- */
   --radius-sm: 4px;   /* ×45 */

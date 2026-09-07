@@ -1,57 +1,36 @@
 /**
- * Guide §B2/§C-Phase4 — nav and footer link lists, built from `routes`.
+ * Guide §B2 — nav and footer link lists, built from `routes`.
  * Never hardcode a URL in the header or footer component.
+ *
+ * Structure read from reference/html/home.html, not assumed:
+ * Home / Features / Documentation / Blog / Support(+Changelog submenu).
+ * "Support" points off-site to storeware.io; "Changelog" is its only child.
  */
-import { routes, external, go } from '../lib/routes';
+import { routes, external } from '../lib/routes';
 
 export interface NavItem {
   label: string;
   href: string;
   external?: boolean;
+  children?: NavItem[];
 }
 
 export const primaryNav: NavItem[] = [
-  { label: 'Home',      href: routes.home() },
-  { label: 'Features',  href: routes.features() },
-  { label: 'Docs',      href: routes.docs() },
-  { label: 'Blog',      href: routes.blog() },
-  { label: 'Changelog', href: routes.changelog() },
+  { label: 'Home',          href: routes.home() },
+  { label: 'Features',      href: routes.features() },
+  { label: 'Documentation', href: routes.docs() },
+  { label: 'Blog',          href: routes.blog() },
+  {
+    label: 'Support',
+    href: external.support,
+    external: true,
+    children: [{ label: 'Changelog', href: routes.changelog() }],
+  },
 ];
 
+/** Header CTA — links straight to the app listing, as on the original. */
 export const headerCta: NavItem = {
   label: 'Install Now',
-  href: go.getStarted(),
+  href: external.shopifyApp,
+  external: true,
 };
-
-export interface FooterColumn {
-  heading: string;
-  items: NavItem[];
-}
-
-export const footerColumns: FooterColumn[] = [
-  {
-    heading: 'Apps',
-    items: [
-      { label: 'StoreFAQ',   href: external.shopifyApp, external: true },
-      { label: 'StoreSEO',   href: 'https://apps.shopify.com/storeseo', external: true },
-      { label: 'BetterDocs', href: 'https://apps.shopify.com/betterdocs-knowledgebase', external: true },
-      { label: 'TrustSync',  href: 'https://apps.shopify.com/customer-review-app', external: true },
-      { label: 'EasyFlow',   href: 'https://apps.shopify.com/product-options-4', external: true },
-    ],
-  },
-  {
-    heading: 'Get Help',
-    items: [
-      { label: 'Documentation', href: routes.docs() },
-      { label: 'Blog',          href: routes.blog() },
-      { label: 'Changelog',     href: routes.changelog() },
-      { label: 'Support',       href: external.support, external: true },
-    ],
-  },
-  {
-    heading: 'Company',
-    items: [
-      { label: 'Privacy Policy', href: routes.privacy() },
-    ],
-  },
-];
