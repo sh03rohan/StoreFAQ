@@ -579,3 +579,21 @@ Verified against the live site first — the original does the same thing, so th
 Card cells still match the reference exactly at every viewport; only the gaps between them changed.
 
 **Near-miss worth recording:** the edit that replaced the row-spacing block was anchored on a start and end string, and the `.feature` card rule (background, radius, padding) sat between them — so it was silently deleted and every card lost its background. Caught by the crop, not by the geometry diff, which still reported cells as exact. Anchor block edits on their own boundaries, and re-check a crop after any range-based CSS replacement.
+
+### CTA band — done
+
+**1px worst delta at all 7 viewports**, verified with a crop comparison as well as geometry.
+
+- Section padding 30/20 below 1280, 60/20/70 above.
+- Card is `#2F4621` with a **32px** radius, padding 30px below 768 and 50px above; two equal columns, `align-items: center`, gap 0 stacked / 20px side by side.
+- Title 26/33.8 w600 white below 1280, 48/62.4 above, `text-transform: capitalize` (same as hero and features).
+- The **swoosh is centred in the text column and offset 10px right** — constant at every width (verified at 360/480/768/1024/1280/1440). Note this differs from the feature-lead swoosh, which sits at ~48.7% from the left; they are not the same rule.
+- Title, swoosh and link stack with **no gaps at all** — the swoosh starts the pixel after the title ends.
+- The text column carries **20px of trailing space below 768** and none above.
+
+"Try StoreFAQ Today" is a **text link with a 1px white rule beneath it**, not a filled button: 16/16 w600 below 1280, 18/18 above, padding `0 0 5px`, linking to the app listing.
+
+Two bugs found while building it:
+
+1. The link was `inline-block`, so the container's line-box strut added ~5px of leading beneath the swoosh and pushed the whole column 5px long. Fixed with `display: block; width: fit-content`, which also keeps the underline to the text width.
+2. An orphaned dev server from an earlier session was still holding port 4321, so the diff was measuring stale output while the new server sat on 4322. Worth checking the port when a component renders in `dist/` but not in the diff.
