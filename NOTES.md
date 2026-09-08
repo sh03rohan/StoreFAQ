@@ -597,3 +597,24 @@ Two bugs found while building it:
 
 1. The link was `inline-block`, so the container's line-box strut added ~5px of leading beneath the swoosh and pushed the whole column 5px long. Fixed with `display: block; width: fit-content`, which also keeps the underline to the text width.
 2. An orphaned dev server from an earlier session was still holding port 4321, so the diff was measuring stale output while the new server sat on 4322. Worth checking the port when a component renders in `dist/` but not in the diff.
+
+### Feature card image alignment — reported and fixed
+
+Flagged in review: card images were not aligned to the bottom.
+
+Measured the gap below each image (card bottom minus image bottom), 8 cards across 5 viewports:
+
+| | ref | mine (before) |
+|---|---|---|
+| 360 / 768 | all `0` | `0` / up to 30 |
+| 1024 | all `0` | up to **59** |
+| 1280 | all `0` | up to 56 |
+| 1440 | all `0` | up to 30 |
+
+The original keeps every image flush to its card's bottom edge. Cards in a row stretch to the tallest, so when one card's title wraps to fewer lines the slack has to go **above** the image, not below it. Mine let the slack fall to the bottom.
+
+Fixed by making `.feature` a flex column and giving `.feature__sub` `margin-bottom: auto`, which absorbs the slack between the copy and the image. All tails are now `0` at all 7 viewports.
+
+Section and cell geometry is unchanged by this — the earlier diff had been comparing *column* heights, which matched, while the card inside still had a tail. Another case of a passing geometry diff hiding a visual problem; the measurement had to target the card, not the column.
+
+The per-card `gap` values in `home-features.ts` now act as **minimums** rather than fixed gaps — the driving card in each row still sets the row height, which is why 1280/1440 cells continue to match exactly.

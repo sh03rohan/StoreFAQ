@@ -200,11 +200,19 @@
  * title wrap earlier than the card width suggests. Background and the
  * subtitle-to-image gap are set per card on the original. */
 .feature {
+  display: flex;
+  flex-direction: column;
   background: var(--card-bg, var(--color-cream));
   border-radius: var(--radius-lg);
   padding: 40px 0 0 40px;
   overflow: hidden;
 }
+
+/* The image is flush to the card's bottom edge on every card at every
+ * width (measured: zero gap below the image, 8 cards x 5 viewports).
+ * Cards in a row stretch to the tallest, so the slack has to go above the
+ * image, not below it — this auto margin absorbs it. */
+.feature__sub { margin-bottom: auto; }
 
 .feature__title,
 .feature__sub { margin-right: 40px; }
