@@ -643,7 +643,7 @@ Six cards, three columns of two from 768 up, one column below. **The columns pac
 
 3. **The stacked order reads across the columns, not down them** — Vegas, Moore, Vida Pura, then Plentiful, SitnStand, PK. The original does this by shipping a *second, mobile-only row* holding copies of the lower three cards (byte-identical text, verified against the captured HTML). One list plus `display: contents` and `order` on the columns reproduces it without the duplication.
 
-4. **Those mobile-only copies were left on the 16px name from the tablet range** while the three beside them use 18px — 3px per card, 9px of page height. Reproduced rather than normalised, since the brief is a migration; it is a one-line rule and easy to drop if you would rather the six names matched.
+4. **Those mobile-only copies were left on the 16px name from the tablet range** while the three beside them use 18px — 3px per card, 9px of page height. Reproduced rather than normalised, since the brief is a migration. **Decided (2026-09-09): keep it reproduced.**
 
 #### Deviation: Font Awesome
 
@@ -690,7 +690,7 @@ Built as `<details name="home-faq">` + `<summary>`, which gives the original's b
 
 So: one open at a time, the first open on load, and clicking the open one closes it. **The section ships zero JavaScript** (the built page still contains only the pre-existing mobile-nav and newsletter scripts).
 
-The one thing CSS cannot fully cover is the 500ms slide (`data-transition-duration="500"` on the original block, animated from JS). It is reproduced with `interpolate-size: allow-keywords` + `::details-content`, behind an `@supports` guard: the animation runs in Chrome/Edge and the panel toggles instantly in Safari and Firefox until they ship it. **If you would rather the slide ran everywhere, say so** — it is about 20 lines of progressive enhancement over the same markup, and nothing else about the section changes.
+The one thing CSS cannot fully cover is the 500ms slide (`data-transition-duration="500"` on the original block, animated from JS). It is reproduced with `interpolate-size: allow-keywords` + `::details-content`, behind an `@supports` guard: the animation runs in Chrome/Edge and the panel toggles instantly in Safari and Firefox until they ship it. **Decided (2026-09-09): keep it CSS-only.** The section ships no JavaScript; the slide animates in Chrome/Edge and toggles instantly elsewhere until Safari and Firefox ship `interpolate-size`, at which point it starts animating there with no change to this code.
 
 #### Deviation: Font Awesome
 
@@ -714,7 +714,7 @@ Below 1280 exactly two deltas remain, both already accounted for:
 | pricing | −151 | −100 | −1 | −1 |
 | everything else | 0/−1 | 0/+1 | 0/+1 | 0 |
 
-The feature-stack delta is the **mobile card gap normalisation you asked for** — the original leaves two rows touching on small screens and this build does not. The pricing delta is the documented row-equalisation limitation and still needs your decision.
+The feature-stack delta is the **mobile card gap normalisation you asked for** — the original leaves two rows touching on small screens and this build does not. The pricing delta is the documented row-equalisation limitation. **Decided (2026-09-09): accept it** — the rows sit at their natural height on phones, so the table is more compact than the original; nothing overlaps or misaligns, and no script is added.
 
 ### Hero: two errors the section diff reported and I did not read
 
@@ -728,3 +728,17 @@ Two real causes:
 Both fixed; the hero is now 0px on every box at every viewport.
 
 Lesson, and the fourth variant of the same one in this phase: a diff that prints a ✗ is only useful if every line of it gets read. "The parts I looked at passed" is not "it passed".
+
+## Decisions taken 2026-09-09
+
+| Question | Decision |
+|---|---|
+| FAQ accordion open/close animation | **CSS only, no JavaScript.** Animates where `interpolate-size` is supported, instant elsewhere. |
+| Pricing table 151px short at 360 (100px at 480) | **Accept.** Natural row heights on phones; no equalising script. |
+| Testimonial names 16px vs 18px on mobile | **Reproduce** the original's inconsistency. |
+
+Still open, all from earlier phases: the "Changelog" nav item's type (Sora 16px in the original vs IBM Plex Sans 18px on its neighbours), `tokens.css` carrying 47 custom properties against the gate's 40, the newsletter's stacked layout at 360, and the header ballooning to 325px between 600 and 767.
+
+## Phase 5 — Home is complete
+
+All six sections built and verified: hero, feature stack, pricing, CTA band, testimonials, FAQ. Page total within 3px at 1280 and above, within 1px at 1440/1920. The two deltas below 1280 are both decided above.
