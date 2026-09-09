@@ -12,6 +12,13 @@ const REF = {
     const q = e.getBoundingClientRect();
     return q.width >= 100 && q.height >= 40 && !e.parentElement?.closest('.wp-block-essential-blocks-wrapper');
   })[1].querySelector('.eb-wrapper-outer'),
+  featureRow: () => {
+    const vis = e => { const q = e.getBoundingClientRect(); return q.width > 0 && q.height > 0; };
+    const sec = document.querySelectorAll('main .wp-block-essential-blocks-wrapper')[1];
+    const rows = [...sec.querySelectorAll('.wp-block-essential-blocks-row')]
+      .filter(e => !e.parentElement.closest('.wp-block-essential-blocks-row')).filter(vis);
+    return rows[1];
+  },
   faq: () => { const a = document.querySelector('.eb-accordion-container');
     const w = []; for (let e = a; (e = e.closest('.eb-wrapper-outer')); e = e.parentElement) w.push(e);
     return w[w.length - 1]; },

@@ -192,11 +192,16 @@
  * decision): 30px between cards in the single column, 24px between rows once
  * there are two columns, matching the 1280+ value. See NOTES.md.
  */
+/* `align-items: start` because the original does NOT equalise the two cards
+ * in a row — each is as tall as its own copy and screenshot make it, and the
+ * bottoms are ragged. Stretching them also put slack below the image, which
+ * is what the bottom-alignment fix was working around. */
 .feature-grid {
   list-style: none;
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
+  align-items: start;
   column-gap: 20px;
   row-gap: 30px;
 }
@@ -217,10 +222,9 @@
   overflow: hidden;
 }
 
-/* The image is flush to the card's bottom edge on every card at every
- * width (measured: zero gap below the image, 8 cards x 5 viewports).
- * Cards in a row stretch to the tallest, so the slack has to go above the
- * image, not below it — this auto margin absorbs it. */
+/* Belt and braces for the flush image: with `align-items: start` above there
+ * is no slack to absorb, but if a card is ever stretched this keeps the gap
+ * above the image rather than below it. */
 .feature__sub { margin-bottom: auto; }
 
 .feature__title,

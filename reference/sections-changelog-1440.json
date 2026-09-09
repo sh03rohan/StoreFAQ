@@ -1,0 +1,33 @@
+[
+  {
+    "i": 0,
+    "y": 92,
+    "h": 249,
+    "bg": "rgba(0, 0, 0, 0)",
+    "bgImage": null,
+    "pad": "20px",
+    "heading": "Changelog",
+    "headings": [
+      "Changelog"
+    ],
+    "imgCount": 0,
+    "firstImg": null
+  },
+  {
+    "i": 1,
+    "y": 341,
+    "h": 16808,
+    "bg": "rgb(249, 250, 251)",
+    "bgImage": null,
+    "pad": "80px 20px",
+    "heading": "August 27, 2026",
+    "headings": [
+      "August 27, 2026",
+      "v3.7.2",
+      "Improvements",
+      "Issues & Bug Fixes"
+    ],
+    "imgCount": 0,
+    "firstImg": null
+  }
+]

@@ -841,3 +841,33 @@ All fixed. `scripts/diff-footer.mjs` now reads paint as well as boxes: the band'
 #### How the probe misled me first
 
 My first pass measured the *element* whose computed background is `#16250E` and concluded the live site has a 30px gap and never overlaps — at fifteen viewport widths from 1024 to 2560. That contradicted the screenshot, and I nearly wrote it off as not-the-live-site. What settled it was sampling **rendered pixels** down the left gutter: dark begins at card-top + 147 on the original and + 354 on mine. Computed styles describe elements; only pixels describe the page.
+
+## Re-verification under the stabilised measurement
+
+Every section built before the font-settling fix was re-run:
+
+| | result |
+|---|---|
+| hero | 0 failures |
+| CTA band | 0 failures, 1px |
+| testimonials | 0 failures, 1px |
+| FAQ | 0 failures, 1px |
+| chrome (header/footer) | 0 failures, **0px** |
+| pricing | only the accepted 360 shortfall and the pre-existing 3px at 1280 |
+| feature stack | see below |
+
+Nothing was hiding behind the old settle. The one thing it did surface was in the feature stack, and it turned out to be two separate problems.
+
+### Feature stack: the diff was comparing a card against a column
+
+`cells[0]` read 30px short at 360 and 480. The card matched exactly (423.8 vs 424) — but `diff-features.mjs` was measuring the reference's **column**, which also contains the card's 30px bottom margin, against my **card**, which expresses that margin as a grid row-gap. Two different boxes. It now measures the card on both sides.
+
+### Feature stack: the original does not equalise cards in a row
+
+With that fixed, `cells[1]` was 13–56px too tall from 768 up. The reference leaves the two cards in a row at their **own** heights — the bottoms are ragged — while my grid stretched them to match.
+
+This is the other half of the alignment problem reported earlier. The fix then was `margin-bottom: auto` on the subtitle, which pushed the slack above the image so the image stayed flush; correct as far as it went, but it was compensating for stretching that should not have been happening. `align-items: start` removes the stretch, so each card is its natural height, the bottoms are ragged as on the original, and every image is still flush.
+
+Verified: card heights match at all 7 viewports, and the tails are `[0,0,0,0,0,0,0,0]` on both sides at all 7. The tails check is now part of `diff-features.mjs` rather than something I ran by hand.
+
+The four remaining section deltas (+65/+64/+47/+48 below 1280) are the mobile card-gap normalisation you asked for, unchanged.

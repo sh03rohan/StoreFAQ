@@ -33,13 +33,28 @@ for (const w of [360, 480, 768, 1024, 1280, 1440, 1920]) {
     const card = sec.querySelector('.eb-row-root-container');
     const rows = [...sec.querySelectorAll('.wp-block-essential-blocks-row')].filter(e => !e.parentElement.closest('.wp-block-essential-blocks-row')).filter(vis);
     const cells = [];
-    rows.slice(1).forEach(row => [...row.querySelectorAll('.eb-row-inner > .wp-block-essential-blocks-column')].filter(vis).forEach(c => cells.push(g(c))));
-    return { section: g(outer), card: g(card), cells };
+    // The card, not the column. The reference's column box also contains the
+    // card's 30px bottom margin, which this build expresses as a row gap —
+    // comparing the column against my card made every card look 30px short.
+    rows.slice(1).forEach(row => [...row.querySelectorAll('.eb-row-inner > .wp-block-essential-blocks-column')]
+      .filter(vis).forEach(c => cells.push(g(c.querySelector('.eb-parent-wrapper') ?? c))));
+    // "Tails": the gap between a card's last content edge and its bottom.
+    // The original keeps every screenshot flush to the card bottom; this is
+    // the check that would have caught the misalignment reported in review.
+    const tails = [];
+    rows.slice(1).forEach(row => [...row.querySelectorAll('.eb-row-inner > .wp-block-essential-blocks-column')]
+      .filter(vis).forEach(c => { const card = c.querySelector('.eb-parent-wrapper') ?? c;
+        const img = [...c.querySelectorAll('img')].filter(vis).pop();
+        tails.push(img ? Math.round(card.getBoundingClientRect().bottom - img.getBoundingClientRect().bottom) : null); }));
+    return { section: g(outer), card: g(card), cells, tails };
   });
   const m = await mine.evaluate(() => {
     const g = s => { const e = document.querySelector(s); if (!e) return null; const q = e.getBoundingClientRect(); return { w: Math.round(q.width), h: Math.round(q.height), x: Math.round(q.x), y: Math.round(q.top + scrollY) }; };
     const cells = [...document.querySelectorAll('.feature')].map(e => { const q = e.getBoundingClientRect(); return { w: Math.round(q.width), h: Math.round(q.height), x: Math.round(q.x), y: Math.round(q.top + scrollY) }; });
-    return { section: g('.features'), card: g('.feature-lead'), cells };
+    const tails = [...document.querySelectorAll('.feature')].map(c => {
+      const img = c.querySelector('.feature__media img') ?? c.querySelector('img');
+      return img ? Math.round(c.getBoundingClientRect().bottom - img.getBoundingClientRect().bottom) : null; });
+    return { section: g('.features'), card: g('.feature-lead'), cells, tails };
   });
   const d = (a, c) => a && c ? ['w','h','x'].map(k => c[k] - a[k]) : null;
   console.log(`\n${w}px`);
@@ -48,6 +63,9 @@ for (const w of [360, 480, 768, 1024, 1280, 1440, 1920]) {
     if (dd) { console.log(`  ${k.padEnd(8)} ref ${r[k].w}x${r[k].h}@${r[k].x}  mine ${m[k].w}x${m[k].h}@${m[k].x}  Δ${dd.join(',')} ${dd.some(v=>Math.abs(v)>2)?'✗':'✓'}`); worst = Math.max(worst, ...dd.map(Math.abs)); }
   }
   console.log(`  cells    ref ${r.cells.length} mine ${m.cells.length}`);
+  const tailsOk = JSON.stringify(r.tails) === JSON.stringify(m.tails);
+  console.log(`  tails    ref ${JSON.stringify(r.tails)}\n           mine ${JSON.stringify(m.tails)} ${tailsOk ? '✓' : '✗'}`);
+  if (!tailsOk) worst = Math.max(worst, 3);
   for (let i = 0; i < Math.min(r.cells.length, m.cells.length, 2); i++) {
     const dd = d(r.cells[i], m.cells[i]);
     console.log(`    [${i}] ref ${r.cells[i].w}x${r.cells[i].h}@${r.cells[i].x}  mine ${m.cells[i].w}x${m.cells[i].h}@${m.cells[i].x}  Δ${dd.join(',')} ${dd.some(v=>Math.abs(v)>2)?'✗':'✓'}`);

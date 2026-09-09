@@ -1,0 +1,91 @@
+[
+  {
+    "i": 0,
+    "y": 0,
+    "h": 92,
+    "bg": "rgba(0, 0, 0, 0)",
+    "bgImage": null,
+    "pad": "20px",
+    "heading": null,
+    "headings": [],
+    "imgCount": 2,
+    "firstImg": "headerLogo.png"
+  },
+  {
+    "i": 1,
+    "y": 92,
+    "h": 360,
+    "bg": "rgb(255, 255, 255)",
+    "bgImage": "url(\"https://storefaq.io/wp-content/uploads/2026/05/docs-bg-1-scaled.png\")",
+    "pad": "100px 20px",
+    "heading": "How can we help you?",
+    "headings": [
+      "How can we help you?"
+    ],
+    "imgCount": 0,
+    "firstImg": null
+  },
+  {
+    "i": 2,
+    "y": 451,
+    "h": 450,
+    "bg": "rgba(0, 0, 0, 0)",
+    "bgImage": null,
+    "pad": "0px 20px",
+    "heading": "Getting Started",
+    "headings": [
+      "Getting Started",
+      "Configurations"
+    ],
+    "imgCount": 2,
+    "firstImg": "tabler-icon-rocket.png"
+  },
+  {
+    "i": 3,
+    "y": 902,
+    "h": 851,
+    "bg": "rgb(255, 255, 255)",
+    "bgImage": null,
+    "pad": "50px 20px 60px",
+    "heading": "Frequently Asked Questions",
+    "headings": [
+      "Frequently Asked Questions",
+      "What is the StoreFAQ documentation page?",
+      "What topics are covered in the documentation?",
+      "Is support available if I need help?"
+    ],
+    "imgCount": 1,
+    "firstImg": "Group-39473.png"
+  },
+  {
+    "i": 4,
+    "y": 1753,
+    "h": 414,
+    "bg": "rgba(0, 0, 0, 0)",
+    "bgImage": "linear-gradient(rgb(255, 255, 255) 50%, rgb(22, 37, 14) 50%)",
+    "pad": "60px 20px 30px",
+    "heading": "Get Shopify Tips & Latest Updates",
+    "headings": [
+      "Get Shopify Tips & Latest Updates"
+    ],
+    "imgCount": 0,
+    "firstImg": null
+  },
+  {
+    "i": 5,
+    "y": 2167,
+    "h": 346,
+    "bg": "rgb(22, 37, 14)",
+    "bgImage": null,
+    "pad": "70px 20px 0px",
+    "heading": "Apps",
+    "headings": [
+      "Apps",
+      "Get Help",
+      "Community",
+      "Copyright © 2026 | A Storeware Product from family"
+    ],
+    "imgCount": 3,
+    "firstImg": "Logo.png"
+  }
+]
