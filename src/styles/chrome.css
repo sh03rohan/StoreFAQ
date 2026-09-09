@@ -202,7 +202,15 @@ html.has-menu-open { overflow: hidden; }
 /* ---------- newsletter band ---------- */
 /* Card: #6AA63C, 24px radius, padding 80/20/56, width = wide container.
  * Heading 24px (<600) / 30px (600-1279) / 48px (>=1280). */
-.newsletter { padding-block: 60px; }
+/* A hard-stop 50/50 gradient — white above, footer-dark below — so the card
+ * straddles the boundary and the footer appears to start behind it. The dark
+ * half is what makes the card overlap; there is no negative margin anywhere.
+ * Pure paint, so no geometry check can see it: the section, the card and the
+ * footer all measure the same with and without it. */
+.newsletter {
+  padding-block: 60px 30px;
+  background-image: linear-gradient(var(--color-white) 50%, var(--color-brand-dark) 50%);
+}
 
 /* Two decorative bitmaps, measured off the original:
  *  - Group-39470 (60x74 sparkle) as the card background, 40px 40px,
@@ -312,7 +320,8 @@ html.has-menu-open { overflow: hidden; }
 .newsletter__status { margin-top: 12px; color: var(--color-white); font-family: var(--font-heading); font-size: 0.875rem; }
 
 /* ---------- footer ---------- */
-.footer { background: var(--color-brand-dark); padding-block: 70px 20px; }
+/* No bottom padding — the bar below supplies its own. */
+.footer { background: var(--color-brand-dark); padding-block: 70px 0; }
 
 /* Four columns on the 1170 content row; no gap below 1280, 20px above,
  * matching 182x4 at 768, 246x4 at 1024, 278x4 at 1440. */
@@ -329,39 +338,67 @@ html.has-menu-open { overflow: hidden; }
 
 .footer__heading {
   font-family: var(--font-accent);   /* DM Sans */
-  font-size: 1.5rem;                 /* 24px */
+  font-size: 1.125rem;               /* 18px below 1280, 24px above */
+  line-height: 1;                    /* not the inherited 1.55 */
   font-weight: 500;
   color: var(--color-white);
+  text-transform: capitalize;
 }
 
 .footer__list, .footer__social { list-style: none; margin: 0; padding: 0; }
-.footer__list { margin-top: 28px; }
-.footer__list li + li { margin-top: 9px; }
+.footer__list { margin-top: 27px; }
 
+/* 26px pitch, set by the link's own line box — the list items carry no
+ * spacing of their own. */
 .footer__link {
+  display: block;
   font-family: var(--font-heading);  /* IBM Plex Sans */
-  font-size: 1rem;
+  font-size: 0.875rem;               /* 14px below 1280, 16px above */
+  line-height: 1.6;
+  font-weight: 500;
   color: var(--color-white);
+  /* "BetterDocs for Shopify" renders as "BetterDocs For Shopify". */
+  text-transform: capitalize;
   transition: color var(--duration-fast) var(--ease-default);
+}
+@media (min-width: 1280px) {
+  .footer__heading { font-size: 1.5rem; }   /* 24/24 */
+  .footer__link    { font-size: 1rem; }     /* 16/25.6 */
 }
 .footer__link:hover { color: var(--color-lime); }
 
-.footer__social { display: flex; gap: 33px; margin-top: 28px; }
+/* Hit targets 32px/5px apart below 1280 and 36px/15px above, so the glyphs
+ * land 37px and 51px apart respectively. */
+.footer__social { display: flex; gap: 5px; margin-top: 27px; }
 .footer__social-link {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
   color: var(--color-lime);          /* #91B947 */
   transition: color var(--duration-fast) var(--ease-default);
 }
 .footer__social-link:hover { color: var(--color-white); }
+.footer__social-link svg { width: 16px; height: 16px; }
+@media (min-width: 1280px) {
+  .footer__social { gap: 15px; }
+  .footer__social-link { width: 36px; height: 36px; }
+  .footer__social-link svg { width: 18px; height: 18px; }
+}
 
 /* ---------- bottom bar ---------- */
+/* A hairline rule 40px below the columns, with 30px of air on each side of
+ * the copyright line. */
 .footer__bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 50px;
+  margin-top: 40px;
+  padding-block: 30px;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
 }
 .footer__copy, .footer__hosted {
   display: flex;

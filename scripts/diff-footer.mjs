@@ -31,9 +31,34 @@ const readRef = (page) => page.evaluate(() => {
     .map((e) => { const b = e.getBoundingClientRect(); return { w: Math.round(b.width), x: Math.round(b.x) }; }) : [];
   const logo = [...document.querySelectorAll('img')]
     .find((e) => /Logo\.png/.test(e.currentSrc) && e.getBoundingClientRect().top + scrollY > document.body.scrollHeight - 700);
+  /* Paint, not boxes. The newsletter band's ground is a hard-stop 50/50
+   * gradient — white above, footer-dark below — which is the whole reason the
+   * card appears to overlap the footer. Every box measures the same with and
+   * without it, so it has to be read directly. */
+  const cs = (e) => e ? getComputedStyle(e) : null;
+  const sec = card ? card.closest('.eb-wrapper-outer:not(.eb-wrapper-b9xpk)') ||
+    (() => { let n = card.parentElement; while (n && n.getBoundingClientRect().width < innerWidth - 1) n = n.parentElement; return n; })() : null;
+  const link = [...document.querySelectorAll('a')]
+    .find((e) => /BetterDocs/.test(e.textContent) && e.getBoundingClientRect().width > 0);
+  const head = [...document.querySelectorAll('*')]
+    .find((e) => /^Apps$/.test(e.textContent.trim()) && e.children.length === 0 && e.getBoundingClientRect().width > 0);
+  const bar = [...document.querySelectorAll('*')]
+    .find((e) => parseFloat(getComputedStyle(e).borderTopWidth) === 1
+      && /rgba\(255, 255, 255, 0\.1\)/.test(getComputedStyle(e).borderTopColor));
+  const soc = [...document.querySelectorAll('a')]
+    .filter((e) => /facebook|linkedin/i.test(e.getAttribute('href') || '') && e.getBoundingClientRect().width > 0)
+    .map((e) => { const q = e.getBoundingClientRect(); return Math.round(q.width) + '@' + Math.round(q.x); }).join(' ');
+  const paint = {
+    social: soc,
+    band: sec ? cs(sec).backgroundImage.replace(/\s+/g, ' ') : null,
+    secPad: sec ? cs(sec).paddingTop + '/' + cs(sec).paddingBottom : null,
+    link: link ? [cs(link).display, cs(link).fontSize, cs(link).fontWeight, cs(link).lineHeight, cs(link).textTransform].join(' ') : null,
+    head: head ? [cs(head).fontSize, cs(head).lineHeight, cs(head).textTransform].join(' ') : null,
+    bar: bar ? [cs(bar).borderTopWidth, cs(bar).paddingTop, cs(bar).paddingBottom].join(' ') : null,
+  };
   return { card: g(card), form: g(document.querySelector('.eb-fluent-form-04ajb')),
     input: g(document.querySelector('.ff-el-form-control')), submit: g(document.querySelector('.ff-btn')),
-    brandLogo: g(logo), cols };
+    brandLogo: g(logo), cols, paint };
 });
 
 const readMine = (page) => page.evaluate((sel) => {
@@ -41,8 +66,24 @@ const readMine = (page) => page.evaluate((sel) => {
     const b = e.getBoundingClientRect(); return { w: Math.round(b.width), h: Math.round(b.height), x: Math.round(b.x) }; };
   const cols = [...document.querySelectorAll('.footer__cols > *')]
     .map((e) => { const b = e.getBoundingClientRect(); return { w: Math.round(b.width), x: Math.round(b.x) }; });
+  const cs = (e) => e ? getComputedStyle(e) : null;
+  const sec = document.querySelector('.newsletter');
+  const link = [...document.querySelectorAll('.footer__link')].find((e) => /BetterDocs/.test(e.textContent));
+  const head = document.querySelector('.footer__heading');
+  const bar = document.querySelector('.footer__bar');
+  const soc = [...document.querySelectorAll('.footer__social-link')]
+    .map((e) => { const q = e.getBoundingClientRect(); return Math.round(q.width) + '@' + Math.round(q.x); }).join(' ');
   const out = {}; for (const [k, s] of Object.entries(sel)) out[k] = g(s);
-  out.cols = cols; return out;
+  out.cols = cols;
+  out.paint = {
+    social: soc,
+    band: sec ? cs(sec).backgroundImage.replace(/\s+/g, ' ') : null,
+    secPad: sec ? cs(sec).paddingTop + '/' + cs(sec).paddingBottom : null,
+    link: link ? [cs(link).display, cs(link).fontSize, cs(link).fontWeight, cs(link).lineHeight, cs(link).textTransform].join(' ') : null,
+    head: head ? [cs(head).fontSize, cs(head).lineHeight, cs(head).textTransform].join(' ') : null,
+    bar: bar ? [cs(bar).borderTopWidth, cs(bar).paddingTop, cs(bar).paddingBottom].join(' ') : null,
+  };
+  return out;
 }, MINE_SEL);
 
 const browser = await chromium.launch();
@@ -72,6 +113,7 @@ const settle = async (p, url) => {
 };
 
 let worst = 0;
+
 for (const w of VIEWPORTS) {
   await ref.setViewportSize({ width: w, height: 900 });
   await mine.setViewportSize({ width: w, height: 900 });
@@ -89,6 +131,12 @@ for (const w of VIEWPORTS) {
   const cw = (a) => a.map((c) => c.w + '@' + c.x).join(' ');
   const same = cw(r.cols) === cw(m.cols);
   console.log(`  cols       ref ${cw(r.cols)}\n             mine ${cw(m.cols)} ${same ? '✓' : '✗'}`);
+  if (!same) worst = Math.max(worst, 3);
+  for (const k of Object.keys(r.paint)) {
+    const ok = r.paint[k] === m.paint[k];
+    console.log(`  ${('paint.' + k).padEnd(10)} ${ok ? '✓' : `✗\n     ref  ${r.paint[k]}\n     mine ${m.paint[k]}`}`);
+    if (!ok) worst = Math.max(worst, 3);
+  }
 }
 console.log(`\nworst delta: ${worst}px`);
 await browser.close();

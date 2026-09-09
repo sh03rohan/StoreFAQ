@@ -813,3 +813,31 @@ Two structural details:
 What works is waiting for the page height to stop changing — three consecutive equal readings, 100ms apart. Applied to all nine `scripts/diff-*.mjs`. Every measurement taken before this is suspect to about one line of text; the sections re-run since (Home end to end, pricing, features) all hold.
 
 Also fixed in the features diff: comparing background-image **filenames** across a migration fails by construction, since assets are renamed. It compares "has an image" plus position and size.
+
+### Newsletter + footer — reported and fixed
+
+Flagged in review with a screenshot of the live section. Seven differences, and the largest was invisible to every box measurement.
+
+**The newsletter band is a hard-stop 50/50 gradient** — `linear-gradient(#FFFFFF 50%, #16250E 50%)` on the section — so the footer's dark ground begins **147px into the 324px card** and the card appears to straddle the boundary. There is no negative margin and no overlap in the box model: the section, the card and the footer all measure identically with and without it. My build painted the page's `#F9F9F9` above the card and started the dark at the footer element, 36px *below* it.
+
+The rest:
+
+| | original | mine |
+|---|---|---|
+| newsletter padding-bottom | 30px | 60px |
+| footer padding-bottom | 0 | 20px |
+| footer heading | 18px/1 below 1280, 24px/1 above | 24px/1.55 throughout |
+| footer links | 14px below 1280, 16px above, **w500**, `display: block`, `line-height: 1.6` | 16px w400 inline, 9px li margins |
+| footer links + headings | `text-transform: capitalize` — "BetterDocs for Shopify" renders as "BetterDocs **F**or Shopify" | as authored |
+| social icons | 32px/5px gap below 1280, 36px/15px above | 36px/33px throughout |
+| bottom bar | 40px below the columns, 30px padding each side, 1px `rgb(255 255 255 / 0.1)` rule | 50px, no padding, no rule |
+
+All fixed. `scripts/diff-footer.mjs` now reads paint as well as boxes: the band's `background-image`, the link and heading type, the social geometry and the bar's rule. It had been passing on all six of its boxes the whole time.
+
+#### Still open: the form at 360
+
+`input ref 196 mine 156`. On the original the Subscribe button **overflows the white pill by 29px** at 360 — the input is 196 wide and the button 113, in a 280px pill. Mine shrinks the input so the button sits inside. Reproducing it would mean reproducing an overflow; it stays on the open list.
+
+#### How the probe misled me first
+
+My first pass measured the *element* whose computed background is `#16250E` and concluded the live site has a 30px gap and never overlaps — at fifteen viewport widths from 1024 to 2560. That contradicted the screenshot, and I nearly wrote it off as not-the-live-site. What settled it was sampling **rendered pixels** down the left gutter: dark begins at card-top + 147 on the original and + 354 on mine. Computed styles describe elements; only pixels describe the page.
