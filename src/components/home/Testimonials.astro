@@ -12,13 +12,13 @@ const STAR =
 ---
 <section class="tm">
   <Container>
-    <h2 class="tm__title">Here’s What Our Users Say</h2>
+    <h2 class="tm__title" data-anim="heading">Here’s What Our Users Say</h2>
 
     <div class="tm__grid">
       {testimonialColumns.map((column) => (
         <div class="tm__col">
           {column.map((t) => (
-            <figure class:list={['tm__card', t.flush && 'tm__card--flush']} style={`--order:${t.order};--tm-bg:${t.bg}`}>
+            <figure class:list={['tm__card', t.flush && 'tm__card--flush']} data-anim="card" style={`--order:${t.order};--tm-bg:${t.bg}`}>
               <div class="tm__head">
                 <figcaption class="tm__info">
                   <span class="tm__stars" role="img" aria-label="Rated 5 out of 5">
@@ -37,7 +37,7 @@ const STAR =
       ))}
     </div>
 
-    <div class="tm__actions">
+    <div class="tm__actions" data-anim="chip">
       <a class="tm__more" href={external.shopifyReviews} target="_blank" rel="noopener noreferrer">
         Read More Reviews
       </a>

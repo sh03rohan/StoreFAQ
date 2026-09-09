@@ -4,7 +4,11 @@
 import { chromium } from 'playwright';
 
 const b = await chromium.launch();
-const ctx = await b.newContext();
+/* `reducedMotion: 'reduce'` so the entrance animations never run here.
+ * Every element is then at its final position from first paint, which is
+ * what these measurements are about — and it exercises the accessibility
+ * path at the same time. */
+const ctx = await b.newContext({ reducedMotion: 'reduce' });
 const ref = await ctx.newPage(), mine = await ctx.newPage();
 const settle = async (p, u) => {
   await p.goto(u, { waitUntil: 'networkidle', timeout: 60000 });

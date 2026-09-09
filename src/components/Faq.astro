@@ -15,17 +15,17 @@ const ANGLE_DOWN =
     <div class="faq__row">
       <div class="faq__intro">
         <div class="faq__lead">
-          <h2 class="faq__title">Frequently Asked Questions</h2>
-          <p class="faq__sub">Still Need Help? Reach out to our dedicated support team anytime</p>
+          <h2 class="faq__title" data-anim="heading">Frequently Asked Questions</h2>
+          <p class="faq__sub" data-anim="text">Still Need Help? Reach out to our dedicated support team anytime</p>
         </div>
-        <div class="faq__swoosh">
+        <div class="faq__swoosh" data-anim="chip">
           <Image src={swoosh} alt="" width={58} height={54} loading="lazy" />
         </div>
       </div>
 
       <div class="faq__list">
         {faqEntries.map((entry, i) => (
-          <details class="faq__item" name="home-faq" open={i === 0}>
+          <details class="faq__item" data-anim="card" name="home-faq" open={i === 0}>
             <summary class="faq__q">
               <span class="faq__icon">
                 <svg viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path d={ANGLE_DOWN} /></svg>

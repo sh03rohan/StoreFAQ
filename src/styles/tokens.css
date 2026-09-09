@@ -10,6 +10,7 @@
 @import './chrome.css';
 @import './home.css';
 @import './features.css';
+@import './motion.css';
 
 @theme {
   /* ---- Reset Tailwind's defaults so only our scale exists (§B3) ---- */

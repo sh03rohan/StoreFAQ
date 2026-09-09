@@ -1,0 +1,96 @@
+---
+/**
+ * Entrance animation for page content.
+ *
+ * Scope is `<main>` only — the header, the newsletter band and the footer are
+ * deliberately excluded, so the chrome is present and interactive from the
+ * first paint.
+ *
+ * Targets are marked in the markup with `data-anim="<preset>"` rather than
+ * matched by a selector list here, so the elements that animate and the
+ * elements CSS hides beforehand can never drift apart.
+ *
+ * Everything animates `opacity` and `transform` only. Neither affects layout,
+ * so every geometry measurement recorded in NOTES.md still holds mid-tween.
+ */
+---
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  // The inline <head> script only adds `.js-anim` when motion is welcome, so
+  // its absence means either "reduced motion" or "already timed out". Either
+  // way there is nothing to do and nothing to un-hide.
+  const root = document.documentElement;
+  if (root.classList.contains('js-anim') && !(window as unknown as { __animGaveUp?: boolean }).__animGaveUp) {
+    // Cancel the failsafe: from here on this module owns the hidden state.
+    clearTimeout((window as unknown as { __animFailsafe?: number }).__animFailsafe);
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    /** Distance, duration and easing per kind of element. */
+    const PRESETS = {
+      heading: { y: 24, duration: 0.7, ease: 'power3.out' },
+      text:    { y: 16, duration: 0.6, ease: 'power3.out' },
+      media:   { y: 20, scale: 0.985, duration: 0.8, ease: 'power3.out' },
+      card:    { y: 28, duration: 0.7, ease: 'power3.out' },
+      chip:    { y: 12, duration: 0.5, ease: 'power2.out' },
+    } as const;
+    type Preset = keyof typeof PRESETS;
+
+    const main = document.querySelector('main');
+    // `[data-anim-intro]` is animated by CSS above the fold — see motion.css.
+    const targets = main
+      ? [...main.querySelectorAll<HTMLElement>('[data-anim]:not([data-anim-intro])')]
+      : [];
+
+    /* Group by section so each one staggers on its own timeline. Without this
+     * a long page would stagger 60 elements against a single trigger and the
+     * last cards would still be waiting long after they were scrolled past. */
+    const groups = new Map<Element, HTMLElement[]>();
+    for (const el of targets) {
+      const section = el.closest('section') ?? main!;
+      const list = groups.get(section);
+      if (list) list.push(el); else groups.set(section, [el]);
+    }
+
+    const reveal = (el: HTMLElement) => {
+      el.style.willChange = 'auto';
+      el.removeAttribute('data-anim');
+    };
+
+    let first = true;
+    for (const [section, els] of groups) {
+      // Put every element in its start position before anything can paint.
+      for (const el of els) {
+        const p = PRESETS[(el.dataset.anim as Preset) ?? 'text'] ?? PRESETS.text;
+        gsap.set(el, { opacity: 0, y: p.y, scale: 'scale' in p ? p.scale : 1 });
+      }
+
+      const tl = gsap.timeline({
+        defaults: { opacity: 1, y: 0, scale: 1, overwrite: 'auto' },
+        // The first section is above the fold on every page, so it plays on
+        // load; everything below waits until it is nearly on screen.
+        ...(first
+          ? { delay: 0.05 }
+          : { scrollTrigger: { trigger: section, start: 'top 85%', once: true } }),
+        onComplete: () => els.forEach(reveal),
+      });
+
+      els.forEach((el, i) => {
+        const p = PRESETS[(el.dataset.anim as Preset) ?? 'text'] ?? PRESETS.text;
+        tl.to(el, { duration: p.duration, ease: p.ease }, i === 0 ? 0 : `<${0.09}`);
+      });
+
+      first = false;
+    }
+
+    // The hidden state is now carried by GSAP's inline styles, so the class
+    // has done its job. Dropping it means a late stylesheet or a cached page
+    // can never leave content invisible.
+    // The class stays: it is what drives the CSS intro above the fold. The
+    // hidden state for everything below is now carried by GSAP's inline
+    // styles, which win over the class rule either way.
+    for (const el of targets) el.style.opacity ||= '0';
+  }
+</script>

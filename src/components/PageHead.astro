@@ -15,8 +15,8 @@ const { title, sub } = Astro.props;
 <section class="page-head">
   <Container>
     <div class="page-head__col">
-      <h1 class="page-head__title">{title}</h1>
-      {sub && <p class="page-head__sub">{sub}</p>}
+      <h1 class="page-head__title" data-anim="heading" data-anim-intro style="--anim-d:.05s;--anim-y:24px">{title}</h1>
+      {sub && <p class="page-head__sub" data-anim="text" data-anim-intro style="--anim-d:.14s;--anim-y:16px">{sub}</p>}
     </div>
   </Container>
 </section>

@@ -16,13 +16,13 @@ const lead = at >= 0
     <!-- Lead feature: mint card, 16px radius, 50px padding -->
     <div class="feature-lead">
       <div class="feature-lead__text">
-        <Image class="feature-lead__swoosh" src={swoosh} alt="" width={58} height={54} loading="lazy" />
-        <h2 class="feature-lead__title">
+        <Image class="feature-lead__swoosh" data-anim="chip" src={swoosh} alt="" width={58} height={54} loading="lazy" />
+        <h2 class="feature-lead__title" data-anim="heading">
           {lead.before}<mark>{lead.mark}</mark>{lead.after}
         </h2>
-        <p class="feature-lead__sub">{leadFeature.sub}</p>
+        <p class="feature-lead__sub" data-anim="text">{leadFeature.sub}</p>
       </div>
-      <div class="feature-lead__media">
+      <div class="feature-lead__media" data-anim="media">
         <Image
           src={leadFeature.image}
           alt={leadFeature.alt}
@@ -36,7 +36,7 @@ const lead = at >= 0
     <!-- Eight features, two per row -->
     <ul class="feature-grid">
       {features.map((f) => (
-        <li class="feature" style={`--card-bg:${f.bg ?? 'var(--color-cream)'};--card-gap:${f.gap ?? 30}px`}>
+        <li class="feature" data-anim="card" style={`--card-bg:${f.bg ?? 'var(--color-cream)'};--card-gap:${f.gap ?? 30}px`}>
           <h2 class="feature__title">{f.title}</h2>
           <p class="feature__sub">{f.sub}</p>
           <Image

@@ -26,7 +26,11 @@ const REF = {
     .find(e => /Here.s What Our Users Say/.test(e.textContent)).closest('.eb-wrapper-outer'),
 };
 const browser = await chromium.launch();
-const ctx = await browser.newContext({ deviceScaleFactor: 2 });
+/* `reducedMotion: 'reduce'` so the entrance animations never run here.
+ * Every element is then at its final position from first paint, which is
+ * what these measurements are about — and it exercises the accessibility
+ * path at the same time. */
+const ctx = await browser.newContext({ deviceScaleFactor: 2, reducedMotion: 'reduce' });
 
 const shoot = async (url, resolve, path) => {
   const p = await ctx.newPage();

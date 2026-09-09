@@ -8,7 +8,11 @@ const BASE = process.argv[2] ?? 'http://localhost:4321';
 const VIEWPORTS = [360, 480, 768, 1024, 1280, 1440, 1920];
 
 const browser = await chromium.launch();
-const page = await browser.newPage();
+/* `reducedMotion: 'reduce'` so the entrance animations never run here.
+ * Every element is then at its final position from first paint, which is
+ * what these measurements are about — and it exercises the accessibility
+ * path at the same time. */
+const page = await browser.newPage({ reducedMotion: 'reduce' });
 let worst = 0;
 
 const MAP = {

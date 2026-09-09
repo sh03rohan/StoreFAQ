@@ -1,5 +1,6 @@
 ---
 import '../styles/tokens.css';
+import Motion from '../components/Motion.astro';
 
 export interface Props {
   title: string;
@@ -44,11 +45,30 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
 
     <link rel="alternate" type="application/rss+xml" title="StoreFAQ" href="/feed/" />
 
+    <!-- Hide the animated blocks before first paint, but only when motion is
+         welcome. Anyone on `prefers-reduced-motion: reduce` never gets the
+         class, so nothing is ever hidden pending JavaScript. The timeout is
+         the failsafe for the module failing to load; it cancels itself once
+         the module takes over. -->
+    <script is:inline>
+      if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+        document.documentElement.classList.add('js-anim');
+        window.__animFailsafe = setTimeout(function () {
+          // The module has not arrived. Reveal everything and leave a flag, so
+          // that if it turns up late it does NOT hide the content again to
+          // animate it — that would read as content vanishing.
+          document.documentElement.classList.remove('js-anim');
+          window.__animGaveUp = true;
+        }, 2500);
+      }
+    </script>
+
     <!-- Preload only the two families used above the fold. -->
     <link rel="preload" href="/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/IBMPlexSans-Variable.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body class="bg-page text-ink font-body text-base antialiased">
     <slot />
+    <Motion />
   </body>
 </html>

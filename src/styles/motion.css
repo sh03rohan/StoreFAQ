@@ -1,0 +1,39 @@
+/* Entrance animation.
+ *
+ * `.js-anim` is added by a tiny inline script in the <head>, and only when
+ * the visitor has not asked for reduced motion. That keeps the hidden state
+ * out of the document entirely for anyone who has — no class, no rule, no
+ * dependency on JavaScript arriving to make the page readable.
+ *
+ * Only `opacity` and `transform` are animated, so nothing here can move the
+ * layout: every measurement in NOTES.md still holds while a tween runs.
+ */
+.js-anim [data-anim] {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+/* Above the fold, the entrance is pure CSS and plays immediately.
+ *
+ * The hero image is the LCP element, and an element at `opacity: 0` does not
+ * count as painted — so driving it from the animation bundle would put the
+ * page's largest paint behind a 44KB download on every cold visit. These
+ * elements are skipped by the module and animate from here instead, which
+ * costs nothing and starts on the first frame.
+ *
+ * `--anim-d` staggers them; `--anim-y` and `--anim-s` match the module's
+ * presets so the two systems look like one. */
+@keyframes anim-rise {
+  from { opacity: 0; transform: translateY(var(--anim-y, 20px)) scale(var(--anim-s, 1)); }
+  to   { opacity: 1; transform: none; }
+}
+.js-anim [data-anim-intro] {
+  animation: anim-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--anim-d, 0s) both;
+}
+
+/* Belt and braces: if the module never loads, the inline script's timeout
+ * drops `.js-anim` and these rules stop applying, so the page is readable. */
+@media (prefers-reduced-motion: reduce) {
+  .js-anim [data-anim] { opacity: 1; will-change: auto; }
+  .js-anim [data-anim-intro] { animation: none; }
+}

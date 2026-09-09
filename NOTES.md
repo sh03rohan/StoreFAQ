@@ -888,3 +888,38 @@ Neither grid's row heights change (a grid row is already as tall as its tallest 
 #### The diffs now encode the deviation rather than reporting it forever
 
 Both `diff-features.mjs` and `diff-features-page.mjs` compare each card's height against **the tallest card in its reference row**, not against its own. Width, x, y, the image band, the text positions and the paint still compare card to card, so a genuinely wrong card still fails. Result: 0 failures on both, with the deviation stated in the code rather than sitting in the output as noise to be scrolled past — which is how the `content` +59 went unread on the pricing diff for weeks.
+
+## Entrance animations (GSAP) — requested addition
+
+**This is a departure from the migration brief, not a fidelity fix.** The original has no entrance animation; asked for in review, so it is additive and reversible (delete `Motion.astro`, `motion.css`, the `<head>` snippet and the `data-anim` attributes).
+
+Scope is `<main>` only. Header, newsletter band and footer are excluded and are interactive from first paint, as asked.
+
+### How it is put together
+
+Targets are marked in the markup as `data-anim="heading|text|media|card|chip"`, not matched by a selector list in the script — so the set the script animates and the set CSS hides beforehand cannot drift apart. 39 elements on Home, 26 on /features/. Cards animate as a unit rather than per child; staggering the inside of a card as well reads as noise, not polish.
+
+Presets: heading rises 24px over 0.7s, body copy 16px/0.6s, media 20px + a 0.985 scale over 0.8s, cards 28px/0.7s, chips 12px/0.5s — all `power3.out`, staggered 0.09s within a section. Each section gets its own ScrollTrigger at `top 85%`, `once: true`; without per-section grouping a long page staggers sixty elements off one trigger and the last cards are still waiting long after they have been scrolled past.
+
+### Four things that had to be got right
+
+1. **`prefers-reduced-motion` is honoured at the source.** The `<head>` snippet only adds `.js-anim` when motion is welcome, so for anyone who has asked for less there is no class, no hiding rule and no dependency on JavaScript arriving to make the page readable. Verified with `reducedMotion: 'reduce'`: everything is at opacity 1 from first paint.
+
+2. **The LCP element does not wait on the bundle.** An element at `opacity: 0` does not count as painted, so driving the hero from a 43KB bundle would put the page's largest paint behind that download on every cold visit. Above-the-fold elements carry `data-anim-intro` and animate from CSS keyframes instead — no JavaScript in that path at all. The module skips them.
+
+3. **Failure modes are covered.** With JavaScript entirely off, nothing is ever hidden (screenshot-checked — the page renders complete). If the bundle is merely slow, a 2.5s failsafe reveals everything and sets a flag; a late-arriving module sees the flag and does *not* re-hide the content to animate it, which would read as content vanishing.
+
+4. **Nothing moves the layout.** Only `opacity` and `transform` are animated. Measured **CLS 0** over a full scroll of the home page, and the section offsets are byte-identical with and without motion — so every measurement recorded above still holds.
+
+### The cost, plainly
+
+| | before | after |
+|---|---|---|
+| JS shipped | 1.4 KB gzip | **44.6 KB gzip** (43.2 GSAP + ScrollTrigger, 1.4 existing) |
+| inline script | ~1.3 KB | ~2.0 KB |
+
+That is roughly 30x the site's previous JavaScript, on a site that until now shipped none of consequence. GSAP + ScrollTrigger is the right tool if the animation is going to grow; if this stays as-is — fades and rises on scroll — the whole thing is expressible in ~2KB with `IntersectionObserver` and the same CSS keyframes already written for the hero. Worth revisiting before launch.
+
+### All diffs run in reduced motion
+
+Every `scripts/diff-*.mjs` and `crop.mjs` now opens its context with `reducedMotion: 'reduce'`, so measurements are taken with elements at their final position — and the accessibility path gets exercised on every run. Re-verified after the change: hero, CTA, testimonials, FAQ, features-page and chrome all 0 failures; features, pricing and footer show only their documented deviations.

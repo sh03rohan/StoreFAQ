@@ -87,7 +87,11 @@ const readMine = (page) => page.evaluate((sel) => {
 }, MINE_SEL);
 
 const browser = await chromium.launch();
-const ctx = await browser.newContext();
+/* `reducedMotion: 'reduce'` so the entrance animations never run here.
+ * Every element is then at its final position from first paint, which is
+ * what these measurements are about — and it exercises the accessibility
+ * path at the same time. */
+const ctx = await browser.newContext({ reducedMotion: 'reduce' });
 const ref = await ctx.newPage(), mine = await ctx.newPage();
 const settle = async (p, url) => {
   await p.goto(url, { waitUntil: 'networkidle', timeout: 60000 });

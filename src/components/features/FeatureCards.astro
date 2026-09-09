@@ -13,7 +13,7 @@ const pick = (name: string) => images[`../../assets/features/${name}`].default;
 ---
 <ul class="fcards">
   {featureCards.map((c) => (
-    <li class="fcard" style={`--band-bg:${c.bg};--band-top:${c.bandTop}px;--desc-gap:${c.descBottom}px`}>
+    <li class="fcard" data-anim="card" style={`--band-bg:${c.bg};--band-top:${c.bandTop}px;--desc-gap:${c.descBottom}px`}>
       <div class="fcard__band">
         <Image src={pick(c.img)} alt={c.alt} widths={[362, 738]} sizes="(min-width: 1280px) 33vw, 100vw" loading="lazy" />
       </div>

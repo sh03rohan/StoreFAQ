@@ -26,7 +26,11 @@ const spec = SECTIONS[name];
 const VIEWPORTS = [360, 480, 768, 1024, 1280, 1440, 1920];
 
 const browser = await chromium.launch();
-const ctx = await browser.newContext();
+/* `reducedMotion: 'reduce'` so the entrance animations never run here.
+ * Every element is then at its final position from first paint, which is
+ * what these measurements are about — and it exercises the accessibility
+ * path at the same time. */
+const ctx = await browser.newContext({ reducedMotion: 'reduce' });
 const ref = await ctx.newPage(), mine = await ctx.newPage();
 
 const settle = async (p, url) => {
