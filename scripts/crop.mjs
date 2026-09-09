@@ -25,6 +25,8 @@ const REF = {
   testimonials: () => [...document.querySelectorAll('.first-title')]
     .find(e => /Here.s What Our Users Say/.test(e.textContent)).closest('.eb-wrapper-outer'),
   docsHero: () => document.querySelector('.eb-wrapper-3lds7'),
+  clHead: () => document.querySelector('.eb-wrapper-300d0'),
+  clEntry: () => document.querySelectorAll('.timeline-row')[0],
   docsCats: () => document.querySelector('.eb-wrapper-e0v4v'),
   footerBar: () => { const vis = e => { const q = e.getBoundingClientRect(); return q.width > 0 && q.height > 0; };
     return [...document.querySelectorAll('*')].filter(vis).find(e => parseFloat(getComputedStyle(e).borderTopWidth) === 1

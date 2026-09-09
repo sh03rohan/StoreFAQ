@@ -42,3 +42,14 @@
   font-style: normal;
   font-display: swap;
 }
+
+/* Sora — the changelog's 33 entry dates, and nothing else on the site. The
+ * @font-face costs nothing on other pages: a face is only fetched when a
+ * rendered element actually asks for it. */
+@font-face {
+  font-family: 'Sora';
+  src: url('/fonts/Sora-Variable.woff2') format('woff2-variations');
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}

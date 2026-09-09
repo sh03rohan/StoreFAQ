@@ -1083,3 +1083,110 @@ filled by the docs content collection, so they close together:
 Ground rule 8 is "no broken links **at launch**", so these are expected now;
 they belong on the Phase 10 checklist, and `assert-clean.sh` should grow a
 link-resolution pass once the collection exists.
+
+## Phase 5 — /changelog/
+
+A page header on a mint card, then a 33-entry release timeline. `diff-changelog.mjs`
+reports **0 failures at 7 viewports**, worst 1.6px, and the page total is
+**exactly equal at 1280, 1440 and 1920** (17,909px on both).
+
+### The content is scraped, not captured
+
+`reference/html/changelog.html` was already a release behind — it has 32
+entries, the live page has 33. Building from the capture would have put the
+page ~600px out with nothing in the layout to blame, so
+`scripts/scrape-changelog.mjs` pulls the entries from the live page into
+`src/data/changelog.ts`. It keeps only `<strong>`, `<em>`, `<a>`, `<code>` and
+`<br>`, drops every attribute, and discards the builder's wrappers at scrape
+time — so no WordPress class can reach the output (§B1). Re-run it when a
+release ships, until the changelog moves into the CMS.
+
+### What was measured
+
+| | below 768 | 768–1024 | 1025+ |
+|---|---|---|---|
+| columns | 30% / 70%, no gap | `calc(27% - 10px)` / `calc(73% - 10px)`, gap 20 | `calc(27% - 5.4px)` / `calc(73% - 14.6px)`, gap 20 |
+| entry card radius | 10px | 30px | 30px |
+| date type | Sora 12/14.4 | Sora 14/16.8 | Sora 14/16.8 |
+| page h1 | 26/33.8 | 26/33.8 | 40/52 |
+
+Fixed everywhere: 60px below each entry, the version at `padding: 40px` with a
+`1px solid rgb(0 0 0 / 0.06)` bottom rule, the notes block at `padding: 40px`,
+`h3 { margin-bottom: 14px }`, `ul { padding-left: 14px; margin-bottom: 30px }`,
+`li { margin-bottom: 5px }` — the last of which collapses through the list's own
+bottom edge, which is why the space under a list is 30px and not 35.
+
+The two column formulas differ because the original compensates for the 20px
+gap differently either side of 1025: half of it per column below, and each
+column's own share of it above. Both are reproduced as measured.
+
+**`<strong>` in an entry is `font-weight: 400` against the list's own 300** — a
+lift, not a bold. Setting it to 600 (the obvious guess) made every item with a
+bold phrase 5–7px wider, which is how it was caught.
+
+### Sora, and what it costs
+
+The 33 entry dates are Sora — genuinely, not a failed fallback: the reference
+loads it from Google Fonts. The wght-only latin variable is 37KB and is
+declared in `fonts.css`, which costs nothing on the other pages: a face is only
+fetched when a rendered element asks for it.
+
+This settles the open "Changelog nav item" question rather than reopening it.
+That item is Sora 16px in the original header, on *every* page — so reproducing
+it would pull 37KB onto Home, /features/ and /docs/ for one word. The
+normalisation to IBM Plex Sans 18px stands; the cost is now quantified.
+
+### Two entries deliberately normalised
+
+Entries [31] and [32] — v1.1.0 and v1.0.0, the two oldest — were authored with
+a different row: 50/50 columns at 768–1024, stacked below that, and their own
+widths at 1280+ (301/849 and 308/842 against every other entry's 310.5/839.5).
+That is authoring drift from before the pattern settled, and it shows only at
+the very bottom of a 17,909px page. **They are normalised to match the other
+31.** The cost is the page total below 1280: 47px at 360, −42 at 480, −43 at
+768, −22 at 1024. At 1280 and above it is 0.
+
+`diff-changelog.mjs` names them in a `NORMALISED` set, prints their deltas and
+does not count them — so the deviation is stated in the code rather than left
+in the output as noise to be scrolled past.
+
+### The timeline's scroll behaviour
+
+The original holds every entry at `opacity: 0.3` and lifts whichever ones are
+at least 30% on screen, and pins a 500px gradient bar to the viewport once it
+has scrolled past. Both are reproduced from the original's own rules, read out
+of its inline script: an `IntersectionObserver` at `threshold: 0.3`, and a
+latched scroll check (the bar goes fixed when its own top reaches 0 and only
+lets go when the first entry's date column is back on screen — latched because
+once fixed its top is pinned and the entry condition can never read false
+again). Verified against the live site at six scroll positions: the lit set,
+the topmost lit entry and the bar's position all match at every one.
+
+**One deliberate difference.** The original's dim is the CSS default, so with
+JavaScript off all 33 entries sit at 30% opacity — the body copy (#475467 on
+#F9FAFB) lands far below AA and the page is effectively unreadable. Here the
+dim only ever arrives from the script: the class is set by a tiny inline
+`<script>` before the entries are parsed, so there is no flash, and a reader
+without JavaScript gets every entry at full contrast instead of none.
+Screenshot-verified: 0 entries below full opacity with JS off.
+
+**Still worth a decision:** 30% opacity is the original's design, and it is
+reproduced — but it is a real contrast failure for the 32 entries you are not
+currently looking at. Say the word and the resting opacity comes up.
+
+### The card's ground — the sixth time
+
+`diff-changelog.mjs` passed with every box exact while the entry card had no
+background at all. The cream `#F9F7EC` and its radius are the whole visual
+identity of an entry and **nothing in the geometry depends on them**. Caught by
+the crop, again, not the diff.
+
+The diff now reads paint per sampled entry, and it had to be pointed at the
+right element on each side: the reference paints the card on a wrapper *inside*
+its column — the same size, so every box matched either way — while this build
+paints it on the column itself. Comparing the column on both sides compares a
+transparent box against a cream one and reports nothing useful.
+
+Running tally of "a passing geometry diff hides paint": testimonial tints,
+pricing badge and its three price inks, the features lead's ground and sparkle,
+the feature band rule, the newsletter gradient, and now the changelog card.

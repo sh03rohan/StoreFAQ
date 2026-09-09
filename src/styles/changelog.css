@@ -1,0 +1,177 @@
+/* Changelog. All values measured from https://storefaq.io/changelog/ —
+ * see scripts/diff-changelog.mjs.
+ */
+
+/* ---------- page header ---------- */
+.cl-head { padding: 20px 0; }
+
+.cl-head__card {
+  padding: 60px 20px;
+  background: var(--color-mint);            /* #F3F9EC */
+  border-radius: 20px;
+  text-align: center;
+}
+
+.cl-head__title {
+  margin: 0 0 8px;
+  font-family: var(--font-heading);
+  font-size: 1.625rem;                      /* 26/33.8 -> 40/52 */
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--color-ink-mid);              /* #1D2939 */
+}
+@media (min-width: 1280px) { .cl-head__title { font-size: 2.5rem; } }
+
+.cl-head__sub {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;                      /* 14/22.4 -> 18/28.8 */
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--color-body);                 /* #45503F */
+}
+@media (min-width: 1280px) { .cl-head__sub { font-size: 1.125rem; } }
+
+/* ---------- timeline ---------- */
+.cl {
+  padding: 80px 0;
+  background: var(--color-slate);           /* #F9FAFB */
+}
+.cl__wrap { position: relative; }
+
+/* The scroll indicator: a 500px bar that rests 44px below the list and, once
+ * the list has scrolled past, hangs from the top of the viewport. The gradient
+ * runs left-to-right across 2px, so what shows is a green line whose right
+ * edge is slightly soft. */
+.cl__line {
+  position: absolute;
+  top: 44px;
+  left: 4px;
+  width: 2px;
+  height: 500px;
+  background-image: linear-gradient(90.2deg, #548B2F -7.6%, rgba(0, 0, 0, 0) 94.2%);
+}
+.cl__line.is-fixed { position: fixed; top: -6px; }
+
+.cl__list { list-style: none; margin: 0; padding: 0; }
+
+/* 30/70 while the gap is closed, 27/73 once it opens. Both columns carry the
+ * gap compensation the original uses — half of it each below 1025, and each
+ * column's own share of it above, which is why the two subtrahends differ. */
+.cl__entry {
+  display: flex;
+  padding-bottom: 60px;
+}
+.cl__date { width: 30%; }
+.cl__body { width: 70%; padding-left: 10px; }
+
+@media (min-width: 768px) {
+  .cl__entry { gap: 20px; }
+  .cl__date { width: calc(27% - 10px); }
+  .cl__body { width: calc(73% - 10px); padding-left: 0; }
+}
+@media (min-width: 1025px) {
+  .cl__date { width: calc(27% - 5.4px); }
+  .cl__body { width: calc(73% - 14.6px); }
+}
+
+/* The column itself stretches to the entry's height — that is what bounds the
+ * sticky travel. 40px down, so the date sits on the same line as the version
+ * beside it. */
+/* The dot is centred on the date block and nudged 2px down — which is where
+ * the original's baseline arithmetic lands it at every size, including 360
+ * where the date wraps to two lines and a baseline rule would not. */
+.cl__date-inner {
+  display: flex;
+  align-items: center;
+  margin-top: 40px;
+  position: sticky;
+  top: 40px;
+}
+
+.cl__dot {
+  flex: none;
+  margin-top: 2px;
+  width: 10px;
+  height: 10px;
+  margin-right: 10px;
+  background: var(--color-slate);           /* masks the line behind it */
+}
+.cl__dot svg { display: block; width: 10px; height: 10px; fill: var(--color-ink-mid); }
+
+.cl__date-text {
+  /* -2px: the original lifts the date off the dot's baseline by exactly this. */
+  margin-top: -2px;
+  font-family: var(--font-date);            /* Sora */
+  font-size: 0.75rem;                       /* 12/14.4 -> 14/16.8 */
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--color-ink-mid);              /* #1D2939 */
+}
+@media (min-width: 768px) { .cl__date-text { font-size: 0.875rem; } }
+
+/* The card. Its ground and radius are the whole visual identity of an entry
+ * and NOTHING about the geometry depends on them — the sixth time on this
+ * migration that a section measured to the pixel while painting the wrong
+ * colour. diff-changelog.mjs now reads the paint of every sampled entry. */
+.cl__body {
+  min-width: 0;
+  background: var(--color-cream);           /* #F9F7EC */
+  border-radius: 10px;                      /* 30px from 768 */
+}
+@media (min-width: 768px) { .cl__body { border-radius: 30px; } }
+
+.cl__version {
+  margin: 0;
+  padding: 40px;
+  border-bottom: 1px solid rgb(0 0 0 / 0.06);
+  font-family: var(--font-heading);
+  font-size: 1.625rem;                      /* 26/33.8 */
+  line-height: 1.3;
+  font-weight: 500;
+  color: var(--color-ink-mid);              /* #1D2939 */
+}
+
+.cl__notes { padding: 40px; }
+
+.cl__section {
+  margin: 0 0 14px;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;                      /* 18/25.2 */
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--color-ink-mid);              /* #1D2939 */
+}
+
+.cl__items {
+  margin: 0 0 30px;
+  padding-left: 14px;
+  list-style: disc;
+}
+/* 5px between items. The last item's margin collapses through the list's own
+ * bottom edge, so the 30px below a list is 30px and not 35. */
+.cl__items li {
+  margin-bottom: 5px;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;                      /* 14/21 */
+  line-height: 1.5;
+  font-weight: 300;
+  color: var(--color-muted);                /* #475467 */
+}
+/* 400 against the list's own 300 — a lift, not a bold. */
+.cl__items li strong { font-weight: 400; }
+.cl__items li code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+}
+
+/* The original holds every entry but one at 30% opacity and lifts the one
+ * nearest the top of the viewport. Reproduced, but the DEFAULT here is
+ * readable: the dim only ever comes from the script, so with no JavaScript
+ * every entry is at full contrast rather than none of them being legible.
+ * See NOTES — 30% puts the body copy far below AA. */
+.js-cl .cl__entry { opacity: 0.3; transition: opacity 0.2s var(--ease-default); }
+.js-cl .cl__entry.is-active { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .js-cl .cl__entry { transition: none; }
+}

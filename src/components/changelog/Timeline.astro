@@ -1,0 +1,103 @@
+---
+import Container from '../Container.astro';
+import { changelog } from '../../data/changelog';
+
+/* Font Awesome 6 Free "circle" (regular), viewBox 512x512 — the original
+ * renders this glyph at 10px on the section's own ground, so the ring masks
+ * the timeline line where it passes behind.
+ * Icon: Font Awesome Free 6, CC BY 4.0. */
+const CIRCLE =
+  'M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512z';
+
+/** "August 27, 2026" -> "2026-08-27", so <time> carries a machine-readable
+ *  date. Purely additive: nothing about it renders. */
+const iso = (s: string) => {
+  const d = new Date(s + ' UTC');
+  return Number.isNaN(d.getTime()) ? undefined : d.toISOString().slice(0, 10);
+};
+---
+<!-- Set before the entries below are parsed, so they are dimmed from first
+     paint rather than flashing to full contrast and back. With no JavaScript
+     the class never arrives and every entry stays readable — the original
+     dims from CSS and leaves a no-JS reader with 33 unreadable entries. -->
+<script is:inline>document.documentElement.classList.add('js-cl');</script>
+
+<section class="cl">
+  <Container width="content" class="cl__wrap">
+    <!-- A 500px gradient bar that tracks the scroll. Decorative: it carries no
+         information the entry list does not already give. -->
+    <div class="cl__line" aria-hidden="true"></div>
+
+    <ol class="cl__list">
+      {changelog.map((entry, i) => (
+        /* The first entry ships lit, as it does on the original — so it is
+           already at full contrast before the observer's first callback. */
+        <li class:list={['cl__entry', i === 0 && 'is-active']}>
+          <div class="cl__date">
+            <!-- The column stretches to the entry's full height; only this
+                 inner block is sticky, so the date follows its own entry and
+                 stops at its end. -->
+            <div class="cl__date-inner">
+              <span class="cl__dot" aria-hidden="true">
+                <svg viewBox="0 0 512 512" focusable="false"><path d={CIRCLE} /></svg>
+              </span>
+              <time class="cl__date-text" datetime={iso(entry.date)}>{entry.date}</time>
+            </div>
+          </div>
+
+          <div class="cl__body">
+            <h2 class="cl__version">{entry.version}</h2>
+            <div class="cl__notes">
+              {entry.sections.map((s) => (
+                <>
+                  <h3 class="cl__section">{s.heading}</h3>
+                  {s.items.length > 0 && (
+                    <ul class="cl__items">
+                      {s.items.map((item) => <li set:html={item} />)}
+                    </ul>
+                  )}
+                </>
+              ))}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </Container>
+</section>
+
+<script>
+  /* The original lifts every entry that is at least 30% on screen and holds
+   * the rest at 30% opacity, and pins the gradient bar to the viewport once it
+   * has scrolled past the top. Both are scroll state, so both are done here —
+   * no library: one IntersectionObserver and one scroll listener, matching the
+   * original's own rules (threshold 0.3; the bar latches on when its own top
+   * reaches 0 and only lets go when the first entry's date column is back on
+   * screen). */
+  const root = document.documentElement;
+  if (root.classList.contains('js-cl')) {
+    const line = document.querySelector<HTMLElement>('.cl__line');
+    const firstDate = document.querySelector<HTMLElement>('.cl__date');
+    const entries = [...document.querySelectorAll<HTMLElement>('.cl__entry')];
+
+    if (line && firstDate && entries.length) {
+      const io = new IntersectionObserver(
+        (rows) => rows.forEach((e) => e.target.classList.toggle('is-active', e.isIntersecting)),
+        { threshold: 0.3 },
+      );
+      entries.forEach((e) => io.observe(e));
+
+      /* Latched, because once the bar is fixed its own top is pinned and the
+       * entry condition can never read false again. */
+      let fixed = false;
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        if (!fixed && line.getBoundingClientRect().top <= 0) { line.classList.add('is-fixed'); fixed = true; }
+        else if (fixed && firstDate.getBoundingClientRect().top > 0) { line.classList.remove('is-fixed'); fixed = false; }
+      };
+      addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+      update();
+    }
+  }
+</script>
