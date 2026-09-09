@@ -742,3 +742,30 @@ Still open, all from earlier phases: the "Changelog" nav item's type (Sora 16px 
 ## Phase 5 — Home is complete
 
 All six sections built and verified: hero, feature stack, pricing, CTA band, testimonials, FAQ. Page total within 3px at 1280 and above, within 1px at 1440/1920. The two deltas below 1280 are both decided above.
+
+### Pricing: the "Popular" badge outline — reported and fixed
+
+Flagged in review with the badge band boxed. The badge was missing its **1px `#EFE0A1` border** — the same rule colour the popular column uses down its sides — with `border-radius: 10px 10px 0 0`. Not a rounding gap: a visible ring, and the 2px the badge was short in each direction (248x61, not 251x61). It is inset 1px from the column edge so its side borders continue the column's own rules; the bottom edge is covered by the header cell, so it reads as a three-sided cap.
+
+Checking that led to four more differences in the same section, none of which the geometry diff had been looking at:
+
+1. **The four prices are three different inks.** Free `#272541`, Professional `#101828`, Growth `#111111`, Enterprise `#272541`. Mine painted all four `#111111`. Stored per plan in `home-pricing.ts` rather than averaged, since there is no system to derive.
+
+2. **Header cells pack from the top, not centred.** Mine used `justify-content: center`, which landed correctly for three of the four plans purely because their content summed to exactly the 200px content box. Now `flex-start` with the measured spacing: name +0, price +32, button +149.
+
+3. **Enterprise's header block starts 15px lower and is indented 5px**, with its button pulled in 5px on both sides. Nothing in the content asks for it — it is how that block was authored — but it is visible against its neighbours, so it is reproduced (`offset: true` in the data). Mine had been getting a 9px drop by accident, from the centring above.
+
+4. **Below 1280 the plan headers are centred** — name and price both — **except Enterprise, which stays left-aligned.** Mine left-aligned all four. This one is plainly visible on a phone.
+
+Result: 768, 1024, 1440 and 1920 are now **completely clean**; 1280 has only the pre-existing 3px; 360 has only the accepted row-equalisation shortfall.
+
+#### Four bugs in the pricing diff itself
+
+The reason none of the above showed up is that `scripts/diff-pricing.mjs` was comparing the wrong things:
+
+- It measured **boxes, never text**. The Enterprise indent is `padding-left` — it moves the glyphs, not the box — so it was invisible. It now measures a `Range` over each element's contents on my side against the reference's inline text.
+- It read **no colours at all**, so three different price inks passed.
+- `heads.slice(1)` assumed the label column's header is always present. It is only there from 1280 up, so below that **every plan was compared against its neighbour** — which is why the Growth column appeared to have a yearly line.
+- `content` compared two different wrappers: the reference's excludes the absolutely-positioned badge band, mine included the 61px grid row. That produced a constant +59 that had been sitting in the output as accepted noise, exactly the kind of permanent ✗ that trains you to stop reading.
+
+It now also checks the badge's border, radius and fill, and reports a hidden label column as absent rather than as a zero-sized box.

@@ -303,6 +303,10 @@
   right: 0;
   top: -61px;
   height: 61px;
+  /* Outlined in the popular column's own rule colour, with the top corners
+   * rounded — the bottom edge is covered by the header cell, so it reads as
+   * a three-sided cap sitting on the column. */
+  border: 1px solid var(--color-rule-active);   /* #EFE0A1 */
   border-radius: 10px 10px 0 0;
   display: flex;
   align-items: center;
@@ -335,25 +339,26 @@
 }
 .pricing__cell:last-child { box-shadow: none; }
 
-/* 260px tall, padding 30px 20px, contents **left aligned** and centred
- * vertically as a block — that is what drops Enterprise's group 15px to
- * make room for its yearly line. Measured offsets within the cell:
- * name +30, price +60, button +179 (plans without a yearly line);
- * name +45, price +75, yearly +129, button +172 (Enterprise). */
+/* 260px tall, padding 30px 20px, contents left aligned and packed from the
+ * top — NOT centred. Measured offsets from the cell's content edge:
+ * name +0, price +32, button +149 (plans without a yearly line);
+ * name +15, price +47, yearly +97, button +142 (Enterprise, see .is-offset). */
 .pricing__cell--header {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: stretch;
   gap: 0;                                  /* .pricing__cell sets 16px */
   min-height: 260px;
   padding: 30px 20px;
-  text-align: left;
+  /* Centred while the plans are stacked cards; left-aligned once they become
+   * columns of the comparison table at 1280. */
+  text-align: center;
 }
 .pricing__cell--label { display: none; }
 
 .pricing__plan-name {
-  margin: 0;
+  margin: 0 0 8px;
   font-family: var(--font-body);
   font-size: 1.25rem;                      /* 20/24 */
   line-height: 1.2;
@@ -363,12 +368,12 @@
 
 /* Measured 37px tall — line-height 1.32, not 1.2. */
 .pricing__price {
-  margin: 6px 0 0;
+  margin: 0;
   font-family: var(--font-heading);
   font-size: 1.75rem;                      /* 28px */
   line-height: 1.32;
   font-weight: 700;
-  color: var(--color-ink);
+  color: var(--plan-price, var(--color-ink));
 }
 .pricing__period {
   font-size: 1.25rem;                      /* 20/24 */
@@ -377,7 +382,7 @@
 }
 
 .pricing__yearly {
-  margin: 17px 0 0;
+  margin: 13px 0 0;
   font-family: var(--font-body);
   font-size: 0.875rem;                     /* 14/22.4 */
   font-weight: 500;
@@ -386,7 +391,7 @@
 
 .pricing__cta {
   display: block;
-  margin-top: 82px;                        /* 26px when a yearly line precedes */
+  margin-top: 80px;                        /* 23px when a yearly line precedes */
   margin-bottom: 8px;
   padding: 12px 30px;
   text-align: center;
@@ -403,7 +408,19 @@
   transition: background-color var(--duration-fast) var(--ease-default),
               color var(--duration-fast) var(--ease-default);
 }
-.pricing__yearly + .pricing__cta { margin-top: 26px; }
+.pricing__yearly + .pricing__cta { margin-top: 23px; }
+
+/* Enterprise only. Its header block starts 15px lower than the other three
+ * and is indented 5px, with the button pulled in 5px on both sides. Nothing
+ * about the content asks for it — it is how the block was authored — but it
+ * is visible next to its neighbours, so it is reproduced. */
+/* ...and it stays left-aligned while the other three centre. */
+.pricing__cell--header.is-offset { text-align: left; }
+.pricing__cell--header.is-offset .pricing__plan-name { margin-top: 15px; }
+.pricing__cell--header.is-offset .pricing__plan-name,
+.pricing__cell--header.is-offset .pricing__price,
+.pricing__cell--header.is-offset .pricing__yearly { padding-left: 5px; }
+.pricing__cell--header.is-offset .pricing__cta { margin-left: 5px; margin-right: 5px; }
 .pricing__cta:hover { background: var(--color-brand-dark); color: var(--color-white); }
 .is-popular .pricing__cta {
   background: var(--color-brand-dark);
@@ -567,7 +584,8 @@
   .pricing__cell--label { display: flex; }
   .pricing__cell-label { display: none; }
 
-  .pricing__cell--header { min-height: 260px; padding: 30px 20px; }
+  /* `.pricing__cell` above sets `center`; the header packs from the top. */
+  .pricing__cell--header { justify-content: flex-start; min-height: 260px; padding: 30px 20px; text-align: left; }
   .pricing__labels .pricing__cell--header { background: none; }
 
   .pricing__plan.is-popular { margin-top: 0; }
@@ -577,7 +595,9 @@
     position: static;
     grid-row: 1;
     grid-column: var(--col);
-    margin: 0;
+    /* Inset by 1px so its side borders line up with the column's own rules,
+       which are drawn as inset shadows inside the same grid column. */
+    margin: 0 1px;
   }
   .pricing__value { text-align: center; }
 }

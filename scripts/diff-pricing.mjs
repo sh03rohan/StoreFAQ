@@ -13,11 +13,34 @@ for (const w of [360, 768, 1024, 1280, 1440, 1920]) {
     const vis = e => { const q = e.getBoundingClientRect(); return q.width > 0 && q.height > 0; };
     const g = e => { if (!e) return null; const q = e.getBoundingClientRect(); return { w: Math.round(q.width), h: Math.round(q.height), x: Math.round(q.x) }; };
     const cols = [...sec.querySelectorAll('.eb-mcpt-column')];
+    // Where the glyphs land inside each plan header, relative to the header
+    // cell's own content edge, plus their colours. Box geometry alone let a
+    // 15px offset and three different price inks through unnoticed.
+    const T = (e, top) => { if (!e) return null; const q = e.getBoundingClientRect();
+      return { dy: Math.round(q.top + scrollY - top), dx: Math.round(q.x), c: getComputedStyle(e).color }; };
+    // Not `.slice(1)`: the label column's header is only present at 1280+,
+    // so slicing blind shifted every plan by one below that.
+    const heads = [...sec.querySelectorAll('.eb-mcpt-cell.eb-mcpt-header')]
+      .filter(e => vis(e) && e.querySelector('.eb-original-price-wrapper'));
     return { section: g(sec.querySelector('.eb-wrapper-outer')),
-      heading: g([...sec.querySelectorAll('.first-title')].filter(vis)[0]),
-      content: g(sec.querySelector('.eb-mcpt-content')),
+      heading: g([...sec.querySelectorAll('.eb-ah-title')].filter(vis)[0]),
+      content: (() => { const boxes = cols.filter(vis).map(c => c.getBoundingClientRect());
+        if (!boxes.length) return null;
+        const l = Math.min(...boxes.map(q => q.x)), rt = Math.max(...boxes.map(q => q.right));
+        const t = Math.min(...boxes.map(q => q.top)), bt = Math.max(...boxes.map(q => q.bottom));
+        return { w: Math.round(rt - l), h: Math.round(bt - t), x: Math.round(l) }; })(),
       labelCol: vis(cols[0]) ? g(cols[0]) : null,
-      plans: cols.slice(1).map(c => vis(c) ? g(c) : null) };
+      plans: cols.slice(1).map(c => vis(c) ? g(c) : null),
+      headers: heads.map(h => { const top = h.getBoundingClientRect().top + scrollY
+            + parseFloat(getComputedStyle(h).paddingTop);
+        const yr = [...h.querySelectorAll('.first-title')].find(e => /yearly/.test(e.textContent));
+        return { name: T(h.querySelector('.eb-ah-title .first-title'), top),
+                 price: T(h.querySelector('.eb-original-price-wrapper'), top),
+                 yearly: T(yr, top), cta: T(h.querySelector('.eb-button-anchor'), top) }; }),
+      badge: (() => { const bd = [...sec.querySelectorAll('*')].filter(vis)
+          .find(e => /^\s*Popular\s*$/.test(e.textContent) && e.children.length < 3);
+        if (!bd) return null; const c = getComputedStyle(bd);
+        return { ...g(bd), bg: c.backgroundColor, bd: c.borderColor, bw: c.borderTopWidth, br: c.borderRadius }; })() };
   });
   const m = await mine.evaluate(() => {
     const g = s => { const e = document.querySelector(s); if (!e) return null; const q = e.getBoundingClientRect();
@@ -34,10 +57,62 @@ for (const w of [360, 768, 1024, 1280, 1440, 1920]) {
         return { w: Math.round(q.width), h: Math.round(q.height), x: Math.round(q.x) }; }
       return span([...pl.querySelectorAll('.pricing__cell')]);
     });
-    return { section: g('.pricing'), heading: g('.pricing__heading'), content: g('.pricing__table'),
-      labelCol: labelCells.length ? span(labelCells) : null, plans: planBoxes };
+    // Ranges, not block boxes: padding-left shifts the glyphs inside the box,
+    // so only a range sees the reference's 5px Enterprise indent.
+    const T = (e, top) => { if (!e) return null; const rg = document.createRange(); rg.selectNodeContents(e);
+      const q = rg.getBoundingClientRect();
+      return { dy: Math.round(q.top + scrollY - top), dx: Math.round(q.x), c: getComputedStyle(e).color }; };
+    const heads = [...document.querySelectorAll('.pricing__plan .pricing__cell--header')];
+    const headers = heads.map(h => { const top = h.getBoundingClientRect().top + scrollY
+          + parseFloat(getComputedStyle(h).paddingTop);
+      const cta = h.querySelector('.pricing__cta');
+      const q = cta.getBoundingClientRect();
+      return { name: T(h.querySelector('.pricing__plan-name'), top),
+               price: T(h.querySelector('.pricing__price'), top),
+               yearly: T(h.querySelector('.pricing__yearly'), top),
+               cta: { dy: Math.round(q.top + scrollY - top), dx: Math.round(q.x),
+                      c: getComputedStyle(cta).color } }; });
+    const bdEl = document.querySelector('.pricing__badge');
+    const bdCS = getComputedStyle(bdEl); const bq = bdEl.getBoundingClientRect();
+    const badge = { w: Math.round(bq.width), h: Math.round(bq.height), x: Math.round(bq.x),
+      bg: bdCS.backgroundColor, bd: bdCS.borderColor, bw: bdCS.borderTopWidth, br: bdCS.borderRadius };
+    return { headers, badge,
+      section: g('.pricing'), heading: g('.pricing__heading'),
+      content: (() => {
+        const cells = [...document.querySelectorAll('.pricing__plan, .pricing__labels')]
+          .flatMap(p => getComputedStyle(p).display === 'contents' ? [...p.children] : [p])
+          .filter(e => !e.classList.contains('pricing__badge'))
+          .map(e => e.getBoundingClientRect()).filter(q => q.width > 0 && q.height > 0);
+        if (!cells.length) return null;
+        const l = Math.min(...cells.map(q => q.x)), rt = Math.max(...cells.map(q => q.right));
+        const t = Math.min(...cells.map(q => q.top)), bt = Math.max(...cells.map(q => q.bottom));
+        return { w: Math.round(rt - l), h: Math.round(bt - t), x: Math.round(l) }; })(),
+      // The label column is display:none below 1280; report it absent (as the
+      // reference does) rather than as a zero-sized box.
+      labelCol: (() => { if (!labelCells.length) return null; const b = span(labelCells);
+        return b && b.w > 0 && b.h > 0 ? b : null; })(), plans: planBoxes };
   });
   console.log(`\n${w}px`);
+  const NAMES = ['Free', 'Professional', 'Growth', 'Enterprise'];
+  (r.headers ?? []).forEach((a, i) => {
+    const z = m.headers[i]; if (!z) return;
+    for (const part of ['name', 'price', 'yearly', 'cta']) {
+      const A = a[part], Z = z[part];
+      if (!A && !Z) continue;
+      if (!A || !Z) { console.log(`  ${NAMES[i]}.${part} ref=${JSON.stringify(A)} mine=${JSON.stringify(Z)} ✗`); worst = 999; continue; }
+      const d = [Z.dy - A.dy, Z.dx - A.dx];
+      const bad = d.some(v => Math.abs(v) > 2) || A.c !== Z.c;
+      console.log(`  ${(NAMES[i] + '.' + part).padEnd(20)} ref +${A.dy}@${A.dx} ${A.c}  mine +${Z.dy}@${Z.dx} ${Z.c}  Δy${d[0]} Δx${d[1]} ${bad ? '✗' : '✓'}`);
+      if (bad) worst = Math.max(worst, 3, ...d.map(Math.abs));
+    }
+  });
+  if (r.badge && m.badge) {
+    const d = [m.badge.w - r.badge.w, m.badge.h - r.badge.h];
+    const paintSame = ['bg', 'bd', 'bw', 'br'].every(k => r.badge[k] === m.badge[k]);
+    const bad = d.some(v => Math.abs(v) > 2) || !paintSame;
+    console.log(`  ${'badge'.padEnd(20)} ref ${r.badge.w}x${r.badge.h} ${r.badge.bw} ${r.badge.bd} ${r.badge.br}  mine ${m.badge.w}x${m.badge.h} ${m.badge.bw} ${m.badge.bd} ${m.badge.br} ${bad ? '✗' : '✓'}`);
+    if (bad) worst = Math.max(worst, 3, ...d.map(Math.abs));
+  }
   for (const k of ['section', 'heading', 'content', 'labelCol']) {
     if (!r[k] && !m[k]) { console.log(`  ${k.padEnd(9)} both absent ✓`); continue; }
     if (!r[k] || !m[k]) { console.log(`  ${k.padEnd(9)} ref=${JSON.stringify(r[k])} mine=${JSON.stringify(m[k])} ✗`); worst = 999; continue; }

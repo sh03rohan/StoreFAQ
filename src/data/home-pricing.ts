@@ -45,23 +45,38 @@ export interface Plan {
   period: string;
   yearly?: string;
   popular?: boolean;
+  /**
+   * The four prices are three different near-blacks on the live page —
+   * authoring noise rather than a system, so each is stored rather than
+   * averaged to one ink.
+   */
+  priceColor: string;
+  /**
+   * Enterprise's header block is indented 5px and starts 15px lower than
+   * the other three. Also plugin noise; reproduced because it is visible
+   * against its neighbours.
+   */
+  offset?: true;
 }
 
 export const plans: Plan[] = [
   {
     name: 'Free',
+    priceColor: 'var(--color-ink-navy)',
     currency: '$',
     price: '0.00',
     period: '/mo',
   },
   {
     name: 'Professional',
+    priceColor: 'var(--color-ink-strong)',
     currency: '$',
     price: '7.99',
     period: '/mo',
   },
   {
     name: 'Growth',
+    priceColor: 'var(--color-ink)',
     currency: '$',
     price: '14.99',
     period: '/mo',
@@ -69,10 +84,12 @@ export const plans: Plan[] = [
   },
   {
     name: 'Enterprise',
+    priceColor: 'var(--color-ink-navy)',
     currency: '$',
     price: '49.99',
     period: '/mo',
     yearly: '$479.90 yearly (Save 20%)',
+    offset: true,
   },
 ];
 

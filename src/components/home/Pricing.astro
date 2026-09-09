@@ -44,7 +44,10 @@ const HEADER_ROW = 2;
             </p>
           )}
 
-          <div class="pricing__cell pricing__cell--header" style={`--row:${HEADER_ROW}`}>
+          <div
+            class:list={['pricing__cell', 'pricing__cell--header', plan.offset && 'is-offset']}
+            style={`--row:${HEADER_ROW};--plan-price:${plan.priceColor}`}
+          >
             <h3 class="pricing__plan-name">{plan.name}</h3>
             <p class="pricing__price">
               <span class="pricing__currency">{plan.currency}</span>{plan.price}<span class="pricing__period">{plan.period}</span>
