@@ -81,6 +81,8 @@
   --color-danger: #D32D2D;     /* cross icon                 */
   --color-rule: #E3E3E3;       /* pricing table rules        */
   --color-rule-active: #EFE0A1;/* rules beside the popular column */
+  --color-rule-cream: #E2DDC2; /* FAQ accordion item border  */
+  --color-navy: #172B4D;       /* FAQ question text          */
   --color-violet-2: #A741FF;   /* end of the AI label gradient */
   --color-quote: #4A4F48;      /* testimonial body          */
   --color-quote-meta: #444565; /* testimonial location      */

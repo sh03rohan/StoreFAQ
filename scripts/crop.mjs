@@ -5,6 +5,9 @@ import { chromium } from 'playwright';
 const [key, mineSel, width = '1440', out = 'crop'] = process.argv.slice(2);
 const REF = {
   hero: () => document.querySelectorAll('main .wp-block-essential-blocks-wrapper')[0],
+  faq: () => { const a = document.querySelector('.eb-accordion-container');
+    const w = []; for (let e = a; (e = e.closest('.eb-wrapper-outer')); e = e.parentElement) w.push(e);
+    return w[w.length - 1]; },
   testimonials: () => [...document.querySelectorAll('.first-title')]
     .find(e => /Here.s What Our Users Say/.test(e.textContent)).closest('.eb-wrapper-outer'),
 };

@@ -656,3 +656,46 @@ The captured href carried a per-visit `search_id` tracking token. `external.shop
 #### The geometry diff missed the tints
 
 Every box matched to 1px and the section still looked wrong, because the paint check compared only the *first* card's background. `scripts/diff-testimonials.mjs` now checks background, border and all four text colours **per card**, at every viewport. Fourth time in this phase that a passing geometry diff hid a visual problem — the crop is what caught it, again.
+
+### FAQ accordion — done
+
+**0 failures, 1px worst delta at all 7 viewports**, verified with a crop at 1440 and an interaction test against the live site.
+
+The whole section sits on a **cream card** (`#F9F7EC`) — radius 20px and padding `40px 30px` below 1280, radius **60px** and padding `80px` above. Section padding is `30px 20px` / `50px 20px 60px`.
+
+Two columns, `align-items: center`: intro then accordion, stacked below 1280 and 40/60 above with a 30px gap. The columns are `width`-sized, not flex-sized — between 768 and 1279 the original leaves each column **15px (half the gap) narrower than the row**, and at 1280 up they are 40/60 of what remains *after* the gap, which a flex-basis percentage does not give.
+
+- Title IBM Plex Sans 700, 26/33.8 → 48/62.4, `capitalize`, `#16250E`, **`padding: 0 0 15px`**.
+- Subtitle Inter 400 16/27.2, `#45503F`, **`padding: 0 0 30px`**. Both spacings are padding on the text, not gaps — worth knowing, because a gap would have put the same pixels in a place that measures the same but reflows differently.
+- The intro column carries **`padding-bottom: 40px` only between 768 and 1279**, where the swoosh is hidden. Not at 360, not at 1280.
+- Swoosh: hidden below 1280; above it, centred in what is left of the column after a 50px indent, 58x53.8, 20px of clearance beneath.
+
+Accordion:
+
+- Item: 1px `#E2DDC2`, radius 6px, `overflow: hidden`, `margin-bottom: 20px` on **every** item. The list needs `overflow: hidden` too — that is what stops the last item's margin escaping, and it is why the list is 20px taller than its items and the column height comes out right. Same shape of trap as the testimonial row.
+- Header: `padding: 25px 20px`, flex **`row-reverse`** so the icon is first in source and right in paint, `align-items: center`. Background `#F9F7EC` closed, `#F3EED6` open, 0.5s transition.
+- The title sits in a `flex: 1` box and is itself shrink-to-fit, so it only wraps once it runs out of room. IBM Plex Sans 500, 16/19.2 → 20/24, `#172B4D`.
+- **The answer panel is `#F3EED6` at all times**, not only when open — which is why the open item reads as one solid block rather than a tinted header over a lighter body.
+- Panel padding `0 20px 20px 25px` below 1280, `0 20px 24px` above. Body Inter 400 16/25.6, `#45503F`.
+
+#### §B3 decision: `<details name>` and no JavaScript
+
+Built as `<details name="home-faq">` + `<summary>`, which gives the original's behaviour natively. Verified against the live site, same script:
+
+| | live site | mine |
+|---|---|---|
+| on load | `[open, –, –, –, –]` | same |
+| click item 3 | `[–, –, open, –, –]` | same |
+| click it again | all closed | same |
+
+So: one open at a time, the first open on load, and clicking the open one closes it. **The section ships zero JavaScript** (the built page still contains only the pre-existing mobile-nav and newsletter scripts).
+
+The one thing CSS cannot fully cover is the 500ms slide (`data-transition-duration="500"` on the original block, animated from JS). It is reproduced with `interpolate-size: allow-keywords` + `::details-content`, behind an `@supports` guard: the animation runs in Chrome/Edge and the panel toggles instantly in Safari and Firefox until they ship it. **If you would rather the slide ran everywhere, say so** — it is about 20 lines of progressive enhancement over the same markup, and nothing else about the section changes.
+
+#### Deviation: Font Awesome
+
+The chevron was a `Font Awesome 6 Free` glyph, swapped between `angle-down` and `angle-up` from JS. Inlined as SVG and rotated 180deg from the `[open]` state instead — one path, no font request, no script. Icon: Font Awesome Free 6, CC BY 4.0.
+
+#### The duplicate-block trap, again
+
+The first measuring pass anchored on `document.querySelector('.eb-infobox-wrapper .title')` and silently measured **a different infobox further up the page** — DM Sans 12px at `y≈162` instead of IBM Plex Sans 48px at `y≈7428`. Everything downstream was wrong and nothing looked obviously wrong. `scripts/diff-faq.mjs` anchors on `.eb-accordion-container` and walks up from there; nothing in it starts from a bare `document.querySelector`.

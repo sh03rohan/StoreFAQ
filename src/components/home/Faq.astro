@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets';
+import Container from '../Container.astro';
+import swoosh from '../../assets/home/Group-39473.png';
+import { faqEntries } from '../../data/home-faq';
+
+/* Font Awesome 6 Free "angle-down" (solid), viewBox 448x512 — the original
+ * swaps this glyph for "angle-up" when a panel opens; a 180deg rotation gets
+ * to the same shape from one path. Icon: Font Awesome Free 6, CC BY 4.0. */
+const ANGLE_DOWN =
+  'M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z';
+---
+<section class="faq">
+  <Container class="faq__card">
+    <div class="faq__row">
+      <div class="faq__intro">
+        <div class="faq__lead">
+          <h2 class="faq__title">Frequently Asked Questions</h2>
+          <p class="faq__sub">Still Need Help? Reach out to our dedicated support team anytime</p>
+        </div>
+        <div class="faq__swoosh">
+          <Image src={swoosh} alt="" width={58} height={54} loading="lazy" />
+        </div>
+      </div>
+
+      <div class="faq__list">
+        {faqEntries.map((entry, i) => (
+          <details class="faq__item" name="home-faq" open={i === 0}>
+            <summary class="faq__q">
+              <span class="faq__icon">
+                <svg viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path d={ANGLE_DOWN} /></svg>
+              </span>
+              <span class="faq__q-text"><h3 class="faq__q-title">{entry.q}</h3></span>
+            </summary>
+            <div class="faq__a"><p>{entry.a}</p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </Container>
+</section>

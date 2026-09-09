@@ -780,3 +780,153 @@
 @media (min-width: 768px)  { .tm__more { padding: 16px 30px; } }
 @media (min-width: 1280px) { .tm__more { padding: 12px 20px; } }
 .tm__more:hover { background: var(--color-brand); border-color: var(--color-brand); }
+
+/* ---------- FAQ ---------- */
+.faq {
+  background: var(--color-white);
+  padding: 30px 0;                          /* 50px 0 60px from 1280 */
+}
+@media (min-width: 1280px) { .faq { padding: 50px 0 60px; } }
+
+/* The whole block sits on a cream card. */
+.faq__card {
+  background: var(--color-cream);           /* #F9F7EC */
+  border-radius: 20px;
+  padding: 40px 30px;
+}
+@media (min-width: 1280px) { .faq__card { border-radius: 60px; padding: 80px; } }
+
+/* Stacked below 1280, 40/60 above. The columns are `width`-sized rather than
+ * flex-sized: at 768-1279 the original leaves each one 15px — half the gap —
+ * narrower than the row, and at 1280 up they are 40/60 of what is left after
+ * the gap, which flex-basis percentages do not give. */
+.faq__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  align-items: center;
+}
+.faq__intro,
+.faq__list { width: 100%; }
+
+@media (min-width: 768px) {
+  .faq__row { gap: 30px; }
+  .faq__intro, .faq__list { width: calc(100% - 15px); }
+  /* Only while the columns are stacked and the mark is hidden. */
+  .faq__intro { padding-bottom: 40px; }
+}
+@media (min-width: 1280px) {
+  .faq__row { flex-wrap: nowrap; }
+  .faq__intro { width: calc((100% - 30px) * 0.4); padding-bottom: 0; }
+  .faq__list  { width: calc((100% - 30px) * 0.6); }
+}
+
+/* Spacing under both is padding on the text itself, not a gap. */
+.faq__title {
+  margin: 0;
+  padding: 0 0 15px;
+  font-family: var(--font-heading);
+  font-size: 1.625rem;                      /* 26/33.8 -> 48/62.4 */
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--color-brand-dark);           /* #16250E */
+  text-transform: capitalize;
+}
+@media (min-width: 1280px) { .faq__title { font-size: 3rem; } }
+
+.faq__sub {
+  margin: 0;
+  padding: 0 0 30px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.7;                         /* 27.2/16 */
+  font-weight: 400;
+  color: var(--color-body);                 /* #45503F */
+}
+
+/* Hidden below 1280. Above it the mark is centred in what is left of the
+ * column after a 50px indent, with 20px of clearance beneath. */
+.faq__swoosh { display: none; }
+@media (min-width: 1280px) {
+  .faq__swoosh {
+    display: flex;
+    justify-content: center;
+    margin: 0 0 20px 50px;
+  }
+}
+.faq__swoosh img { display: block; width: 58px; height: auto; }
+
+/* `overflow: hidden` is load-bearing: it stops the last item's 20px bottom
+ * margin escaping, so the list is 20px taller than its items and the column
+ * height matches. */
+.faq__list { overflow: hidden; }
+
+.faq__item {
+  border: 1px solid var(--color-rule-cream);  /* #E2DDC2 */
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 20px;                        /* on every item, last included */
+  background: none;
+}
+
+.faq__q {
+  display: flex;
+  flex-direction: row-reverse;                /* icon is first in source, right in paint */
+  align-items: center;
+  padding: 25px 20px;
+  cursor: pointer;
+  background: var(--color-cream);             /* #F9F7EC */
+  transition: background 0.5s;
+  list-style: none;
+}
+.faq__q::-webkit-details-marker { display: none; }
+.faq__item[open] .faq__q { background: var(--color-cream-deep); }  /* #F3EED6 */
+
+/* Takes the slack so the icon is pinned right; the title inside is
+ * shrink-to-fit and only wraps once it runs out of room. */
+.faq__q-text { flex: 1 1 0; display: flex; justify-content: flex-start; min-width: 0; }
+
+.faq__q-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1rem;                            /* 16/19.2 -> 20/24 */
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--color-navy);                   /* #172B4D */
+}
+@media (min-width: 1280px) { .faq__q-title { font-size: 1.25rem; } }
+
+.faq__icon { display: flex; width: 20px; height: 20px; flex: none; }
+.faq__icon svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--color-ink-strong);              /* #101828 */
+  transition: transform 0.5s;
+}
+.faq__item[open] .faq__icon svg { transform: rotate(180deg); }
+
+/* The panel carries the deeper cream at all times — it only ever shows while
+ * its header has it too, so the open item reads as one block. */
+.faq__a { padding: 0 20px 20px 25px; background: var(--color-cream-deep); }
+@media (min-width: 1280px) { .faq__a { padding: 0 20px 24px; } }
+.faq__a p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;                           /* 25.6/16 */
+  font-weight: 400;
+  color: var(--color-body);                   /* #45503F */
+}
+
+/* The original slides the panel open over 500ms from JS. `<details>` can do
+ * the same from CSS where `interpolate-size` is supported; elsewhere the
+ * panel toggles instantly, which is the graceful end of the trade. */
+@supports (interpolate-size: allow-keywords) {
+  :root { interpolate-size: allow-keywords; }
+  .faq__item::details-content {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.5s, content-visibility 0.5s allow-discrete;
+  }
+  .faq__item[open]::details-content { height: auto; }
+}
