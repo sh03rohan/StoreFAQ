@@ -66,9 +66,16 @@ for (const w of [360, 480, 768, 1024, 1280, 1440, 1920]) {
   const tailsOk = JSON.stringify(r.tails) === JSON.stringify(m.tails);
   console.log(`  tails    ref ${JSON.stringify(r.tails)}\n           mine ${JSON.stringify(m.tails)} ${tailsOk ? '✓' : '✗'}`);
   if (!tailsOk) worst = Math.max(worst, 3);
-  for (let i = 0; i < Math.min(r.cells.length, m.cells.length, 2); i++) {
-    const dd = d(r.cells[i], m.cells[i]);
-    console.log(`    [${i}] ref ${r.cells[i].w}x${r.cells[i].h}@${r.cells[i].x}  mine ${m.cells[i].w}x${m.cells[i].h}@${m.cells[i].x}  Δ${dd.join(',')} ${dd.some(v=>Math.abs(v)>2)?'✗':'✓'}`);
+  /* All eight, not the first two. Card heights are DELIBERATELY equalised per
+   * row (asked for in review; the original leaves them ragged), so compare
+   * each card's height against the tallest in its reference row. Width and x
+   * still compare card to card, so a genuinely wrong card still fails. */
+  const rowMax = new Map();
+  r.cells.forEach(c => rowMax.set(c.y, Math.max(rowMax.get(c.y) ?? 0, c.h)));
+  for (let i = 0; i < Math.min(r.cells.length, m.cells.length); i++) {
+    const expect = { ...r.cells[i], h: rowMax.get(r.cells[i].y) ?? r.cells[i].h };
+    const dd = d(expect, m.cells[i]);
+    console.log(`    [${i}] ref ${expect.w}x${expect.h}@${expect.x}  mine ${m.cells[i].w}x${m.cells[i].h}@${m.cells[i].x}  Δ${dd.join(',')} ${dd.some(v=>Math.abs(v)>2)?'✗':'✓'}`);
     worst = Math.max(worst, ...dd.map(Math.abs));
   }
 }

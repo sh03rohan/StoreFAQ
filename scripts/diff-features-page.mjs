@@ -157,9 +157,20 @@ for (const w of [360, 480, 768, 1024, 1280, 1440, 1920]) {
   }
   console.log(`  cards       ref ${r.cards.length}  mine ${m.cards.length} ${r.cards.length === m.cards.length ? '✓' : '✗'}`);
   if (r.cards.length !== m.cards.length) worst = 999;
+  /* Card heights are DELIBERATELY equalised per row here — the original leaves
+   * them ragged (asked for in review). So compare each card's height against
+   * the tallest in its reference row, not against its own. Everything else
+   * still compares card to card, so a genuinely wrong card still fails. */
+  const rowMax = new Map();
+  r.cards.forEach((a) => {
+    const key = a.shell.y;
+    rowMax.set(key, Math.max(rowMax.get(key) ?? 0, a.shell.h));
+  });
   r.cards.forEach((a, i) => {
     const z = m.cards[i]; if (!z) return;
-    for (const part of ['shell', 'band', 'img']) box(`c${i}.${part}`, a[part], z[part]);
+    const expect = { ...a.shell, h: rowMax.get(a.shell.y) ?? a.shell.h };
+    box(`c${i}.shell`, expect, z.shell);
+    for (const part of ['band', 'img']) box(`c${i}.${part}`, a[part], z[part]);
     for (const part of ['title', 'desc', 'link']) txt(`c${i}.${part}`, a[part], z[part]);
     const same = JSON.stringify(a.paint) === JSON.stringify(z.paint);
     if (!same) { console.log(`  c${i}.paint   ref ${JSON.stringify(a.paint)} mine ${JSON.stringify(z.paint)} ✗`); worst = Math.max(worst, 3); }

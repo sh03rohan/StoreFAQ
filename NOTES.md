@@ -871,3 +871,20 @@ This is the other half of the alignment problem reported earlier. The fix then w
 Verified: card heights match at all 7 viewports, and the tails are `[0,0,0,0,0,0,0,0]` on both sides at all 7. The tails check is now part of `diff-features.mjs` rather than something I ran by hand.
 
 The four remaining section deltas (+65/+64/+47/+48 below 1280) are the mobile card-gap normalisation you asked for, unchanged.
+
+### Card heights equalised — reported and fixed
+
+Flagged in review with the /features/ cards boxed: the three cards in a row end at different heights, and it reads as a mistake.
+
+The original leaves them ragged — each card is as tall as its own screenshot and copy make it. I had reproduced that faithfully on both card grids (and had just changed the home feature stack *to* be ragged for exactly that reason, one commit earlier). **This is now a deliberate departure**: `align-items: stretch` on both grids, so cards in a row match the tallest.
+
+Applied to both, not just the page in the screenshot: the home feature stack has the same raggedness, and it shows more there because those cards carry a background colour.
+
+- `/features/` — the slack lands below the "Learn More" link, inside the card's border.
+- Home — the slack lands **above the image**, never below it, because `.feature__sub` keeps its `margin-bottom: auto`. Tails verified `[0 x 8]` at all 7 viewports, so the images are still flush.
+
+Neither grid's row heights change (a grid row is already as tall as its tallest item); only where each card sits inside its row. Section heights are unchanged.
+
+#### The diffs now encode the deviation rather than reporting it forever
+
+Both `diff-features.mjs` and `diff-features-page.mjs` compare each card's height against **the tallest card in its reference row**, not against its own. Width, x, y, the image band, the text positions and the paint still compare card to card, so a genuinely wrong card still fails. Result: 0 failures on both, with the deviation stated in the code rather than sitting in the output as noise to be scrolled past — which is how the `content` +59 went unread on the pricing diff for weeks.

@@ -125,8 +125,9 @@
 /* One per row below 1280, three above. The original splits them into four
  * separate rows; a single grid gives the same result because every row is
  * full and the trailing gap is the same. */
-/* `align-items: start` because the original does NOT equalise card heights
- * within a row — each card is as tall as its own screenshot and copy make it.
+/* Cards in a row are equalised to the tallest — a deliberate departure from
+ * the original, which leaves the bottoms ragged. Asked for in review: the
+ * uneven bottoms read as a mistake next to each other.
  * The trailing margin is the last row's own bottom margin, which the original
  * keeps and which the section's height depends on. */
 .fcards {
@@ -135,7 +136,7 @@
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
-  align-items: start;
+  align-items: stretch;
   gap: 24px;
 }
 @media (min-width: 1280px) {
