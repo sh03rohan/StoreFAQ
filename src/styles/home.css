@@ -30,10 +30,12 @@
 
 /* Columns: stacked below 768; 50/50 at 768-1279; 45/55 above.
  * Reproduces 354/354 at 768, 482/482 at 1024, 549/671 at 1280, 585/715 at 1440. */
+/* Stacked, the space between the columns is trailing space on the text
+ * column (see .hero__content), not a gap — so the gap is 0 there. */
 .hero__row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 30px;
+  gap: 0;
   align-items: center;
 }
 @media (min-width: 768px)  { .hero__row { grid-template-columns: 1fr 1fr; gap: 20px; } }
@@ -41,10 +43,12 @@
 
 /* 192x44. The height comes from the pill inheriting the body's
  * 16.8px/26.04px strut while its label is 12px — reproduce the mechanism
- * rather than hard-coding a height. */
+ * rather than hard-coding a height. The 1px outline is the other 2px, and
+ * it is visible: a pale green ring around the mint fill. */
 .hero__badge {
   display: inline-block;
   background: var(--color-mint);        /* #F3F9EC */
+  border: 1px solid var(--color-mint-rule);  /* #DBE8D0 */
   border-radius: var(--radius-md);
   padding: 8px 16px;
   font-size: var(--text-base);          /* 16.8px strut */
@@ -91,7 +95,12 @@
  * button. With the row centre-aligned this shifts the whole column, so it
  * has to be reproduced or every child sits ~14px too low.
  * Measured column heights: 342 at 768, 303 at 1024, 425 at 1440. */
-.hero__content { padding-bottom: 27px; }
+/* Trailing space below the button, measured on the original: 30px while the
+ * columns are stacked (where it doubles as the gap to the image) and 28px
+ * once they sit side by side, where `align-items: center` makes it offset
+ * the whole column. */
+.hero__content { padding-bottom: 30px; }
+@media (min-width: 768px) { .hero__content { padding-bottom: 28px; } }
 
 .hero__media img { width: 100%; height: auto; }
 

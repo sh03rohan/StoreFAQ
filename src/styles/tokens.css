@@ -63,6 +63,7 @@
   --color-cream: #F9F7EC;      /* bg ×55                     */
   --color-cream-deep: #F3EED6; /* bg ×18 popular plan        */
   --color-mint: #F3F9EC;       /* bg ×11                     */
+  --color-mint-rule: #DBE8D0;  /* hero badge outline         */
   --color-sky: #ECF6F9;        /* feature card bg            */
   --color-plan: #F9FCFF;       /* pricing column bg          */
   /* Testimonial cards — each of the six has its own tint. */

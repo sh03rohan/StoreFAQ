@@ -418,15 +418,15 @@ New tooling: `scripts/map-sections.mjs` (segments a page), `scripts/inspect.mjs`
 
 ### Hero — done
 
-Within 2px at all 7 viewports; exact except the badge pill (190x42 vs 192x44).
+**Exact at all 7 viewports** (corrected — see "Hero: two errors the section diff reported and I did not read", below).
 
 - Section padding 70/20/30 below 768, 70/20 to 1279, 120/20 above
 - Columns stacked below 768, 50/50 to 1279, **45/55** above, `align-items: center`, 20px gap
 - Title 30/39 w600 below 1280, 48/62.4 above, `#1D2939`
 - Subtitle 14/22.4 **w300** below 1280, 18/28.8 above, `#45503F`
 - CTA 144x47, 16/17.6 w500 on `#16250E`, links to `apps.shopify.com/storefaq`
-- Badge pill 192x44 on `#F3F9EC`: its height comes from inheriting the body's 16.8/26.04 strut while the label is 12px DM Sans. Reproduced as a mechanism rather than a fixed height; still 2px short, which is inside tolerance.
-- The text column carries **27px of trailing space** below the button. Under `center` alignment this offsets the whole column, so it must be reproduced — without it every child sat ~14px low.
+- Badge pill 192x44 on `#F3F9EC` with a **1px `#DBE8D0` outline**. Its height comes from inheriting the body's 16.8/26.04 strut while the label is 12px DM Sans — reproduced as a mechanism rather than a fixed height — and the border is the remaining 2px in each direction.
+- The text column carries trailing space below the button: **30px while stacked**, where it doubles as the gap to the image (the original's row gap is 0 there), and **28px from 768 up**, where `align-items: center` makes it offset the whole column. Without it every child sat ~14px low.
 
 ### §B7 item 4 does not reproduce
 
@@ -699,3 +699,32 @@ The chevron was a `Font Awesome 6 Free` glyph, swapped between `angle-down` and 
 #### The duplicate-block trap, again
 
 The first measuring pass anchored on `document.querySelector('.eb-infobox-wrapper .title')` and silently measured **a different infobox further up the page** — DM Sans 12px at `y≈162` instead of IBM Plex Sans 48px at `y≈7428`. Everything downstream was wrong and nothing looked obviously wrong. `scripts/diff-faq.mjs` anchors on `.eb-accordion-container` and walks up from there; nothing in it starts from a bare `document.querySelector`.
+
+### Whole-page check — `scripts/diff-home-page.mjs`
+
+With all six sections built, the page is now compared end to end: each section band's height and offset, plus the total height of `main`. Sections that pass individually can still drift once stacked, and a per-section diff cannot see that.
+
+Result at 1280 / 1440 / 1920: **every section within 3px, total within 3px** (1440 and 1920 are within 1px).
+
+Below 1280 exactly two deltas remain, both already accounted for:
+
+| | 360 | 480 | 768 | 1024 |
+|---|---|---|---|---|
+| feature stack | +65 | +64 | +47 | +48 |
+| pricing | −151 | −100 | −1 | −1 |
+| everything else | 0/−1 | 0/+1 | 0/+1 | 0 |
+
+The feature-stack delta is the **mobile card gap normalisation you asked for** — the original leaves two rows touching on small screens and this build does not. The pricing delta is the documented row-equalisation limitation and still needs your decision.
+
+### Hero: two errors the section diff reported and I did not read
+
+Running the page end to end surfaced a hero that was 25px too tall at 360/480 and 3px short from 768 up. Re-running `scripts/diff-section.mjs hero` showed it had been reporting `section ✗` all along — every *named* box passed, I read those, and I wrote "within 2px at all 7 viewports" without looking at the section row itself. That claim was wrong.
+
+Two real causes:
+
+1. **The badge is missing a 1px `#DBE8D0` border.** Not a rounding gap — a visible pale-green ring around the mint fill, and 2px in each direction. My earlier button-border audit did not cover it because the badge is not a button.
+2. **The trailing space below the button is 30px stacked and 28px side by side, not a flat 27px** — and while stacked it *is* the gap: the original's hero row has `gap: 0` there. Mine had both a 27px pad and a 30px gap, so the image sat 25px too low.
+
+Both fixed; the hero is now 0px on every box at every viewport.
+
+Lesson, and the fourth variant of the same one in this phase: a diff that prints a ✗ is only useful if every line of it gets read. "The parts I looked at passed" is not "it passed".
