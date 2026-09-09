@@ -56,7 +56,18 @@ const readRef = (page) => page.evaluate(() => {
     head: head ? [cs(head).fontSize, cs(head).lineHeight, cs(head).textTransform].join(' ') : null,
     bar: bar ? [cs(bar).borderTopWidth, cs(bar).paddingTop, cs(bar).paddingBottom].join(' ') : null,
   };
-  return { card: g(card), form: g(document.querySelector('.eb-fluent-form-04ajb')),
+  /* Vertical rhythm, not just boxes. Every named box below passed while the
+   * page total was 3px out at 1280 and 47px at 360 — because nothing here
+   * measured the DISTANCE between them. These three spans are structural
+   * (found by background and by the bottom bar's 1px white-10% rule), so they
+   * pick the same thing on both sides. */
+  const dB = document.documentElement.scrollHeight;
+  const span = {
+    cardToBar: card && bar ? Math.round(bar.getBoundingClientRect().top + scrollY - (card.getBoundingClientRect().bottom + scrollY)) : null,
+    barH: bar ? Math.round(bar.getBoundingClientRect().height) : null,
+    barToEnd: bar ? Math.round(dB - (bar.getBoundingClientRect().bottom + scrollY)) : null,
+  };
+  return { span, card: g(card), form: g(document.querySelector('.eb-fluent-form-04ajb')),
     input: g(document.querySelector('.ff-el-form-control')), submit: g(document.querySelector('.ff-btn')),
     brandLogo: g(logo), cols, paint };
 });
@@ -73,7 +84,15 @@ const readMine = (page) => page.evaluate((sel) => {
   const bar = document.querySelector('.footer__bar');
   const soc = [...document.querySelectorAll('.footer__social-link')]
     .map((e) => { const q = e.getBoundingClientRect(); return Math.round(q.width) + '@' + Math.round(q.x); }).join(' ');
+  const dB = document.documentElement.scrollHeight;
+  const cardEl = document.querySelector('.newsletter__card');
+  const spanM = {
+    cardToBar: cardEl && bar ? Math.round(bar.getBoundingClientRect().top + scrollY - (cardEl.getBoundingClientRect().bottom + scrollY)) : null,
+    barH: bar ? Math.round(bar.getBoundingClientRect().height) : null,
+    barToEnd: bar ? Math.round(dB - (bar.getBoundingClientRect().bottom + scrollY)) : null,
+  };
   const out = {}; for (const [k, s] of Object.entries(sel)) out[k] = g(s);
+  out.span = spanM;
   out.cols = cols;
   out.paint = {
     social: soc,
@@ -131,6 +150,12 @@ for (const w of VIEWPORTS) {
     const bad = d.some((v) => Math.abs(v) > 2);
     console.log(`  ${k.padEnd(10)} ref ${r[k].w}x${r[k].h}@${r[k].x}  mine ${m[k].w}x${m[k].h}@${m[k].x}  Δ${d.join(',')} ${bad ? '✗' : '✓'}`);
     worst = Math.max(worst, ...d.map(Math.abs));
+  }
+  for (const k of Object.keys(r.span)) {
+    const d = m.span[k] - r.span[k];
+    const bad = Math.abs(d) > 2;
+    if (bad) worst = Math.max(worst, Math.abs(d));
+    console.log(`  span.${k.padEnd(9)} ref ${r.span[k]}  mine ${m.span[k]}  Δ${d} ${bad ? '✗' : '✓'}`);
   }
   const cw = (a) => a.map((c) => c.w + '@' + c.x).join(' ');
   const same = cw(r.cols) === cw(m.cols);

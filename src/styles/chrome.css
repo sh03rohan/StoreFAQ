@@ -346,7 +346,14 @@ html.has-menu-open { overflow: hidden; }
 }
 
 .footer__list, .footer__social { list-style: none; margin: 0; padding: 0; }
-.footer__list { margin-top: 27px; }
+/* Measured glyph-to-glyph: the gap from a column heading to the first item
+ * under it — a link, or the social row in the last column — is 43px while the
+ * columns are stacked and 48px once they sit side by side. A single value
+ * cannot give both, so this is two measurements, like the rest of the file.
+ * `scripts/probe-footer-glyphs.mjs` is what reads it: the two sides wrap their
+ * text in different elements, so only a Range rect compares like with like. */
+.footer__list, .footer__social { margin-top: 20px; }
+@media (min-width: 768px) { .footer__list, .footer__social { margin-top: 25px; } }
 
 /* 26px pitch, set by the link's own line box — the list items carry no
  * spacing of their own. */
@@ -369,7 +376,7 @@ html.has-menu-open { overflow: hidden; }
 
 /* Hit targets 32px/5px apart below 1280 and 36px/15px above, so the glyphs
  * land 37px and 51px apart respectively. */
-.footer__social { display: flex; gap: 5px; margin-top: 27px; }
+.footer__social { display: flex; gap: 5px; }
 .footer__social-link {
   display: inline-flex;
   align-items: center;
@@ -395,21 +402,48 @@ html.has-menu-open { overflow: hidden; }
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  /* Stacked, the two lines are separated by 20px of padding under the
+     copyright — not by a gap on the row. */
+  gap: 0;
   margin-top: 40px;
   padding-block: 30px;
   border-top: 1px solid rgb(255 255 255 / 0.1);
 }
+@media (min-width: 768px) { .footer__bar { gap: 12px; } }
+
+/* A sentence with two logos set into it, so it is ordinary inline flow — as a
+ * flex row the words could not wrap around the images and the line broke in
+ * the wrong places, leaving the block 6px tall per line too much. */
 .footer__copy, .footer__hosted {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  display: block;
   font-family: var(--font-accent);   /* DM Sans */
-  font-size: 1rem;
+  font-size: 0.875rem;               /* 14/21 -> 16/24 */
+  line-height: 1.5;
   color: var(--color-white);
+  text-align: center;
 }
-.footer__copy-link { color: var(--color-white); text-decoration: underline; }
-.footer__partner { height: 16px; width: auto; object-fit: contain; }
+/* Each takes a whole row while stacked, and shrinks to its own text once the
+   two sit side by side. `flex: none` above 768 matters: left to shrink, the
+   copyright wraps to two lines and the bar grows by a whole line. */
+.footer__copy, .footer__hosted { flex: 1 1 100%; }
+.footer__copy { padding-bottom: 20px; }
+.footer__copy a, .footer__hosted a { vertical-align: middle; }
+
+@media (min-width: 768px) {
+  .footer__copy, .footer__hosted { flex: none; }
+  .footer__copy { padding-bottom: 0; text-align: left; }
+  .footer__hosted { text-align: right; }
+}
+@media (min-width: 1280px) {
+  .footer__copy, .footer__hosted { font-size: 1rem; }
+}
+/* Bold and unmarked on the original — the weight is what sets it apart from
+ * the sentence, since it is the same white. The underline is kept for hover
+ * and keyboard focus, which changes nothing at rest. */
+.footer__copy-link { color: var(--color-white); font-weight: 700; text-decoration: none; }
+.footer__copy-link:hover, .footer__copy-link:focus-visible { text-decoration: underline; }
+/* inline-block, not block: these sit inside a sentence. */
+.footer__partner { display: inline-block; height: 16px; width: auto; object-fit: contain; vertical-align: middle; }
 .footer__hosted .footer__partner { height: 21px; }
 
 .sr-only {

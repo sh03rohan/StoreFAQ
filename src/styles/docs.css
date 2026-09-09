@@ -1,0 +1,171 @@
+/* Docs index. All values measured from https://storefaq.io/docs/ —
+ * see scripts/diff-docs.mjs.
+ */
+
+/* ---------- search hero ---------- */
+.docs-hero {
+  padding: 70px 0;                          /* 100px 0 from 1280 */
+  background: var(--color-white) url('/decor/docs-bg.png') no-repeat 50% 100% / cover;
+}
+@media (min-width: 1280px) { .docs-hero { padding: 100px 0; } }
+
+/* The original nests the heading in a wrapper carrying `margin-bottom: 20px`
+ * (32px from 1280) while the heading itself carries 15px. The two collapse —
+ * nothing separates them — so only the larger is ever observable, and one
+ * margin here measures the same as their two. */
+.docs-hero__title {
+  margin: 0 0 20px;
+  font-family: var(--font-heading);
+  font-size: 1.375rem;                      /* 22/28.6 -> 48/62.4 */
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--color-brand-dark);           /* #16250E */
+  text-align: center;
+}
+@media (min-width: 1280px) {
+  .docs-hero__title { margin-bottom: 32px; font-size: 3rem; }
+}
+
+/* A fixed 316px pill below 768 and 690px above — it does NOT fill the row;
+ * at 480 the row is 440 wide and the box is still 316, centred. */
+.docs-search {
+  display: flex;
+  align-items: center;
+  width: min(100%, 316px);
+  margin-inline: auto;
+  padding: 4px 4px 4px 10px;
+  background: var(--color-white);
+  border: 1px solid var(--color-search-rule);   /* #DAE2EF */
+  border-radius: 12px;
+}
+@media (min-width: 768px) {
+  .docs-search { width: min(100%, 690px); padding: 8px 8px 8px 24px; }
+}
+
+/* Takes the slack so the button is pinned right. The white is the original's
+ * and is invisible today — the bar beneath it is white too. */
+.docs-search__field {
+  display: flex;
+  background: var(--color-white);
+  flex: 1 1 0;
+  align-items: center;
+  gap: 15px;
+  min-width: 0;
+  margin-right: 10px;
+}
+
+.docs-search__icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--color-search-icon);          /* #98A2B3 */
+}
+
+.docs-search__input {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-body);
+  font-size: 0.875rem;                      /* 14 -> 18 */
+  line-height: 1;
+  font-weight: 400;
+  color: var(--color-ink);
+}
+.docs-search__input::placeholder { color: var(--color-placeholder); }  /* #7D7E9D */
+.docs-search__input:focus { outline: none; }
+.docs-search:focus-within { border-color: var(--color-brand); }
+@media (min-width: 768px) { .docs-search__input { font-size: 1.125rem; } }
+
+/* Manrope here and nowhere else on the page — as on the original. */
+.docs-search__submit {
+  flex: none;
+  padding: 10px 32px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--color-brand);           /* #548B2F */
+  font-family: var(--font-quote);           /* Manrope */
+  font-size: 1rem;                          /* 16/27.2 */
+  line-height: 1.7;
+  font-weight: 600;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-default);
+}
+.docs-search__submit:hover { background: var(--color-brand-mid); }
+
+/* ---------- category cards ---------- */
+/* No vertical padding at all: the hero's bottom edge and the mint card's top
+ * edge are the same y on the original. */
+.docs-cats { padding: 0; }
+
+.docs-cats__card {
+  padding: 40px 20px;                       /* 88px 80px from 1280 */
+  background: var(--color-mint);            /* #F3F9EC */
+  border-radius: 16px;
+}
+@media (min-width: 1280px) { .docs-cats__card { padding: 88px 80px; } }
+
+/* One column to 500px, two from 501 — BetterDocs' own breakpoint, which is
+ * none of this site's four. */
+.docs-cats__grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 501px) { .docs-cats__grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* The original wraps the card body in three nested boxes that carry no
+ * padding, margin, border or background between them. They are flattened
+ * away: the card is the column, and each child is centred at its own width,
+ * which is what those wrappers produced anyway. */
+.docs-cat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px;                       /* 40px 20px from 1280 */
+  background: var(--color-white);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: box-shadow var(--duration-fast) var(--ease-default);
+}
+@media (min-width: 1280px) { .docs-cat { padding: 40px 20px; } }
+
+.docs-cat__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 24px;
+  background: var(--color-icon-tile);       /* #F9FBF6 */
+  border-radius: 8px;
+}
+.docs-cat__icon img { display: block; width: 32px; height: 32px; }
+
+.docs-cat__title {
+  margin: 0 0 24px;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;                        /* 24/28.8 */
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--color-brand-dark);           /* #16250E */
+  text-align: center;
+}
+
+.docs-cat__count {
+  margin-bottom: 12px;
+  font-family: var(--font-body);
+  font-size: 1rem;                          /* 16/19.2 */
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--color-body);                 /* #45503F */
+}
+
+.docs-cat__updated {
+  padding: 8px;
+  background: var(--color-stamp);           /* #F5F8F3 */
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;                       /* 12/14.4 */
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--color-body);                 /* #45503F */
+}

@@ -1,0 +1,38 @@
+---
+import Container from '../Container.astro';
+import { routes } from '../../lib/routes';
+
+/* The original's search icon, verbatim from the BetterDocs markup. Its fill
+ * is hardcoded to #98A2B3 there; it is `currentColor` here so the colour
+ * lives in the stylesheet with everything else. */
+const SEARCH_ICON =
+  'M14.4631 13.6407L17.8394 17.0162L16.724 18.1317L13.3485 14.7554C12.0925 15.7622 10.5303 16.3098 8.92061 16.3075C5.00435 16.3075 1.82593 13.1291 1.82593 9.21285C1.82593 5.29658 5.00435 2.11816 8.92061 2.11816C12.8369 2.11816 16.0153 5.29658 16.0153 9.21285C16.0176 10.8226 15.47 12.3848 14.4631 13.6407ZM12.8818 13.0558C13.8823 12.027 14.441 10.6479 14.4387 9.21285C14.4387 6.16371 11.969 3.69476 8.92061 3.69476C5.87147 3.69476 3.40252 6.16371 3.40252 9.21285C3.40252 12.2612 5.87147 14.7309 8.92061 14.7309C10.3557 14.7332 11.7347 14.1745 12.7636 13.174L12.8818 13.0558Z';
+---
+<section class="docs-hero">
+  <Container>
+    <!-- The original marks this <h2> and the page therefore has no <h1>; it
+         is the page's title, so it is the <h1> here (§B7). The original's
+         <h2> also carries a Cardo face and a fluid clamp that paint nothing —
+         every glyph sits in an inner <span> that re-declares the whole font —
+         so neither is reproduced. See NOTES. -->
+    <h1 class="docs-hero__title" data-anim="heading" data-anim-intro style="--anim-d:.05s;--anim-y:24px">
+      How can we help you?
+    </h1>
+
+    <!-- A real form, not the original's pair of <span>s. It stays inert until
+         the docs collection and its search index exist (Phase 7); the action
+         is the docs index so a submit before then lands on a real page rather
+         than a 404. -->
+    <form class="docs-search" role="search" action={routes.docs()} method="get"
+          data-anim="media" data-anim-intro style="--anim-d:.14s;--anim-y:20px">
+      <div class="docs-search__field">
+        <svg class="docs-search__icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+          <path d={SEARCH_ICON} fill="currentColor" />
+        </svg>
+        <label class="sr-only" for="docs-q">Search the documentation</label>
+        <input class="docs-search__input" id="docs-q" type="search" name="q" placeholder="Search Docs..." autocomplete="off" />
+      </div>
+      <button class="docs-search__submit" type="submit">Search</button>
+    </form>
+  </Container>
+</section>

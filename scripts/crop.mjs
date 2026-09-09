@@ -24,6 +24,11 @@ const REF = {
     return w[w.length - 1]; },
   testimonials: () => [...document.querySelectorAll('.first-title')]
     .find(e => /Here.s What Our Users Say/.test(e.textContent)).closest('.eb-wrapper-outer'),
+  docsHero: () => document.querySelector('.eb-wrapper-3lds7'),
+  docsCats: () => document.querySelector('.eb-wrapper-e0v4v'),
+  footerBar: () => { const vis = e => { const q = e.getBoundingClientRect(); return q.width > 0 && q.height > 0; };
+    return [...document.querySelectorAll('*')].filter(vis).find(e => parseFloat(getComputedStyle(e).borderTopWidth) === 1
+      && /rgba\(255, 255, 255, 0\.1\)/.test(getComputedStyle(e).borderTopColor)); },
 };
 const browser = await chromium.launch();
 /* `reducedMotion: 'reduce'` so the entrance animations never run here.

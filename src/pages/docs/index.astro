@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import DocsSearch from '../../components/docs/DocsSearch.astro';
+import CategoryGrid from '../../components/docs/CategoryGrid.astro';
+import Faq from '../../components/Faq.astro';
+import { docsFaqEntries } from '../../data/docs-faq';
+---
+<BaseLayout
+  title="StoreFAQ Docs: Setup Guides and Feature Walkthroughs"
+  description="Set up StoreFAQ and get the most out of it — installation, FAQ groups, AI-generated questions, layouts and FAQ schema, step by step."
+>
+  <Header />
+  <main>
+    <DocsSearch />
+    <CategoryGrid />
+    <Faq
+      entries={docsFaqEntries}
+      sub="Stuck on something? Contact our dedicated support team anytime."
+      name="docs-faq"
+    />
+  </main>
+  <Footer />
+</BaseLayout>

@@ -10,6 +10,7 @@
 @import './chrome.css';
 @import './home.css';
 @import './features.css';
+@import './docs.css';
 @import './motion.css';
 
 @theme {
@@ -89,6 +90,11 @@
   --color-rule-active: #EFE0A1;/* rules beside the popular column */
   --color-rule-cream: #E2DDC2; /* FAQ accordion item border  */
   --color-navy: #172B4D;       /* FAQ question text          */
+  --color-search-rule: #DAE2EF;/* docs search box outline    */
+  --color-search-icon: #98A2B3;/* docs search magnifier      */
+  --color-placeholder: #7D7E9D;/* docs search placeholder    */
+  --color-icon-tile: #F9FBF6;  /* docs category icon tile    */
+  --color-stamp: #F5F8F3;      /* docs "Last Updated" pill   */
   --color-violet-2: #A741FF;   /* end of the AI label gradient */
   --color-quote: #4A4F48;      /* testimonial body          */
   --color-quote-meta: #444565; /* testimonial location      */

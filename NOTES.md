@@ -923,3 +923,163 @@ That is roughly 30x the site's previous JavaScript, on a site that until now shi
 ### All diffs run in reduced motion
 
 Every `scripts/diff-*.mjs` and `crop.mjs` now opens its context with `reducedMotion: 'reduce'`, so measurements are taken with elements at their final position — and the accessibility path gets exercised on every run. Re-verified after the change: hero, CTA, testimonials, FAQ, features-page and chrome all 0 failures; features, pricing and footer show only their documented deviations.
+
+## Phase 5 — /docs/ (index shell)
+
+Built from `reference/html/docs.html` and measured live. Four sections: search
+hero, category card, the shared FAQ, then chrome.
+
+`diff-docs.mjs` reports **0 geometry failures at all 8 viewports** (360, 480,
+600, 768, 1024, 1280, 1440, 1920), worst 3px, and every paint property equal.
+The crops are indistinguishable.
+
+### What was measured
+
+| | below 768 | 768–1279 | 1280+ |
+|---|---|---|---|
+| hero padding | 70px 0 | 70px 0 | 100px 0 |
+| heading | 22/28.6 w600 | 22/28.6 | 48/62.4 |
+| heading margin-bottom | 20px | 20px | 32px |
+| search box | 316px wide | 690px | 690px |
+| search padding | 4px 4px 4px 10px | 8px 8px 8px 24px | same |
+| placeholder | 14px | 18px | 18px |
+| mint card padding | 40px 20px | 40px 20px | 88px 80px |
+| category grid | 1 col to 500px, 2 from 501 | 2 col | 2 col |
+| card padding | 28px 16px | 28px 16px | 40px 20px |
+
+New tokens: `--color-search-rule #DAE2EF`, `--color-search-icon #98A2B3`,
+`--color-placeholder #7D7E9D`, `--color-icon-tile #F9FBF6`,
+`--color-stamp #F5F8F3`.
+
+The category grid's 501px breakpoint is BetterDocs' own (`max-width: 500px` in
+its stylesheet) and is none of this site's four. It is reproduced as measured
+rather than rounded to the nearest house breakpoint.
+
+### Two things in the original that paint nothing, and are not reproduced
+
+1. **The hero heading declares Cardo at a fluid clamp** — 30.03px at 360 rising
+   to 40px at 1280 — and `line-height: 0`. None of it reaches a pixel: every
+   glyph sits in an inner `<span>` that re-declares family, size and weight
+   (IBM Plex Sans 22/28.6 600, 48/62.4 at 1280). Copying the outer declaration
+   would have pulled a whole extra webfont onto the page for text that never
+   uses it. The only observable effect of `line-height: 0` is that the h2's box
+   equals the span's line box, which one element with the right line-height
+   gives directly.
+2. **The heading sits in a wrapper with `margin-bottom: 20px` while the heading
+   itself carries 15px.** Nothing separates them, so the two collapse and only
+   the larger is ever visible. One margin here measures the same as their two.
+
+### Departures
+
+- The heading is the page's `<h1>`. The original marks it `<h2>` and the page
+  therefore has no `<h1>` at all — the same §B7 item as the home hero.
+- The search is a real `<form>` with a labelled `<input type="search">`, not the
+  original's pair of `<span>`s. It stays inert until the docs collection and its
+  index exist (Phase 7); the action is the docs index, so a submit before then
+  lands on a real page rather than a 404.
+- `docs-categories.ts` holds the doc counts and "Last Updated" dates as
+  literals so the shell renders the measured page. Once the 16 articles land as
+  a content collection both become derived and the file keeps only icon + title.
+- `Faq.astro` now takes `entries`, `sub` and `name`. Home and /features/ carry
+  the same five questions and the same subtitle, so those stay the defaults;
+  /docs/ has its own five and its own subtitle ("Stuck on something? …").
+
+### The diff had to be taught three things
+
+All three are repeats of mistakes made earlier on this migration, so they are
+now written into the script rather than remembered:
+
+1. **Compare glyphs, not boxes, when the two sides nest text differently.** The
+   heading read 827px wide on the reference's inline `<span>` against my
+   centred block. `Range.getBoundingClientRect()` on both sides put it at 0.
+2. **Report only paint that can reach a pixel.** The reference's category card
+   is a bare `<a>`, so its `color` is the browser's default link blue and its
+   border colour is a transparent 0px border — neither observable, because every
+   text child sets its own colour. A border colour on a 0px border and a text
+   colour on an element with no text are now suppressed, and the type is read
+   off whichever pass-through wrapper actually holds the words.
+3. **"Has an image", not which file.** Comparing background-image filenames
+   fails by construction across a migration, forever, while telling you nothing.
+
+## Chrome: the footer was 47px out and every box passed
+
+Chasing the /docs/ page total — exact in every section, 47px out overall at 360
+— led into the footer, which `diff-footer.mjs` had been reporting clean.
+
+It was clean, on everything it looked at. It compared the newsletter card, the
+form, the input, the submit, the brand logo and the column widths, and none of
+those had moved. **Nothing measured the distance between them.** The errors were
+all in vertical rhythm, which no box in the list could see.
+
+`diff-footer.mjs` now measures three structural spans — newsletter card bottom
+→ bottom-bar top, the bar's own height, and bar bottom → document bottom. Those
+are found by background colour and by the bar's 1px white-10% rule, so they pick
+the same thing on both sides.
+
+Four real defects, all sitewide:
+
+1. **`.footer__list` and `.footer__social` were 27px** where the original is 20px
+   stacked and 25px side by side. Three stacked columns made that 21px at 360.
+2. **The bottom bar's type was 16px/1.55** where the original is 14px/1.5 below
+   1280 and 16px/1.5 above, and the two lines are centred and separated by 20px
+   of padding under the copyright — not by a gap on the row.
+3. **The bar was a flex row** where the original is a sentence with two logos set
+   into it. As a flex row the words could not wrap around the images, the line
+   broke in the wrong places, and the block ran a line too tall. It is ordinary
+   inline flow now, with `flex: none` on the two lines above 768 — left to
+   shrink, the copyright wraps and the bar grows by a whole line.
+4. **The copyright sentence was wrong.** It read "A Storeware Product from
+   [Storeware] [logo] family" — the word twice, once as text and once as the
+   link. The original is "A **[Storeware]** Product from [logo] family". The
+   extra link made the line 60px too wide to fit at 480, which is the whole of
+   that viewport's 21px discrepancy.
+
+Also: Astro trims whitespace at element boundaries across a line break, which
+had silently run "from", the link and "family" together with no spaces at all —
+and the same for "Hosted with" and the xCloud logo. Both paragraphs are one
+source line now, with a comment saying why.
+
+Result: **every span 0px at 360, 480, 1280, 1440 and 1920, and 1px at 768 and
+1024.** The only remaining ✗ is the documented 360px newsletter deviation (the
+original's Subscribe button overflows its white pill by 29px; mine shrinks the
+input so it fits).
+
+### DM Sans was a static file pretending to be variable
+
+The bottom-bar link is bold on the original. Setting `font-weight: 700` changed
+the computed style and **not one pixel** — the crop still showed regular weight.
+
+`public/fonts/DMSans-Variable.woff2` was 14KB and had no usable weight axis:
+the same string measured 419.1px at 300, 400, 500, 600, 700 and 800. So every
+DM Sans weight on the site had been rendering as one — the footer column
+headings (500), the copyright line (400) and this link (700), all identical.
+
+Replaced with the wght-only latin variable from Google Fonts, which is
+**byte-for-byte the file the reference itself serves**
+(`dmsans/v17/rP2Yp2ywxg089UriI5-g4vlH9VoD8Cmcqbu0-K6z9mXg.woff2`, 37KB). The
+opsz variant is 62KB and the site does not use optical sizing. "Storeware" now
+measures 70.0px on both sides, against 66.7px before.
+
+Inter, IBM Plex Sans and Manrope were checked the same way and all three vary
+correctly. `scripts/probe-font-axes.mjs` is that check, kept: a static font
+masquerading as variable is invisible to every other test in this repo —
+computed styles report the weight you asked for, and only the glyphs disagree.
+
+**Lesson, alongside "a passing geometry diff hides paint":** a diff that
+measures only boxes hides *rhythm*. Both footer defects and the /docs/ page
+total were spacing between boxes that were each individually correct.
+
+### Dangling links, to close before launch
+
+Three routes are linked from built pages and do not exist yet. All three are
+filled by the docs content collection, so they close together:
+
+| linked from | target | closed by |
+|---|---|---|
+| /docs/ category cards | `/docs-category/getting-started/`, `/docs-category/configuration/` | the collection's category pages |
+| /features/ "Learn More" (×11) | `/docs/<slug>/` | the 16 article pages |
+| header + footer nav | `/blog/`, `/changelog/`, `/privacy-policy/` | Phase 5 remainder |
+
+Ground rule 8 is "no broken links **at launch**", so these are expected now;
+they belong on the Phase 10 checklist, and `assert-clean.sh` should grow a
+link-resolution pass once the collection exists.

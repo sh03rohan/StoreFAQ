@@ -2,7 +2,26 @@
 import { Image } from 'astro:assets';
 import Container from './Container.astro';
 import swoosh from '../assets/home/Group-39473.png';
-import { faqEntries } from '../data/home-faq';
+import { faqEntries, type FaqEntry } from '../data/home-faq';
+
+/**
+ * Shared by Home, /features/ and /docs/. Home and /features/ carry the same
+ * five questions and the same subtitle, so those stay the defaults; /docs/
+ * passes its own set.
+ *
+ * `name` groups the <details> into a native exclusive accordion, so it has to
+ * be unique per page — two blocks sharing a name would close each other.
+ */
+export interface Props {
+  entries?: FaqEntry[];
+  sub?: string;
+  name?: string;
+}
+const {
+  entries = faqEntries,
+  sub = 'Still Need Help? Reach out to our dedicated support team anytime',
+  name = 'home-faq',
+} = Astro.props;
 
 /* Font Awesome 6 Free "angle-down" (solid), viewBox 448x512 — the original
  * swaps this glyph for "angle-up" when a panel opens; a 180deg rotation gets
@@ -16,7 +35,7 @@ const ANGLE_DOWN =
       <div class="faq__intro">
         <div class="faq__lead">
           <h2 class="faq__title" data-anim="heading">Frequently Asked Questions</h2>
-          <p class="faq__sub" data-anim="text">Still Need Help? Reach out to our dedicated support team anytime</p>
+          <p class="faq__sub" data-anim="text">{sub}</p>
         </div>
         <div class="faq__swoosh" data-anim="chip">
           <Image src={swoosh} alt="" width={58} height={54} loading="lazy" />
@@ -24,8 +43,8 @@ const ANGLE_DOWN =
       </div>
 
       <div class="faq__list">
-        {faqEntries.map((entry, i) => (
-          <details class="faq__item" data-anim="card" name="home-faq" open={i === 0}>
+        {entries.map((entry, i) => (
+          <details class="faq__item" data-anim="card" name={name} open={i === 0}>
             <summary class="faq__q">
               <span class="faq__icon">
                 <svg viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path d={ANGLE_DOWN} /></svg>

@@ -59,19 +59,11 @@ const icons = {
   </Container>
 
   <Container class="footer__bar">
-    <p class="footer__copy">
-      Copyright &copy; {year} | A Storeware Product from
-      <a class="footer__copy-link" href="https://storeware.io/" target="_blank" rel="noopener noreferrer">Storeware</a>
-      <a href="https://startise.com/" target="_blank" rel="noopener noreferrer" aria-label="Startise">
-        <Image class="footer__partner" src={startise} alt="Startise" widths={[70, 140]} sizes="70px" loading="lazy" />
-      </a>
-      family
-    </p>
-    <p class="footer__hosted">
-      Hosted with
-      <a href="https://xcloud.host/" target="_blank" rel="noopener noreferrer" aria-label="xCloud">
-        <Image class="footer__partner" src={xcloud} alt="xCloud" widths={[51, 102]} sizes="51px" loading="lazy" />
-      </a>
-    </p>
+    {/* One line on purpose: the spaces around the two links are part of the
+        sentence, and Astro trims whitespace at element boundaries across a
+        line break — which silently ran the words together and made the line
+        60px too wide to fit at 480. */}
+    <p class="footer__copy">Copyright &copy; {year} | A <a class="footer__copy-link" href="https://storeware.io/" target="_blank" rel="noopener noreferrer">Storeware</a> Product from <a href="https://startise.com/" target="_blank" rel="noopener noreferrer" aria-label="Startise"><Image class="footer__partner" src={startise} alt="Startise" widths={[70, 140]} sizes="70px" loading="lazy" /></a> family</p>
+    <p class="footer__hosted">Hosted with <a href="https://xcloud.host/" target="_blank" rel="noopener noreferrer" aria-label="xCloud"><Image class="footer__partner" src={xcloud} alt="xCloud" widths={[51, 102]} sizes="51px" loading="lazy" /></a></p>
   </Container>
 </footer>
