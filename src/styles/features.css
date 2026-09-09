@@ -1,0 +1,203 @@
+/* Features page. All values measured from https://storefaq.io/features/ —
+ * see scripts/diff-features-page.mjs.
+ */
+
+/* ---------- page header ---------- */
+.page-head {
+  background: var(--color-white);
+  padding: 50px 0;                          /* 88px 0 from 1280 */
+}
+@media (min-width: 1280px) { .page-head { padding: 88px 0; } }
+
+/* A fixed-width column, centred in the container: 390px below 1280 and
+ * 630px above, never wider than the container itself. */
+.page-head__col {
+  width: min(100%, 390px);
+  margin-inline: auto;
+  text-align: center;
+}
+@media (min-width: 1280px) { .page-head__col { width: min(100%, 630px); } }
+
+.page-head__title {
+  margin: 0 0 16px;
+  font-family: var(--font-heading);
+  font-size: 1.75rem;                       /* 28/36.4 -> 48/62.4 */
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--color-brand-dark);           /* #16250E */
+}
+@media (min-width: 1280px) { .page-head__title { font-size: 3rem; } }
+
+.page-head__sub {
+  margin: 0 0 20px;
+  font-family: var(--font-heading);
+  font-size: 1rem;                          /* 16/25.6 -> 18/28.8 */
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--color-body);                 /* #45503F */
+}
+@media (min-width: 1280px) { .page-head__sub { font-size: 1.125rem; } }
+
+/* ---------- feature list ---------- */
+.features-list {
+  background: var(--color-white);
+  padding: 20px 0 40px;                     /* 50px bottom from 1280 */
+}
+@media (min-width: 1280px) { .features-list { padding: 20px 0 50px; } }
+
+/* ---------- lead block ---------- */
+/* Inset 30px top and left while stacked, 50px all round once the columns sit
+ * side by side. The vertical padding matters: `align-items: center` measures
+ * against the padded box, so without it the text column sits ~22px high. */
+.flead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  align-items: center;
+  padding: 30px 0 0 30px;
+  margin-bottom: 24px;
+  background: var(--color-mint);            /* #F3F9EC */
+  border-radius: 16px;
+}
+@media (min-width: 768px) {
+  .flead { gap: 20px; padding: 50px; }
+  .flead__text, .flead__media { width: calc((100% - 20px) / 2); }
+}
+@media (min-width: 1280px) {
+  .flead { flex-wrap: nowrap; }
+  .flead__text  { width: calc((100% - 20px) * 0.4); }
+  .flead__media { width: calc((100% - 20px) * 0.6); }
+}
+
+/* Centred in what is left of the column after a 50px indent, as on the home
+ * page's lead card and in the FAQ block. */
+.flead__swoosh {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 20px 50px;
+}
+.flead__swoosh img { display: block; width: 58px; height: auto; }
+
+.flead__title {
+  margin: 0 0 15px;
+  font-family: var(--font-heading);
+  font-size: 1.625rem;                      /* 26/33.8 -> 40/52 */
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--color-ink-mid);              /* #1D2939 */
+  text-transform: capitalize;
+}
+@media (min-width: 1280px) { .flead__title { font-size: 2.5rem; } }
+.flead__mark { color: var(--color-accent); } /* #88C15A */
+
+.flead__sub {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;                      /* 14/22.4 -> 18/28.8 */
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--color-body);
+}
+@media (min-width: 1280px) { .flead__sub { font-size: 1.125rem; } }
+
+/* The 30px inset while stacked is on the title/subtitle block alone — not on
+ * the column, which would also pull the swoosh 15px left of centre. The space
+ * under the copy is a margin on the same block, because the "Learn More" link
+ * sits below it inside the column. */
+.flead__head { margin: 0 30px 20px 0; }
+@media (min-width: 768px) { .flead__head { margin: 0 0 30px; } }
+
+/* 20px of trailing space below the link while the columns are stacked. */
+.flead__text { padding-bottom: 20px; }
+@media (min-width: 768px) { .flead__text { padding-bottom: 0; } }
+
+/* 45px gutter down the left of the media column, with the sparkle sitting in
+ * it — the screenshot is 675 wide in a 720 column, not full-bleed. The home
+ * page's lead card does exactly the same. */
+.flead__media {
+  padding-left: 45px;
+  background: url('/decor/lead-sparkle.png') no-repeat 0% 50%;
+  background-size: 60px auto;
+}
+.flead__media img { display: block; width: 100%; height: auto; }
+
+/* ---------- the eleven cards ---------- */
+/* One per row below 1280, three above. The original splits them into four
+ * separate rows; a single grid gives the same result because every row is
+ * full and the trailing gap is the same. */
+/* `align-items: start` because the original does NOT equalise card heights
+ * within a row — each card is as tall as its own screenshot and copy make it.
+ * The trailing margin is the last row's own bottom margin, which the original
+ * keeps and which the section's height depends on. */
+.fcards {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 24px;
+}
+@media (min-width: 1280px) {
+  .fcards { grid-template-columns: repeat(3, 1fr); gap: 40px 24px; margin-bottom: 40px; }
+}
+
+.fcard {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-card-rule); /* #F0F0EE */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* The tint sits behind the screenshot only, and the screenshot runs to the
+ * band's bottom edge — no padding beneath it. */
+/* A hairline in the card's own outline colour separates the tinted band from
+ * the copy below it. */
+.fcard__band {
+  background: var(--band-bg);
+  border-bottom: 1px solid var(--color-card-rule);   /* #F0F0EE */
+  padding: var(--band-top) 30px 0;
+}
+.fcard__band img { display: block; width: 100%; height: auto; }
+
+.fcard__body { padding: 30px; }
+
+.fcard__title {
+  margin: 0;
+  padding: 0 0 16px;
+  font-family: var(--font-heading);
+  font-size: 1.375rem;                      /* 22/28.6 */
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--color-brand-dark);
+}
+
+/* Inter here, not IBM Plex Sans — the only body copy on the page that is.
+ * It is 1px wider per character and it changes where two of the eleven
+ * descriptions wrap. */
+.fcard__desc {
+  margin: 0;
+  padding: 0 0 var(--desc-gap);             /* 22px, 32px or 34px */
+  font-family: var(--font-body);
+  font-size: 1rem;                          /* 16/24 */
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--color-body);
+}
+
+/* `flex`, not `inline-flex`: as an inline box it picks up the body's 24px
+ * line-height strut and adds ~3px above and below the 21px link. */
+.learn-more {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-heading);
+  font-size: 1rem;                          /* 16/20.8 */
+  line-height: 1.3;
+  font-weight: 500;
+  color: var(--color-body);
+}
+.learn-more svg { width: 16px; height: 16px; fill: currentColor; }
+.learn-more:hover { color: var(--color-brand); }

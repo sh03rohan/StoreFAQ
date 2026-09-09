@@ -9,6 +9,7 @@
 @import './fonts.css';
 @import './chrome.css';
 @import './home.css';
+@import './features.css';
 
 @theme {
   /* ---- Reset Tailwind's defaults so only our scale exists (§B3) ---- */
@@ -64,6 +65,8 @@
   --color-cream: #F9F7EC;      /* bg ×55                     */
   --color-cream-deep: #F3EED6; /* bg ×18 popular plan        */
   --color-mint: #F3F9EC;       /* bg ×11                     */
+  --color-aqua: #F2F9F7;       /* feature card image band    */
+  --color-card-rule: #F0F0EE;  /* feature card outline       */
   --color-mint-rule: #DBE8D0;  /* hero badge outline         */
   --color-sky: #ECF6F9;        /* feature card bg            */
   --color-plan: #F9FCFF;       /* pricing column bg          */

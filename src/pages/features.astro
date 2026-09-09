@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Container from '../components/Container.astro';
+import PageHead from '../components/PageHead.astro';
+import FeatureLead from '../components/features/FeatureLead.astro';
+import FeatureCards from '../components/features/FeatureCards.astro';
+import Faq from '../components/Faq.astro';
+---
+<BaseLayout
+  title="Features - StoreFAQ"
+  description="StoreFAQ helps you create organized FAQs for your Shopify store — so customers get answers instantly and buy without hesitation."
+>
+  <Header />
+  <main>
+    <PageHead
+      title="Turn Customer Questions Into Confident Purchases"
+      sub="StoreFAQ helps you create organized FAQs for your Shopify store — so customers get answers instantly and buy without hesitation."
+    />
+    <section class="features-list">
+      <Container>
+        <FeatureLead />
+        <FeatureCards />
+      </Container>
+    </section>
+    <Faq />
+  </main>
+  <Footer />
+</BaseLayout>

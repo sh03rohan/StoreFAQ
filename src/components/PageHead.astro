@@ -1,0 +1,22 @@
+---
+import Container from './Container.astro';
+
+/**
+ * Page header: a centred, fixed-width column of title + subtitle.
+ * The column is 390px wide (or the container, whichever is smaller) below
+ * 1280 and 630px above — measured on /features/.
+ */
+export interface Props {
+  title: string;
+  sub?: string;
+}
+const { title, sub } = Astro.props;
+---
+<section class="page-head">
+  <Container>
+    <div class="page-head__col">
+      <h1 class="page-head__title">{title}</h1>
+      {sub && <p class="page-head__sub">{sub}</p>}
+    </div>
+  </Container>
+</section>

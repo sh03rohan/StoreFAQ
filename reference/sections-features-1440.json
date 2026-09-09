@@ -1,0 +1,50 @@
+[
+  {
+    "i": 0,
+    "y": 92,
+    "h": 394,
+    "bg": "rgb(255, 255, 255)",
+    "bgImage": "url(\"https://storefaq.io/wp-content/uploads/2026/04/feature-hero-bg-scaled.png\")",
+    "pad": "88px 20px",
+    "heading": "Turn Customer Questions Into Confident Purchases",
+    "headings": [
+      "Turn Customer Questions Into Confident Purchases"
+    ],
+    "imgCount": 0,
+    "firstImg": null
+  },
+  {
+    "i": 1,
+    "y": 486,
+    "h": 2904,
+    "bg": "rgb(255, 255, 255)",
+    "bgImage": null,
+    "pad": "20px 20px 50px",
+    "heading": "Write Frequently Answered Questions With The Magic Of AI",
+    "headings": [
+      "Write Frequently Answered Questions With The Magic Of AI",
+      "Add Instant Answer in few clicks",
+      "Add Live Chat to Your Shopify Store",
+      "AI Chatbot for Smart Help Desk"
+    ],
+    "imgCount": 13,
+    "firstImg": "Group-39473.png"
+  },
+  {
+    "i": 2,
+    "y": 3390,
+    "h": 825,
+    "bg": "rgb(255, 255, 255)",
+    "bgImage": null,
+    "pad": "50px 20px 60px",
+    "heading": "Frequently Asked Questions",
+    "headings": [
+      "Frequently Asked Questions",
+      "How to create a FAQ in Shopify?",
+      "What is the best FAQ accordion app for Shopify?",
+      "Does Shopify store have a default FAQ page?"
+    ],
+    "imgCount": 1,
+    "firstImg": "Group-39473.png"
+  }
+]

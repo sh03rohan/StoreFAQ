@@ -2,12 +2,16 @@
 // Usage: node scripts/crop.mjs <refSelectorKey> <mineSelector> <width> <outName>
 import { chromium } from 'playwright';
 
-const [key, mineSel, width = '1440', out = 'crop'] = process.argv.slice(2);
+const [key, mineSel, width = '1440', out = 'crop', route = '/'] = process.argv.slice(2);
 const REF = {
   hero: () => document.querySelectorAll('main .wp-block-essential-blocks-wrapper')[0],
   pricingBadge: () => { const vis = e => { const q = e.getBoundingClientRect(); return q.width > 0 && q.height > 0; };
     const b = [...document.querySelectorAll('*')].filter(vis).find(e => /^\s*Popular\s*$/.test(e.textContent) && e.children.length < 3);
     return b.closest('.eb-wrapper-outer'); },
+  featuresList: () => [...document.querySelectorAll('main .wp-block-essential-blocks-wrapper')].filter(e => {
+    const q = e.getBoundingClientRect();
+    return q.width >= 100 && q.height >= 40 && !e.parentElement?.closest('.wp-block-essential-blocks-wrapper');
+  })[1].querySelector('.eb-wrapper-outer'),
   faq: () => { const a = document.querySelector('.eb-accordion-container');
     const w = []; for (let e = a; (e = e.closest('.eb-wrapper-outer')); e = e.parentElement) w.push(e);
     return w[w.length - 1]; },
@@ -32,7 +36,7 @@ const shoot = async (url, resolve, path) => {
   await p.close();
 };
 
-await shoot('https://storefaq.io/', REF[key], `/tmp/crops/${out}-ref-${width}.png`);
-await shoot('http://localhost:4321/', new Function(`return document.querySelector(${JSON.stringify(mineSel)})`), `/tmp/crops/${out}-mine-${width}.png`);
+await shoot('https://storefaq.io' + route, REF[key], `/tmp/crops/${out}-ref-${width}.png`);
+await shoot('http://localhost:4321' + route, new Function(`return document.querySelector(${JSON.stringify(mineSel)})`), `/tmp/crops/${out}-mine-${width}.png`);
 console.log(`/tmp/crops/${out}-{ref,mine}-${width}.png`);
 await browser.close();

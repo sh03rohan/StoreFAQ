@@ -9,6 +9,23 @@ const ref = await ctx.newPage(), mine = await ctx.newPage();
 const settle = async (p, u) => {
   await p.goto(u, { waitUntil: 'networkidle', timeout: 60000 });
   await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 700) { scrollTo(0, y); await new Promise(r => setTimeout(r, 60)); } scrollTo(0, 0); });
+  // Wait for layout to stop moving. Web fonts swapping in change where text
+  // wraps, and measuring mid-swap makes the REFERENCE itself vary run to run —
+  // one card read 3 lines on one run and 4 on the next. Neither
+  // `document.fonts.ready` (it resolves to a FontFaceSet, which Playwright
+  // cannot serialise, so awaiting it in Node is a no-op) nor
+  // `document.fonts.check` (true before the face is actually applied) is
+  // enough on its own; a settled page height is.
+  await p.evaluate(async () => {
+    await document.fonts.ready;
+    let last = -1, stable = 0;
+    for (let i = 0; i < 80 && stable < 3; i++) {
+      await new Promise(r => requestAnimationFrame(() => setTimeout(r, 100)));
+      const h = document.documentElement.scrollHeight;
+      stable = h === last ? stable + 1 : 0;
+      last = h;
+    }
+  });
   await p.waitForTimeout(800);
 };
 

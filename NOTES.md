@@ -769,3 +769,47 @@ The reason none of the above showed up is that `scripts/diff-pricing.mjs` was co
 - `content` compared two different wrappers: the reference's excludes the absolutely-positioned badge band, mine included the 61px grid row. That produced a constant +59 that had been sitting in the output as accepted noise, exactly the kind of permanent ✗ that trains you to stop reading.
 
 It now also checks the badge's border, radius and fill, and reports a hidden label column as absent rather than as a zero-sized box.
+
+## Phase 5 — Features page (`/features/`)
+
+**0 failures, 1px worst delta at all 7 viewports**, geometry and paint, verified with crops at 1440 as well.
+
+Three sections: a centred page header, the feature list, and the same FAQ block as Home. `src/components/home/Faq.astro` moved to `src/components/Faq.astro` — the two are byte-identical in content, verified against the captured HTML.
+
+### Page header — `src/components/PageHead.astro`
+
+Section padding `50px 0` below 1280 and `88px 0` above. The content is a **fixed-width centred column**, not a fraction: `min(100%, 390px)` below 1280 and `min(100%, 630px)` above. Title 28/36.4 → 48/62.4 w600 `#16250E` with `margin-bottom: 16px`; subtitle 16/25.6 → 18/28.8 `#45503F` with `margin-bottom: 20px`. Reusable for the remaining pages if they measure the same.
+
+### Lead block
+
+Sits on a **`#F3F9EC` card with a 16px radius** and `padding: 30px 0 0 30px` while stacked, `50px` all round once the columns are side by side. The vertical padding is load-bearing: `align-items: center` measures against the padded box, and without it the text column sat 22px high.
+
+- 40/60 split at 1280+, 50/50 at 768–1279, stacked below.
+- Swoosh first, then title (40/52 w600 `#1D2939`, `capitalize`, the phrase "Frequently Answered Questions" in `#88C15A`), then subtitle, then a "Learn More →" link.
+- The media column has a **45px left gutter with the sparkle in it** — `Group-39470.png` at `0% 50% / 60px auto` — so the screenshot is 675 wide in a 720 column. Identical to the home page's lead card.
+
+### The eleven cards
+
+- Shell: 1px `#F0F0EE`, 8px radius, `overflow: hidden`, no fill.
+- Image band: per-card tint (`#F2F9F7`, `#F9F7EC`, `#F3F9EC` in threes), `padding: <top> 30px 0` where top is 20px on two cards and 30px on the rest, and a **1px `#F0F0EE` rule along its bottom edge**.
+- Body `padding: 30px`. Title 22/28.6 w600 `#16250E` with `padding-bottom: 16px`. Description **Inter** 16/24 `#45503F` — the only body copy on the page that is not IBM Plex Sans, and it changes where two of the eleven descriptions wrap. Its `padding-bottom` is 22px except on two cards (32px and 34px).
+- "Learn More →" 16/20.8 **w500** `#45503F`, `display: flex` (as an inline box it picks up the body's 24px strut and gains ~3px above and below).
+- One per column below 1280, three above, `gap: 24px` / `40px 24px`.
+
+Two structural details:
+
+1. **The original does not equalise card heights within a row** — each card is as tall as its own screenshot and copy make it. `align-items: start`, not the grid default.
+2. **The last row has an empty third column.** It paints nothing, but while the cards are stacked it still contributes a 24px gap, and the section's height depends on it. Reproduced as an empty grid cell.
+
+### The measurement was lying, twice
+
+**The lead block's green ground and its sparkle were both missing** and the geometry diff passed anyway — every box was within 1px because the ground and the sparkle are paint, not layout. The crop caught it. Same shape as the pricing badge; the diff now reads the lead's background and the sparkle's position and size.
+
+**The reference itself was varying run to run.** One card measured 3 description lines on one run and 4 on the next, a 24px swing, and the "failure" moved with it. Cause: measuring mid font-swap. Neither fix that looks right actually works —
+
+- `await page.evaluate(() => document.fonts.ready)` is a **no-op**: it resolves to a `FontFaceSet`, which Playwright cannot serialise, so the promise is never awaited.
+- `document.fonts.check('16px Inter')` returns **true before the face is applied**, so gating on it still measures the fallback.
+
+What works is waiting for the page height to stop changing — three consecutive equal readings, 100ms apart. Applied to all nine `scripts/diff-*.mjs`. Every measurement taken before this is suspect to about one line of text; the sections re-run since (Home end to end, pricing, features) all hold.
+
+Also fixed in the features diff: comparing background-image **filenames** across a migration fails by construction, since assets are renamed. It compares "has an image" plus position and size.

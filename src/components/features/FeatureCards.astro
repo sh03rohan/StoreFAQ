@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets';
+import LearnMore from '../LearnMore.astro';
+import { featureCards } from '../../data/features';
+
+/* Every card image lives in src/assets/features and is resolved at build
+ * time, so Astro can emit the responsive variants. */
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '../../assets/features/*.{png,webp,jpg}',
+  { eager: true },
+);
+const pick = (name: string) => images[`../../assets/features/${name}`].default;
+---
+<ul class="fcards">
+  {featureCards.map((c) => (
+    <li class="fcard" style={`--band-bg:${c.bg};--band-top:${c.bandTop}px;--desc-gap:${c.descBottom}px`}>
+      <div class="fcard__band">
+        <Image src={pick(c.img)} alt={c.alt} widths={[362, 738]} sizes="(min-width: 1280px) 33vw, 100vw" loading="lazy" />
+      </div>
+      <div class="fcard__body">
+        <h3 class="fcard__title">{c.title}</h3>
+        <p class="fcard__desc">{c.desc}</p>
+        <LearnMore slug={c.slug} />
+      </div>
+    </li>
+  ))}
+  {/* The original's last row has an empty third column. It paints nothing,
+      but while the cards are stacked it still contributes a 24px gap, and
+      the section's height depends on it. */}
+  <li class="fcards__spacer" aria-hidden="true"></li>
+</ul>

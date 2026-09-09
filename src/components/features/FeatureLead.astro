@@ -1,0 +1,23 @@
+---
+import { Image } from 'astro:assets';
+import LearnMore from '../LearnMore.astro';
+import swoosh from '../../assets/home/Group-39473.png';
+import media from '../../assets/home/Component-1.png';
+---
+<div class="flead">
+  <div class="flead__text">
+    <div class="flead__swoosh">
+      <Image src={swoosh} alt="" width={58} height={54} loading="lazy" />
+    </div>
+    <div class="flead__head">
+      <h2 class="flead__title">
+        Write <span class="flead__mark">Frequently Answered Questions</span> With The Magic Of AI
+      </h2>
+      <p class="flead__sub">Answer your common customer questions&nbsp; faster than ever with the help of AI.</p>
+    </div>
+    <LearnMore slug="generate-faqs-using-ai-autowrite" />
+  </div>
+  <div class="flead__media">
+    <Image src={media} alt="StoreFAQ writing an answer with AI" widths={[675, 1240]} sizes="(min-width: 1280px) 60vw, 100vw" loading="lazy" />
+  </div>
+</div>
