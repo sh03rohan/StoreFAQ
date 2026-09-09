@@ -65,6 +65,13 @@
   --color-mint: #F3F9EC;       /* bg ×11                     */
   --color-sky: #ECF6F9;        /* feature card bg            */
   --color-plan: #F9FCFF;       /* pricing column bg          */
+  /* Testimonial cards — each of the six has its own tint. */
+  --color-ice: #F4F9FF;        /* Vegas Custom Creations     */
+  --color-ice-periwinkle: #F7F7FF; /* Plentiful Earth        */
+  --color-ice-cyan: #F6FFFF;   /* Moore Notary Service       */
+  --color-ice-peach: #FFFAF6;  /* SitnStand                  */
+  --color-ice-lilac: #FBF5FF;  /* Vida Pura                  */
+  --color-ice-leaf: #FAFFF5;   /* PK Automaten GmbH          */
   --color-plan-rule: #EAECF0;  /* pricing cell rule          */
   --color-badge: #FFFCD4;      /* "Popular" badge            */
   --color-badge-ink: #000131;  /* "Popular" text             */
@@ -75,6 +82,8 @@
   --color-rule: #E3E3E3;       /* pricing table rules        */
   --color-rule-active: #EFE0A1;/* rules beside the popular column */
   --color-violet-2: #A741FF;   /* end of the AI label gradient */
+  --color-quote: #4A4F48;      /* testimonial body          */
+  --color-quote-meta: #444565; /* testimonial location      */
   --color-gray-50: #F9FAFB;    /* bg ×38                     */
   --color-gray-100: #F2F4F7;   /* bg ×8                      */
   --color-border: #EAECF0;     /* bg ×4                      */

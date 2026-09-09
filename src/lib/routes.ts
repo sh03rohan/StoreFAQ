@@ -25,6 +25,9 @@ export const legacyPost = (slug: string) => `/${slug}/`;
 
 export const external = {
   shopifyApp: 'https://apps.shopify.com/storefaq',
+  /* The captured href carried a per-visit `search_id` tracking token; the
+   * bare reviews URL resolves to the same page. */
+  shopifyReviews: 'https://apps.shopify.com/storefaq/reviews',
   support:    'https://storeware.io/support/',
 } as const;
 

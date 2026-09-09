@@ -618,3 +618,41 @@ Fixed by making `.feature` a flex column and giving `.feature__sub` `margin-bott
 Section and cell geometry is unchanged by this — the earlier diff had been comparing *column* heights, which matched, while the card inside still had a tail. Another case of a passing geometry diff hiding a visual problem; the measurement had to target the card, not the column.
 
 The per-card `gap` values in `home-features.ts` now act as **minimums** rather than fixed gaps — the driving card in each row still sets the row height, which is why 1280/1440 cells continue to match exactly.
+
+### Testimonials — done
+
+**0 failures, 1px worst delta at all 7 viewports**, verified with crops at 1440 and 360 as well as geometry.
+
+Section: padding 30/20 below 1280, 60/20 above; heading centred, 28 → 32 → 48px, line-height 1.3 throughout, colour `#000131` (the same ink as the pricing "Popular" badge), margin-bottom 40px → 65px.
+
+Six cards, three columns of two from 768 up, one column below. **The columns pack independently** — the cards do not line up row by row — so this is three flex columns, not a grid.
+
+- Column gap 20px, card gap 24px, columns are `flex: 1 1 0`.
+- Card: 16px radius; padding `25px` below 768, `40px 32px 40px 15px` between 768 and 1279 (asymmetric on purpose — measured), `40px 32px` above.
+- Name IBM Plex Sans 600 at 18 → 16 → 24px, line-height 1.55 throughout, `#16250E`.
+- Location Manrope 500 at 14 → 18px, line-height 1, `#444565`.
+- Quote Inter 400 at 14/22.4 → 18/28.8, `#4A4F48`, margin-top 14 → 18px.
+- Stars sit in a 24.8px line box; 16px below 1280, 21px above, `#000131`, 5px margin-right on **all five** including the last (it sets the name block's max-content width).
+- Button "Read More Reviews" is filled `#16250E`, 8px radius, IBM Plex Sans 500 16/17.6 white — 185x48 (`14px 20px`) below 768, 205x52 (`16px 30px`) to 1279, 185x44 (`12px 20px`) above. Centred, 56px below the stack and 32px once the cards sit in columns.
+
+#### Four things only a measurement would have given
+
+1. **Every card has its own tint.** `#F4F9FF` blue, `#F7F7FF` periwinkle, `#F6FFFF` cyan, `#FFFAF6` peach, `#FBF5FF` lilac, `#FAFFF5` leaf-green. Each card also carries a 1px border in its own fill colour — invisible, but 2px of the content box.
+
+2. **The row is 24px taller than its tallest column at some widths.** The 24px between stacked cards is a *bottom margin on each card*, not a column gap — including on the last card, where it collapses out of the column block and is then trapped by the flex item, lifting the row. Exactly one card (Plentiful Earth, bottom of column 1) has that margin zeroed, which is why the effect appears at 1440/1920 but not at 768/1024/1280. Reproduced with a real `margin-bottom` on the cards and a `flush` flag in the data rather than a `gap`, so the arithmetic works out the same way.
+
+3. **The stacked order reads across the columns, not down them** — Vegas, Moore, Vida Pura, then Plentiful, SitnStand, PK. The original does this by shipping a *second, mobile-only row* holding copies of the lower three cards (byte-identical text, verified against the captured HTML). One list plus `display: contents` and `order` on the columns reproduces it without the duplication.
+
+4. **Those mobile-only copies were left on the 16px name from the tablet range** while the three beside them use 18px — 3px per card, 9px of page height. Reproduced rather than normalised, since the brief is a migration; it is a one-line rule and easy to drop if you would rather the six names matched.
+
+#### Deviation: Font Awesome
+
+The stars were a `Font Awesome 6 Free` webfont glyph. Replaced with the same icon inlined as SVG at `1.125em` wide (the glyph's own advance width, which is why the measurements line up exactly). Drops a font request; icon is Font Awesome Free 6, CC BY 4.0.
+
+#### Deviation: the review link
+
+The captured href carried a per-visit `search_id` tracking token. `external.shopifyReviews` uses the bare `https://apps.shopify.com/storefaq/reviews`, which resolves to the same page.
+
+#### The geometry diff missed the tints
+
+Every box matched to 1px and the section still looked wrong, because the paint check compared only the *first* card's background. `scripts/diff-testimonials.mjs` now checks background, border and all four text colours **per card**, at every viewport. Fourth time in this phase that a passing geometry diff hid a visual problem — the crop is what caught it, again.

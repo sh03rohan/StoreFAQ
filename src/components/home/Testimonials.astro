@@ -1,0 +1,46 @@
+---
+import Container from '../Container.astro';
+import { external } from '../../lib/routes';
+import { testimonialColumns } from '../../data/home-testimonials';
+
+/* Font Awesome 6 Free "star" (solid), viewBox 576x512 — the original draws
+ * these as a webfont glyph. Inlining the path drops a font request and keeps
+ * the 1.125em advance width the layout is measured against.
+ * Icon: Font Awesome Free 6, CC BY 4.0. */
+const STAR =
+  'M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 338 111.5 483.7c-2.1 11.6 2.7 23.4 12.2 30.3s22.2 7.9 32.6 2.3l128.3-68.5 128.3 68.5c10.4 5.6 23.1 4.7 32.6-2.3s14.3-18.7 12.2-30.3L433.9 338 538.1 235.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L376.7 150.3 316.9 18z';
+---
+<section class="tm">
+  <Container>
+    <h2 class="tm__title">Here’s What Our Users Say</h2>
+
+    <div class="tm__grid">
+      {testimonialColumns.map((column) => (
+        <div class="tm__col">
+          {column.map((t) => (
+            <figure class:list={['tm__card', t.flush && 'tm__card--flush']} style={`--order:${t.order};--tm-bg:${t.bg}`}>
+              <div class="tm__head">
+                <figcaption class="tm__info">
+                  <span class="tm__stars" role="img" aria-label="Rated 5 out of 5">
+                    {[0, 1, 2, 3, 4].map(() => (
+                      <svg viewBox="0 0 576 512" aria-hidden="true" focusable="false"><path d={STAR} /></svg>
+                    ))}
+                  </span>
+                  <span class="tm__name">{t.name}</span>
+                  <span class="tm__place">{t.place}</span>
+                </figcaption>
+              </div>
+              <blockquote class="tm__quote">{t.quote}</blockquote>
+            </figure>
+          ))}
+        </div>
+      ))}
+    </div>
+
+    <div class="tm__actions">
+      <a class="tm__more" href={external.shopifyReviews} target="_blank" rel="noopener noreferrer">
+        Read More Reviews
+      </a>
+    </div>
+  </Container>
+</section>
