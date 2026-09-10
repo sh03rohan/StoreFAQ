@@ -6,10 +6,7 @@ import Container from '../components/Container.astro';
 import Timeline from '../components/changelog/Timeline.astro';
 import { changelog } from '../data/changelog';
 ---
-<BaseLayout
-  title="StoreFAQ Changelog: Releases, Fixes and Improvements"
-  description="Stay up to date with the latest StoreFAQ features, fixes, and improvements."
->
+<BaseLayout route="/changelog/">
   <Header />
   <main>
     <section class="cl-head">

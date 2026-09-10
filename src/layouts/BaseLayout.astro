@@ -1,26 +1,77 @@
 ---
 import '../styles/tokens.css';
 import Motion from '../components/Motion.astro';
+import { seoFor } from '../data/seo';
 
+/**
+ * Pages pass `route` and the title, description, social image and schema come
+ * from src/data/seo.ts — extracted from the live pages, because those are the
+ * strings that rank. `title`/`description` remain overridable for routes that
+ * are generated rather than listed (blog posts, docs articles).
+ */
 export interface Props {
-  title: string;
+  route?: string;
+  title?: string;
   description?: string;
   canonical?: string;
   ogImage?: string;
   robots?: string;
   type?: 'website' | 'article';
+  /** Extra JSON-LD nodes for a page that needs more than its own WebPage. */
+  schema?: Record<string, unknown>[];
 }
 
 const {
-  title,
-  description = '',
+  route,
   canonical,
-  ogImage,
   robots = 'index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large',
   type = 'website',
+  schema: extraSchema = [],
 } = Astro.props;
 
+const seo = route ? seoFor(route) : undefined;
+if (route && !seo) throw new Error(`No SEO entry for route "${route}" — add it to src/data/seo.ts`);
+
+const title = Astro.props.title ?? seo?.title ?? '';
+const description = Astro.props.description ?? seo?.description ?? '';
+
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+
+/* Mirrored into /social/ rather than hotlinked from the WordPress uploads
+ * directory, which §B1 keeps out of the output entirely. */
+const social = Astro.props.ogImage
+  ?? (seo?.ogImage ? '/social/' + seo.ogImage.split('/').pop() : undefined);
+const ogImage = social ? new URL(social, Astro.site).href : undefined;
+
+/* The original carries WebSite and Organization on the home page only, and a
+ * WebPage (or CollectionPage) on each page. Reproduced, minus the WebSite's
+ * `potentialAction` — it advertises `/?s={term}`, a WordPress search endpoint
+ * this build does not have, and pointing crawlers at a 404 is worse than
+ * saying nothing. */
+const site = Astro.site?.href.replace(/\/$/, '') ?? '';
+const isHome = Astro.url.pathname === '/';
+const jsonLd = [
+  ...(isHome ? [
+    { '@context': 'https://schema.org', '@type': 'WebSite',
+      '@id': `${site}/#website`, name: 'storefaq.io', url: `${site}/` },
+    { '@context': 'https://schema.org', '@type': 'Organization',
+      '@id': `${site}#organization`, name: 'storefaq.io', url: site },
+  ] : []),
+  ...(seo?.schema ? [{
+    '@context': 'https://schema.org',
+    '@type': seo.schema.type,
+    name: seo.schema.name,
+    url: canonicalUrl,
+    ...(seo.schema.datePublished ? { datePublished: seo.schema.datePublished } : {}),
+    ...(seo.schema.dateModified ? { dateModified: seo.schema.dateModified } : {}),
+    ...(seo.schema.image ? { image: new URL('/social/' + seo.schema.image.split('/').pop(), Astro.site).href } : {}),
+    ...(seo.schema.type === 'CollectionPage'
+      ? { isPartOf: { '@type': 'WebSite', '@id': `${site}/#website`, url: `${site}/` },
+          description }
+      : {}),
+  }] : []),
+  ...extraSchema,
+];
 ---
 <html lang="en">
   <head>
@@ -28,6 +79,11 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    {/* The original's own keywords, where the page has them. Search engines
+        have ignored this tag for years — it is here because it is the client's
+        authored content, and dropping authored content silently is exactly the
+        mistake the titles above were. */}
+    {seo?.keywords && <meta name="keywords" content={seo.keywords} />}
     <meta name="robots" content={robots} />
     <link rel="canonical" href={canonicalUrl} />
 
@@ -35,15 +91,38 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
     {description && <meta property="og:description" content={description} />}
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content="storefaq.io" />
     <meta property="og:locale" content="en_US" />
     {ogImage && <meta property="og:image" content={ogImage} />}
+    {ogImage && <meta property="og:image:secure_url" content={ogImage} />}
+    {ogImage && seo?.ogImageSize && (
+      <>
+        <meta property="og:image:width" content={String(seo.ogImageSize.width)} />
+        <meta property="og:image:height" content={String(seo.ogImageSize.height)} />
+        <meta property="og:image:type" content={seo.ogImageSize.type} />
+      </>
+    )}
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     {description && <meta name="twitter:description" content={description} />}
     {ogImage && <meta name="twitter:image" content={ogImage} />}
+    {ogImage && seo?.ogImageAlt && (
+      <>
+        <meta property="og:image:alt" content={seo.ogImageAlt} />
+        <meta name="twitter:image:alt" content={seo.ogImageAlt} />
+      </>
+    )}
 
-    <link rel="alternate" type="application/rss+xml" title="StoreFAQ" href="/feed/" />
+    {jsonLd.map((node) => (
+      <script type="application/ld+json" set:html={JSON.stringify(node)} />
+    ))}
+
+    {/* Per-route, and a page can advertise more than one: /docs/ carries the
+        site feed AND its own. */}
+    {(seo?.feeds ?? []).map((f) => (
+      <link rel="alternate" type="application/rss+xml" title={f.title} href={f.href} />
+    ))}
 
     <!-- Hide the animated blocks before first paint, but only when motion is
          welcome. Anyone on `prefers-reduced-motion: reduce` never gets the

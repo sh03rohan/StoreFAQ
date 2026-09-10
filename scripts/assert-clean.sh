@@ -63,6 +63,15 @@ if [ "$FAIL" -eq 0 ]; then
   echo "OK: no WordPress markup in output"
 fi
 
+# The <head> is the half of the page no pixel diff can see, and it is the half
+# search engines read. Every difference from the original must be an accounted
+# one — see the classification in the script.
+if [ -d dist/client ]; then
+  echo
+  node scripts/diff-head.mjs > /tmp/head-diff.txt 2>&1 || { cat /tmp/head-diff.txt; FAIL=1; }
+  tail -2 /tmp/head-diff.txt
+fi
+
 # Every URL WordPress serves today must resolve, and in one hop. Reads the
 # rules back out of the BUILT routing table, because the first version of that
 # map emitted patterns that could never match and nothing in the source said so.

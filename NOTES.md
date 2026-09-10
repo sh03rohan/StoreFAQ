@@ -1485,3 +1485,87 @@ ahead of the filesystem.
   rewrite; Phase 7 downloads the media into the repo instead, so the rewrite is
   only a fallback for anything missed, and pointing it at a host that is not up
   would turn a 404 into a 502. Add it once `cms.storefaq.io` exists.
+
+## The `<head>` — the half no pixel diff can see
+
+`scripts/diff-head.mjs` compares every built page's head against the original:
+title, every meta, the non-asset links and the JSON-LD types. It reports only
+differences that are **not** accounted for, and classifies the rest. It is in
+`assert-clean.sh`.
+
+First run: **20 differences on the home page alone**, and the worst of them was
+mine.
+
+### I had silently rewritten the SEO copy of every page
+
+Phase 5 pages passed `title` and `description` I had written. The live site's
+are authored, and they are what ranks:
+
+| | original | what Phase 5 shipped |
+|---|---|---|
+| `/` | StoreFAQ: Ultimate Shopify FAQ Builder App | StoreFAQ - Shopify FAQ Builder App |
+| `/features/` | StoreFAQ Features: AI-powered FAQ Builder for Shopify | Features - StoreFAQ |
+| `/changelog/` | StoreFAQ Changelog | StoreFAQ Changelog: Releases, Fixes and Improvements |
+
+Every description differed too. Launching that would have changed the title and
+meta description of the entire site on the same day the URLs moved — two
+variables at once, and no diff in the project could see either.
+
+`src/data/seo.ts` is generated from the captures by `scripts/extract-seo.mjs`,
+and pages now pass only `route`.
+
+**Three routes keep an override**, because the original's copy there is a
+WordPress placeholder rather than authored: `/docs/` is the default "Add new
+doc from here"; `/privacy-policy/` and `/feature-request/` are the first 160
+characters of the body cut mid-sentence. Each override quotes the string it
+replaces in the generated file, so the change is auditable instead of invisible
+(§B7).
+
+### What else was missing
+
+- **No JSON-LD at all.** The original carries `WebSite` + `Organization` on the
+  home page and a `WebPage` (or `CollectionPage` on /docs/) on each. Reproduced,
+  minus the `WebSite`'s `potentialAction`: it advertises `/?s={term}`, a
+  WordPress search endpoint this build does not have, and pointing crawlers at
+  a 404 is worse than saying nothing.
+- **No `og:image` anywhere** — every social share was imageless. The three
+  images are mirrored into `public/social/` rather than hotlinked out of
+  `/wp-content/`, which §B1 keeps out of the output.
+- `og:site_name`, `og:image:width/height/type`, `og:image:alt` — all absent.
+  The dimensions are read off the mirrored files with a small PNG/JPEG header
+  parse rather than a dependency.
+- `meta:keywords` — reproduced. Search engines have ignored it for years, but
+  it is the client's authored content, and dropping authored content silently
+  is exactly the mistake above.
+- **The feed link is per-route.** `/docs/` advertises the site feed *and* its
+  own `/docs/feed/`. Emitting one `/feed/` on every page dropped the specific
+  one.
+
+### Correctly not reproduced
+
+WordPress plumbing, listed in the script so it is stated once rather than
+reported forever: the REST record for the page
+(`link:alternate:application/json`), both oEmbed discovery links,
+`link:shortlink` (`/?p=91`), and `msapplication-TileImage`.
+
+### Two bugs in the checker itself
+
+Both would have let a real difference through:
+
+1. **A differing value did not count.** Only an *absent* key incremented the
+   failure count, so the script printed "1 UNEXPLAINED" for the docs feed and
+   then "0 unexplained differences" and exited 0.
+2. **Two links of the same type collapsed into one.** The head map was keyed by
+   rel+type, so /docs/'s second feed overwrote the first and the difference was
+   invisible from both sides. The key carries the link title now.
+
+And the extractor had the matching bug — it took the *first* rss link rather
+than all of them.
+
+### A 404 in the structured data
+
+The home page's `WebPage` schema references a different upload from its
+`og:image` (`image-1.png`, not `headerLogo.png`), so mirroring only the
+og:images left the schema pointing at `/social/image-1.png`, which was not
+there. `extract-seo.mjs` now fails if any referenced social file is missing
+from `public/social/`.
