@@ -62,4 +62,16 @@ fi
 if [ "$FAIL" -eq 0 ]; then
   echo "OK: no WordPress markup in output"
 fi
+
+# Every URL WordPress serves today must resolve, and in one hop. Reads the
+# rules back out of the BUILT routing table, because the first version of that
+# map emitted patterns that could never match and nothing in the source said so.
+if [ -f .vercel/output/config.json ]; then
+  echo
+  node scripts/assert-redirects.mjs || FAIL=1
+else
+  echo
+  echo "skipping the redirect check: no .vercel/output/config.json (run astro build)"
+fi
+
 exit "$FAIL"

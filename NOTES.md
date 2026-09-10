@@ -1419,3 +1419,69 @@ accepting a submission it would silently drop. Same posture as the newsletter
 form and the docs search. The status line is rendered empty at its full height
 from the start, as on the original, so a message appearing does not shift the
 page.
+
+## Phase 8 — links and redirects
+
+`scripts/wp-inventory.mjs` pulls every URL WordPress serves into
+`reference/wp-inventory.json` — **44**: 16 posts, 6 pages, 16 docs, 4
+categories, 2 doc categories. `scripts/gen-redirects.mjs` turns that plus the
+BetterLinks export into `src/lib/redirects.ts`, and an integration in
+`astro.config.mjs` writes it into the built Vercel routing table.
+
+**41 rules**: 16 posts moving under `/blog/`, 19 BetterLinks, 1 empty category,
+and 5 platform rules (`/index.php/*`, `/tag/*`, `/author/*`, and 410s for
+`/wp-json`, `/wp-admin`, `/wp-includes`, `/xmlrpc.php`).
+
+The generator refuses to emit if a rule would shadow a path this build serves,
+if two rules share a `from`, or if WordPress publishes a page this build neither
+serves nor redirects. That last check is what surfaced `/feature-request/`.
+
+### The direction is the opposite of the guide's table
+
+Guide §Phase 8 lists `/blog/:slug/ → /:slug/`. That predates the A1 decision
+recorded here, which moves posts the other way — `/<slug>/ → /blog/<slug>/`.
+The map follows the decision.
+
+### The first version of this map was entirely dead
+
+Astro's own `redirects` looked like the obvious home for the one-to-one rules.
+It emitted, for `trailingSlash: 'always'`:
+
+```
+{"src":"^/best-shopify-faq-apps$", "headers":{"Location":"/blog/…/"}, "status":301}
+```
+
+Slash-less — and **every real old WordPress URL ends in a slash**, so that rule
+can never match the URL anybody actually has. Worse, the adapter puts the 308
+slash-normaliser *ahead* of it, so the slash-less form gets rewritten to the
+slashed one first and then matches nothing either. Both forms 404. All 36
+redirects were dead on arrival and nothing in the source said so.
+
+Every rule now goes into the platform table with `/?$`, prepended so it runs
+before the normaliser.
+
+**`scripts/assert-redirects.mjs` is the check that caught it**, and it reads the
+rules back out of `.vercel/output/config.json` rather than out of the source —
+because the source looked completely correct. It replays all 44 WordPress URLs
+plus the wildcards, in both slash forms, through a simulation of Vercel's route
+phases, and fails on a 404, a chain, or a destination nothing serves. It is
+wired into `assert-clean.sh`.
+
+Its own first run reported 47 failures that were not real: it treated Vercel's
+`{"src":"/.*","status":404}` catch-all as a match, because it ignored the
+`handle` phase boundaries. Only the routes before the first `handle` entry run
+ahead of the filesystem.
+
+### Known and accepted
+
+- **`/index.php/<post>/` takes two hops** — one to strip `index.php`, one for
+  the post's move. Collapsing it would mean duplicating all 16 post rules with
+  an `index.php` prefix, for a URL form WordPress itself already redirected.
+  Named in `TWO_HOPS_OK` so it passes deliberately rather than silently.
+- **41 of the 68 checked URLs resolve to routes Phase 6 has still to build** —
+  the blog, the 16 docs, the categories. The script says so on every run rather
+  than reporting a flat green. Re-run when those land.
+- `/wp-content/*` is **not** rewritten to the CMS yet. The guide asks for a 200
+  rewrite; Phase 7 downloads the media into the repo instead, so the rewrite is
+  only a fallback for anything missed, and pointing it at a host that is not up
+  would turn a 404 into a 502. Add it once `cms.storefaq.io` exists.
