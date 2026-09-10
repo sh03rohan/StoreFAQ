@@ -53,3 +53,22 @@
   font-style: normal;
   font-display: swap;
 }
+
+/* Cardo — the privacy policy's headings, and nothing else on the site: that
+ * page carries none of the design system, so it renders in the WordPress
+ * theme's own serif. Two static weights, because Cardo has no variable cut.
+ * Only fetched on the page that uses it. */
+@font-face {
+  font-family: 'Cardo';
+  src: url('/fonts/Cardo-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cardo';
+  src: url('/fonts/Cardo-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}

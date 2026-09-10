@@ -1190,3 +1190,117 @@ transparent box against a cream one and reports nothing useful.
 Running tally of "a passing geometry diff hides paint": testimonial tints,
 pricing badge and its three price inks, the features lead's ground and sparkle,
 the feature band rule, the newsletter gradient, and now the changelog card.
+
+## Phase 5 — /privacy-policy/ (and Phase 5 closes)
+
+`diff-privacy.mjs` reports **0 failures at 7 viewports, worst 0.1px**, with all
+**26 blocks** matching on size, position, rendered type, `id` and text.
+
+### The one page with none of the design system on it
+
+`sections-privacy-policy-1440.json` is an empty array: zero Essential Blocks
+sections. The page is a WordPress post title and a block of prose, rendered in
+the **twentytwentyfour theme's own type** — which is why its headings are a
+serif (Cardo) while every other page is IBM Plex Sans, and why everything on it
+is fluid rather than stepped at the site's four breakpoints:
+
+| | value |
+|---|---|
+| page inset | `min(8vw, 104px)` |
+| column | 620px (`--container-narrow`), centred |
+| h1 | Cardo `clamp(40.51px, 35.894px + 1.283vw, 52.32px)` / 1.15, weight 400 |
+| h3 | Cardo `clamp(22.55px, 19.786px + 0.767vw, 29.6px)` / 1.2, weight 700 |
+| body | Inter 16.8/26.04 |
+| block rhythm | 1.2rem between every sibling |
+
+Cardo is real, not a failed fallback — the reference loads weights 400 and 700,
+and it has no variable cut, so both are shipped (15KB + 19KB). Like Sora on the
+changelog, the `@font-face` costs nothing elsewhere: a face is only fetched when
+a rendered element asks for it.
+
+**Reproduced rather than normalised.** Restyling this page to IBM Plex Sans
+would make the site more consistent than it is, which is a redesign, not a
+migration. Flagged here rather than decided: if the intent is that the policy
+should look like the rest of the site, that is a one-line change and 34KB back.
+
+### Generated, not transcribed
+
+`scripts/extract-privacy.mjs` pulls the prose out of the capture into
+`src/data/privacy.ts`. It is a legal document that has to be reproduced word
+for word, and the generator is also what enforces §B1 — it keeps a fixed list
+of block and inline tags, drops every attribute except `href` and `id`, and
+throws if any `class=`, `wp-`, `eb-` or `is-layout-` survives.
+
+Two details it preserves deliberately:
+
+- **The heading ids are kept verbatim**, including `id="data-collected-by-betterdocs"`
+  on a heading that reads "Data Collected By StoreFAQ" — a leftover from the
+  policy this one was copied from. It is wrong, and correcting it would break
+  any link that already points at it. Left alone; worth a redirect if it is ever
+  changed.
+- **The redundant `<strong>` inside each heading is dropped.** The original's
+  `<h3>` computes to weight 400 and every glyph in it renders at 700 because of
+  the inner `<strong>`; here the heading carries the 700. The diff compares the
+  element that actually holds the words on each side, so this is verified as
+  identical rather than assumed.
+
+### A margin that escaped
+
+First run was exact everywhere and 121.6px out on every single y. The top inset
+was a `margin-top` on the title, and with nothing on `<main>` to stop it, it
+collapsed straight out and moved `<main>` itself down — which is why the page
+total was right and every offset was wrong. It is `padding-top` on the page
+now, which is what the original's spacer `<div>` amounts to.
+
+The same shape as the row-height mysteries earlier in this migration: a margin
+escaping a block that has no border, padding or BFC to hold it.
+
+---
+
+## Phase 5 is complete
+
+| page | result |
+|---|---|
+| `/` | 3px at 1280+, 1px at 1440/1920 |
+| `/features/` | 0 failures, 1px |
+| `/docs/` | 0 failures, 1px |
+| `/changelog/` | 0 failures, 1.6px; page total exact at 1280+ |
+| `/privacy-policy/` | 0 failures, 0.1px |
+
+Build passes, the §B1 gate passes on all five, JS is 44.3KB gzip.
+
+### Not migrated, and nobody has decided to drop it: Crisp live chat
+
+The live site loads **Crisp** (`client.crisp.chat/l.js`, website id
+`57c11e5d-…`) on **every one of the eight captured pages**. This build has no
+chat widget at all. That is a functional regression, not a styling one, and it
+is not recorded anywhere earlier in these notes — I went looking only because
+the widget's green bubble showed up in the privacy-policy crop.
+
+It is deliberately **not** added here: it loads a third-party script on every
+page and opens a support channel, which is a decision for the team rather than
+something to switch on from a migration task. It is a launch blocker either
+way — either it goes back, or someone decides it is gone.
+
+The BetterDocs "Instant Answer" widget is in the same category and is partly
+tracked already (the "What are your feelings" feedback question, above). Both
+should be settled together, since they are two support surfaces on the same
+pages.
+
+### Still open, carried forward
+
+- **The GSAP bundle.** 43.2KB of the 44.3KB total, for fades and rises on
+  scroll. The changelog's timeline — an IntersectionObserver and one scroll
+  listener, matching the original's behaviour exactly — came to well under 1KB
+  and is the argument that the entrance animations do not need a library.
+- **Crisp and Instant Answer**, above.
+- The changelog's 30% resting opacity (a real contrast failure while JS runs).
+- The newsletter form's stacked layout at 360.
+- `tokens.css` now carries 54 custom properties against the gate's 40.
+- The header ballooning to 325px between 600 and 767 — present in the
+  reference, so reproduced, but it looks like a fault in the original.
+- A ~4px drift between the newsletter and the footer columns, sitewide, found
+  while chasing the /docs/ page total. `diff-footer.mjs` compares boxes and
+  column widths but never the vertical rhythm between the two, which is why it
+  reports 0 while the gap is real. Small, but it is a measurement blind spot as
+  much as a layout one.

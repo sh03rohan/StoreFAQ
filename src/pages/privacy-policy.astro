@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { privacyHtml } from '../data/privacy';
+---
+<BaseLayout
+  title="Privacy Policy - StoreFAQ"
+  description="What StoreFAQ collects when you install and use the app for your Shopify store, how it is used, and the rights you have over it."
+>
+  <Header />
+  <main class="policy">
+    <h1 class="policy__title" data-anim="heading" data-anim-intro style="--anim-d:.05s;--anim-y:24px">Privacy Policy</h1>
+    <!-- Generated from the captured page by scripts/extract-privacy.mjs — a
+         legal document reproduced word for word, with every WordPress class
+         and wrapper dropped at extraction time (§B1). -->
+    <div class="policy__body" set:html={privacyHtml} />
+  </main>
+  <Footer />
+</BaseLayout>
