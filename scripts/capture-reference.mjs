@@ -47,7 +47,7 @@ for (const route of ROUTES) {
 
   for (const width of VIEWPORTS) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto(BASE + route, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(BASE + route, { waitUntil: 'domcontentloaded', timeout: 60000 });
 
     await page.evaluate(async () => {
       for (let y = 0; y < document.body.scrollHeight; y += 600) {

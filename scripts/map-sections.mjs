@@ -8,7 +8,7 @@ const width = Number(process.argv[3] ?? 1440);
 const browser = await chromium.launch();
 const page = await browser.newPage();
 await page.setViewportSize({ width, height: 900 });
-await page.goto('https://storefaq.io' + route, { waitUntil: 'networkidle', timeout: 60000 });
+await page.goto('https://storefaq.io' + route, { waitUntil: 'domcontentloaded', timeout: 60000 });
 await page.evaluate(async () => {
   for (let y = 0; y < document.body.scrollHeight; y += 700) { scrollTo(0, y); await new Promise(r => setTimeout(r, 60)); }
   scrollTo(0, 0);

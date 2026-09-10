@@ -5,7 +5,12 @@ const b = await chromium.launch(); /* `reducedMotion: 'reduce'` so the entrance 
  * path at the same time. */
 const ctx = await b.newContext({ reducedMotion: 'reduce' });
 const ref = await ctx.newPage(), mine = await ctx.newPage();
-const settle = async (p, u) => { await p.goto(u, { waitUntil: 'networkidle', timeout: 60000 });
+/* `domcontentloaded`, NOT `networkidle`. The live site runs Crisp live chat and
+ * the BetterDocs Instant Answer widget, which hold connections open — /docs/
+ * stopped reaching networkidle at all and the diff died on a 60s timeout with
+ * nothing wrong on either side. Readiness here is the settled page height
+ * below, which is the signal that actually made these measurements stable. */
+const settle = async (p, u) => { await p.goto(u, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 700) { scrollTo(0, y); await new Promise(r => setTimeout(r, 60)); } scrollTo(0, 0); });
   // Wait for layout to stop moving. Web fonts swapping in change where text
   // wraps, and measuring mid-swap makes the REFERENCE itself vary run to run —
@@ -15,6 +20,17 @@ const settle = async (p, u) => { await p.goto(u, { waitUntil: 'networkidle', tim
   // `document.fonts.check` (true before the face is actually applied) is
   // enough on its own; a settled page height is.
   await p.evaluate(async () => {
+    /* networkidle used to be what guaranteed images had arrived; wait for them
+     * explicitly instead, since a late image changes where text wraps. Raced
+     * against a timeout because a `loading="lazy"` image that never enters the
+     * viewport never fires either event — waiting on it unconditionally hung
+     * the whole run with both servers responding fine. */
+    await Promise.race([
+      Promise.all([...document.images].filter((i) => !i.complete)
+        .map((i) => new Promise((r) => { i.addEventListener('load', r, { once: true });
+          i.addEventListener('error', r, { once: true }); }))),
+      new Promise((r) => setTimeout(r, 5000)),
+    ]);
     await document.fonts.ready;
     let last = -1, stable = 0;
     for (let i = 0; i < 80 && stable < 3; i++) {

@@ -24,7 +24,7 @@ const add = (k, v) => {
 const samples = {};
 
 for (const route of ROUTES) {
-  await page.goto(BASE + route, { waitUntil: 'networkidle', timeout: 60000 });
+  await page.goto(BASE + route, { waitUntil: 'domcontentloaded', timeout: 60000 });
   const rows = await page.$$eval('[class]', (els, props) =>
     els.slice(0, 4000).map((el) => ({
       tag: el.tagName.toLowerCase(),

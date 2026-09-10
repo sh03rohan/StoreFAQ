@@ -10,7 +10,7 @@ import { writeFileSync } from 'node:fs';
 
 const b = await chromium.launch();
 const p = await (await b.newContext()).newPage();
-await p.goto('https://storefaq.io/changelog/', { waitUntil: 'networkidle', timeout: 60000 });
+await p.goto('https://storefaq.io/changelog/', { waitUntil: 'domcontentloaded', timeout: 60000 });
 await p.evaluate(async () => { await document.fonts.ready; });
 
 const entries = await p.evaluate(() => {

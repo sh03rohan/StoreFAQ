@@ -3,7 +3,7 @@
 import { chromium } from 'playwright';
 const b = await chromium.launch();
 const p = await (await b.newContext()).newPage();
-await p.goto('http://localhost:4321/docs/', { waitUntil: 'networkidle' });
+await p.goto('http://localhost:4321/docs/', { waitUntil: 'domcontentloaded' });
 await p.evaluate(async () => { await document.fonts.ready; });
 const out = await p.evaluate(() => {
   const fams = { Inter: 'Inter', 'IBM Plex Sans': "'IBM Plex Sans'", 'DM Sans': "'DM Sans'", Manrope: 'Manrope' };

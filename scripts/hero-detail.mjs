@@ -3,7 +3,7 @@ const b = await chromium.launch();
 const p = await b.newPage();
 for (const w of [360, 480, 768, 1024, 1280, 1440, 1920]) {
   await p.setViewportSize({ width: w, height: 900 });
-  await p.goto('https://storefaq.io/', { waitUntil: 'networkidle', timeout: 60000 });
+  await p.goto('https://storefaq.io/', { waitUntil: 'domcontentloaded', timeout: 60000 });
   await p.waitForTimeout(500);
   const r = await p.evaluate(() => {
     const vis = (e) => { if (!e) return false; const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0; };

@@ -1304,3 +1304,41 @@ pages.
   column widths but never the vertical rhythm between the two, which is why it
   reports 0 while the gap is real. Small, but it is a measurement blind spot as
   much as a layout one.
+
+## The measurement harness, twice bitten
+
+Two faults surfaced right after Phase 5 closed, both in the harness rather than
+the build, and both of the same kind: **a check that cannot run is not a check
+that passed.**
+
+### `networkidle` is the wrong readiness signal for this site
+
+`diff-docs.mjs` started dying on a 60s timeout: `https://storefaq.io/docs/` no
+longer reaches `networkidle` at all. It runs Crisp live chat and the BetterDocs
+Instant Answer widget, and those hold connections open — so "the network went
+quiet" never happens, and never will.
+
+Every script now waits for `domcontentloaded` and relies on the settled page
+height that was added earlier, which is the signal that actually made these
+measurements stable. Images are waited for explicitly, since `networkidle` was
+what used to guarantee them and a late image changes where text wraps.
+
+That image wait then hung the whole run with both servers responding fine: a
+`loading="lazy"` image that never enters the viewport fires neither `load` nor
+`error`, so waiting on it unconditionally waits forever. It is raced against a
+5s timeout now.
+
+### The reference is a production site, and the suite was hammering it
+
+Running all thirteen diffs back to back is roughly **100 page loads of
+storefaq.io in a few minutes**, and the last few scripts started timing out —
+which looks exactly like a regression and is not one. The site answers in ~2s
+again the moment the load stops.
+
+`scripts/diff-all.sh` now paces the suite (10s between scripts, one retry after
+60s) and — more importantly — **reports a script that produced no summary line
+as a failure**, printing its last few lines. The old inline loop printed a blank
+line, which is how a timed-out `diff-docs` read as a pass twice in a row.
+
+Use an individual diff while iterating; the suite is for checking the whole
+thing, and it is deliberately slow.

@@ -10,7 +10,7 @@ const out = {};
 
 for (const w of VIEWPORTS) {
   await page.setViewportSize({ width: w, height: 900 });
-  await page.goto('https://storefaq.io/', { waitUntil: 'networkidle', timeout: 60000 });
+  await page.goto('https://storefaq.io/', { waitUntil: 'domcontentloaded', timeout: 60000 });
   out[w] = await page.evaluate(() => {
     const box = (sel) => {
       const e = document.querySelector(sel);

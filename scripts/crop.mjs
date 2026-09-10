@@ -43,7 +43,7 @@ const ctx = await browser.newContext({ deviceScaleFactor: 2, reducedMotion: 'red
 const shoot = async (url, resolve, path) => {
   const p = await ctx.newPage();
   await p.setViewportSize({ width: Number(width), height: 900 });
-  await p.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
+  await p.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 700) { scrollTo(0, y); await new Promise(r => setTimeout(r, 50)); } scrollTo(0, 0); });
   await p.waitForTimeout(600);
   await p.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important}' });

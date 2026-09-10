@@ -24,7 +24,7 @@ const MAP = {
 
 for (const w of VIEWPORTS) {
   await page.setViewportSize({ width: w, height: 900 });
-  await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => document.fonts.ready);
 
   const mine = await page.evaluate((map) => {
