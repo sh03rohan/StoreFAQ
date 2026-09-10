@@ -1,58 +1,62 @@
 import { parse, HTMLElement } from 'node-html-parser';
 
-const CMS = import.meta.env?.WP_URL ?? 'https://cms.storefaq.io';
+/**
+ * Guide §B1 — Gutenberg HTML in, clean semantic HTML out.
+ *
+ * Used twice: at build time to freeze the docs into the repo, and at render
+ * time for blog bodies coming from the CMS. One implementation, so the two
+ * cannot drift.
+ *
+ * The guide's KILL_CLASS was too narrow against this site's actual output —
+ * `is-style-stripes`, `has-fixed-layout`, `aligncenter` and five `thinkrank-*`
+ * classes all survived it, and all of them would have passed the enforcement
+ * gate, which only greps for `wp-|eb-|elementor|is-layout-`. Extended, and
+ * `scripts/assert-sanitiser.mjs` runs it over every real document.
+ */
+
+const CMS = import.meta.env?.CMS_URL ?? 'https://cms.storefaq.io';
 const SITE = 'https://storefaq.io';
 
-/** Posts moved from /<slug>/ to /blog/<slug>/ (A1 decision). */
-const POST_SLUGS = new Set<string>();
-export function registerPostSlugs(slugs: Iterable<string>): void {
-  for (const s of slugs) POST_SLUGS.add(s);
-}
-
-// Classes that must never survive (guide §B1).
-//
-// The guide's regex leaves real WordPress markup behind. Verified against the
-// longest post, these also survived it and are added here:
-//   is-style-*, has-fixed-layout   core Gutenberg block styles
-//   thinkrank-*                    SEO plugin's FAQ block
-//   betterdocs-*, ff-*, fluentform-*, nx-*  other plugins in the stack
 const KILL_CLASS =
-  /^(wp-|eb-|is-layout-|is-style-|has-fixed-layout$|has-.*-(color|background|font-size)$|elementor|essential-blocks|thinkrank|betterdocs|ff-|fluentform|notificationx|nx-|size-|attachment-|alignwide|alignfull)/;
+  /^(wp-|eb-|root-eb-|is-layout-|is-style-|has-fixed-layout$|has-.*-(color|background|font-size)$|elementor|essential-blocks|thinkrank|betterdocs|notificationx|nx-|ff-|fluentform|size-|attachment-|align(wide|full|center|left|right)$)/;
 
-// A few plugin classes carry real structure. Renaming beats stripping: the
-// semantics survive under our own names and no plugin identity ships.
-const RENAME_CLASS: Record<string, string> = {
-  'thinkrank-faq': 'faq',
-  'thinkrank-faq__heading': 'faq__heading',
-  'thinkrank-faq__item': 'faq__item',
-  'thinkrank-faq__question': 'faq__question',
-  'thinkrank-faq__answer': 'faq__answer',
-  aligncenter: 'align-center',
-  alignleft: 'align-left',
-  alignright: 'align-right',
-};
+const KILL_ATTR = /^(data-(block|eb|id|widget|element|settings|icon|new-tab|link|show-badge)|itemprop|itemscope|itemtype|aria-describedby$)/;
 
-// Attributes carrying builder state.
-const KILL_ATTR = /^(data-(block|eb|id|widget|element|settings)|itemprop|itemscope|itemtype)/;
+const UNWRAP = ['wp-block-group', 'wp-block-columns', 'wp-block-column', 'eb-wrapper',
+  'eb-parent-wrapper', 'eb-row', 'wp-block-buttons', 'wp-container'];
 
-// Gutenberg wrappers that add nothing semantically.
-const UNWRAP = ['wp-block-group', 'wp-block-columns', 'wp-block-column', 'eb-wrapper'];
+/** Blocks that carry no meaning once the builder is gone. */
+const DROP = ['.wp-block-spacer', 'style', 'script', 'noscript', '.screen-reader-text',
+  '.wp-block-post-navigation-link', '.betterdocs-entry-footer', '.betterdocs-feedback',
+  '#betterdocs-ia', '.notificationx'];
 
 export function cleanWpHtml(html: string): string {
-  const root = parse(html, { blockTextElements: { script: false, style: false } });
+  let root = parse(html, { blockTextElements: { script: false, style: false } });
 
   // 1. Drop builder-only nodes entirely.
-  for (const sel of ['.wp-block-spacer', 'style', 'script', 'noscript', '.eb-parent-wrapper > style']) {
-    root.querySelectorAll(sel).forEach((n) => n.remove());
-  }
+  for (const sel of DROP) root.querySelectorAll(sel).forEach((n) => n.remove());
 
-  // 2. Unwrap layout containers, keeping their children.
-  //    Iterate innermost-first so nested wrappers collapse in one pass.
-  for (const el of [...root.querySelectorAll('div,section')].reverse()) {
-    const cls = el.getAttribute('class')?.split(/\s+/) ?? [];
-    if (cls.some((c) => UNWRAP.some((u) => c.startsWith(u)))) {
-      el.replaceWith(...el.childNodes);
+  // 2. Unwrap layout containers, keeping their children. Repeated, because
+  //    these nest — unwrapping once leaves the inner ones behind.
+  for (let pass = 0; pass < 8; pass++) {
+    let unwrapped = 0;
+    for (const el of root.querySelectorAll('div,section,figure')) {
+      const cls = (el.getAttribute('class') ?? '').split(/\s+/);
+      // A <figure> that holds a caption is meaningful; one that is only a
+      // builder wrapper is not.
+      if (el.tagName === 'FIGURE' && el.querySelector('figcaption')) continue;
+      if (cls.some((c) => c && UNWRAP.some((u) => c.startsWith(u)))) {
+        el.replaceWith(el.childNodes.map((n) => n.toString()).join(''));
+        unwrapped++;
+      }
     }
+    if (!unwrapped) break;
+    // `replaceWith` takes a STRING, which node-html-parser re-parses into new
+    // nodes that the current query result does not know about. Without this
+    // re-parse the strip pass below never visits them, and `wp-block-image`,
+    // `wp-image-1089` and friends sail straight through. That is what the
+    // sanitiser assertion caught on three of the sixteen docs.
+    root = parse(root.toString(), { blockTextElements: { script: false, style: false } });
   }
 
   // 3. Strip builder classes and attributes from everything that remains.
@@ -61,8 +65,7 @@ export function cleanWpHtml(html: string): string {
 
     const kept = (el.getAttribute('class') ?? '')
       .split(/\s+/)
-      .map((c) => RENAME_CLASS[c] ?? c)
-      .filter((c) => c && !KILL_CLASS.test(c) && c !== 'screen-reader-text');
+      .filter((c) => c && !KILL_CLASS.test(c));
     kept.length ? el.setAttribute('class', kept.join(' ')) : el.removeAttribute('class');
 
     for (const name of Object.keys(el.attributes)) {
@@ -70,6 +73,10 @@ export function cleanWpHtml(html: string): string {
     }
     // Inline styles are builder spacing artefacts; tokens own spacing now.
     el.removeAttribute('style');
+    // WordPress ids are block hashes, except on headings where they are the
+    // anchor targets a table of contents and any existing deep link rely on.
+    const id = el.getAttribute('id');
+    if (id && !/^H[1-6]$/.test(el.tagName)) el.removeAttribute('id');
   }
 
   // 4. Semantic normalisation.
@@ -85,13 +92,6 @@ export function cleanWpHtml(html: string): string {
       const u = new URL(href, SITE);
       const last = u.pathname.split('/').pop() ?? '';
       if (!u.pathname.endsWith('/') && !last.includes('.')) u.pathname += '/';
-
-      // Old root-level post URLs now live under /blog/.
-      const seg = u.pathname.split('/').filter(Boolean);
-      if (seg.length === 1 && POST_SLUGS.has(seg[0]!)) {
-        u.pathname = `/blog/${seg[0]}/`;
-      }
-
       a.setAttribute('href', u.pathname + u.search + u.hash);
       a.removeAttribute('target');
       a.removeAttribute('rel');
@@ -101,25 +101,24 @@ export function cleanWpHtml(html: string): string {
     }
   }
 
-  // 6. Images — lazy, async, keep intrinsic dimensions for CLS.
+  // 6. Images — lazy, async, and never without an alt attribute.
   for (const img of root.querySelectorAll('img')) {
     img.setAttribute('loading', 'lazy');
     img.setAttribute('decoding', 'async');
-    if (!img.getAttribute('alt')) img.setAttribute('alt', '');
-    // Uploads are served through the /wp-content/* proxy (guide §B4), so the
-    // host is stripped whichever domain WP hands back.
-    for (const attr of ['src', 'srcset']) {
-      const v = img.getAttribute(attr);
-      if (!v) continue;
-      const rewritten = v.replaceAll(CMS, '').replaceAll(SITE, '');
-      if (rewritten !== v) img.setAttribute(attr, rewritten);
-    }
+    if (img.getAttribute('alt') === null) img.setAttribute('alt', '');
+    for (const junk of ['srcset', 'sizes', 'fetchpriority']) img.removeAttribute(junk);
   }
 
   // 7. Remove nodes left empty by the unwrapping above.
-  for (const el of root.querySelectorAll('p,div,span')) {
+  for (const el of root.querySelectorAll('p,div,span,figure')) {
     if (!el.textContent.trim() && !el.querySelector('img,iframe,video,svg')) el.remove();
   }
 
-  return root.toString();
+  return root.toString().replace(/\n{3,}/g, '\n\n').trim();
+}
+
+/** Rewrites uploads to the local mirror. Phase 7 puts the files there. */
+export function localiseMedia(html: string, map: Record<string, string>): string {
+  return html.replace(/https?:\/\/(?:cms\.)?storefaq\.io\/wp-content\/uploads\/([^\s"'?)]+)/g,
+    (whole, path) => map[path] ?? whole);
 }
