@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Container from '../components/Container.astro';
+import FormField from '../components/FormField.astro';
+---
+<BaseLayout
+  title="Feature Request - StoreFAQ"
+  description="Cannot find your favourite feature in StoreFAQ? Tell us what you would like us to build next."
+>
+  <Header />
+  <main class="plain">
+    <h1 class="plain__title" data-anim="heading" data-anim-intro style="--anim-d:.05s;--anim-y:24px">Feature Request</h1>
+    <div class="plain__body">
+      <section class="frq">
+        <Container width="content" class="frq__row">
+          <div class="frq__col">
+            <h2 class="frq__title" data-anim="heading">Feature Requests</h2>
+            <p class="frq__intro" data-anim="text">
+              Cannot find your favorite feature in StoreFAQ? We are all ears! Let us know your
+              ideas or suggestions; we are always trying to improve StoreFAQ and would love to
+              know what new features you want us to bring next!
+            </p>
+          </div>
+
+          <div class="frq__col">
+            <!-- Posts to /api/feature-request/, which forwards to the CMS. That
+                 endpoint returns a clear "temporarily unavailable" until the
+                 headless WordPress wiring lands (Phase 6) — the same posture as
+                 the newsletter form and the docs search. -->
+            <div class="frq__form-wrapper" data-anim="media">
+            <form class="frq__form" method="post" action="/api/feature-request/">
+              <div class="frq__fields">
+                <FormField id="fr-name"    name="name"    label="Name"    icon="user"     placeholder="Enter your name here..." required />
+                <FormField id="fr-email"   name="email"   label="Email"   icon="envelope" type="email" placeholder="Enter your email here..." required faint />
+                <FormField id="fr-subject" name="subject" label="Subject" icon="pencil"   placeholder="Enter your subject here..." required />
+                <FormField id="fr-message" name="message" label="Message" icon="edit"     placeholder="Enter your message here..." textarea rows={4} />
+              </div>
+              <div class="frq__submit-wrap">
+                <button type="submit" class="frq__submit">Submit</button>
+              </div>
+            </form>
+            <p class="frq__status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+        </Container>
+      </section>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<script>
+  /* Progressive enhancement: the form is a real POST to the API route, so it
+   * works without this. With JavaScript, submit in place and report the result
+   * rather than navigating away. */
+  const form = document.querySelector<HTMLFormElement>('.frq__form');
+  const status = document.querySelector<HTMLParagraphElement>('.frq__status');
+
+  if (form && status) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const button = form.querySelector<HTMLButtonElement>('.frq__submit');
+      const say = (text: string, state: 'ok' | 'error') => {
+        status.textContent = text;
+        status.dataset.state = state;
+      };
+
+      if (button) { button.disabled = true; button.textContent = 'Sending'; }
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        });
+        const body = await res.json().catch(() => ({ message: 'Something went wrong.' }));
+        say(body.message, res.ok ? 'ok' : 'error');
+        if (res.ok) form.reset();
+      } catch {
+        say('Something went wrong. Please try again.', 'error');
+      } finally {
+        if (button) { button.disabled = false; button.textContent = 'Submit'; }
+      }
+    });
+  }
+</script>

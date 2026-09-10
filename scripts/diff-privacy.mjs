@@ -96,7 +96,7 @@ const read = (page, S) => page.evaluate((S) => {
 }, S);
 
 const REF = { main: 'main', title: '.wp-block-post-title', body: '.entry-content' };
-const MINE = { main: 'main.policy', title: '.policy__title', body: '.policy__body' };
+const MINE = { main: 'main.plain', title: '.plain__title', body: '.plain__body' };
 
 let fails = 0, worst = 0;
 const cmp = (label, a, c, keys = ['w', 'h', 'x', 'y']) => {

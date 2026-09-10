@@ -1,0 +1,228 @@
+/* The two plain WordPress pages — /privacy-policy/ and /feature-request/.
+ *
+ * Neither carries the site's design system: they are a WordPress post title
+ * and a content block, rendered in the theme's own type. That is why their
+ * headings are a serif (Cardo) while every other page is IBM Plex Sans, and
+ * why their sizes and insets are fluid rather than stepped at the site's four
+ * breakpoints. Reproduced as measured rather than restyled to match the rest;
+ * see NOTES.
+ *
+ * Measured from the live pages — see scripts/diff-privacy.mjs and
+ * scripts/diff-feature-request.mjs.
+ */
+
+/* 8vw up to 1300px wide, then held at 104px.
+ *
+ * The top inset is PADDING, not a margin on the title. As a margin it collapsed
+ * straight out through <main> — nothing on <main> stops it — and pushed the
+ * element itself down 121.6px, which is exactly what the diff reported. The
+ * original has a real spacer <div> there, so its margin has something to sit
+ * against. */
+.plain {
+  padding-block: min(8vw, 104px) 0;
+  padding-inline: min(8vw, 104px);
+}
+
+/* The original spaces these with two `aria-hidden` spacer <div>s — one the
+ * same height as the page's own inset (above, as padding), one 3vw (below).
+ * Same result, two fewer empty boxes in the document. The extra 1.2rem on each
+ * is the theme's block gap, which every sibling after the first carries. */
+.plain__title {
+  max-width: var(--container-narrow);       /* 620px */
+  margin: 1.2rem auto 0;                    /* the theme's block gap */
+  font-family: var(--font-serif);           /* Cardo */
+  font-size: clamp(40.51px, 35.894px + 1.283vw, 52.32px);
+  line-height: 1.15;
+  font-weight: 400;
+  color: var(--color-ink);                  /* #111 */
+  text-align: center;
+}
+
+.plain__body { margin-top: calc(min(3vw, 40px) + 1.2rem); }
+
+/* A 620px column, centred, with the theme's block gap between siblings. */
+.plain__body > * {
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+}
+.plain__body > * + * { margin-top: 1.2rem; }
+
+.plain__body p,
+.plain__body li {
+  font-family: var(--font-body);            /* Inter */
+  font-size: var(--text-base);              /* 16.8/26.04 */
+  line-height: var(--text-base--line-height);
+  font-weight: 400;
+  color: var(--color-ink);
+}
+
+/* 700, because the original wraps each heading's text in a redundant <strong>
+ * — dropped at extraction, so the weight lives here instead. */
+.plain__body h3 {
+  font-family: var(--font-serif);
+  font-size: clamp(22.55px, 19.786px + 0.767vw, 29.6px);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.plain__body ul {
+  padding-left: 16px;
+  list-style: disc;
+}
+.plain__body li { margin: 0; }
+
+/* ---------- /feature-request/ ---------- */
+/* The form block is `alignfull` on the original: it escapes the page's own
+ * inset entirely and spans the viewport, with its row back at the site's 1170
+ * container. The negative margin is what reproduces that escape. */
+.frq {
+  max-width: none;
+  margin-inline: calc(-1 * min(8vw, 104px));
+}
+
+.frq__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+/* Stacked below 768, two equal columns above. While stacked each column is a
+ * full gap NARROWER than the row, not the row's width — the same quirk the FAQ
+ * columns have, and it changes where the intro text wraps. */
+.frq__col { width: calc(100% - 40px); }
+@media (min-width: 768px) { .frq__col { width: calc(50% - 20px); } }
+
+.frq__title {
+  margin-block: 0.83em;
+  font-family: var(--font-serif);           /* Cardo */
+  font-size: clamp(30.03px, 26.1344px + 1.083vw, 40px);
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--color-ink);
+}
+
+.frq__intro {
+  margin-block: 1em;
+  font-family: var(--font-body);
+  font-size: var(--text-base);              /* 16.8/26.04 */
+  line-height: var(--text-base--line-height);
+  font-weight: 400;
+  color: var(--color-ink);
+}
+
+/* 30px above and below the form, on the wrapper — not a margin on the form,
+ * which would collapse. */
+.frq__form-wrapper { padding: 30px 0; }
+
+/* 15px above the first field and 15px between them. */
+.frq__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-top: 15px;
+}
+
+.frq__field label {
+  display: block;
+  margin-bottom: 10px;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;                     /* 15/18 */
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--color-ink-mid);              /* #1D2939 */
+}
+.frq__required { color: var(--color-required); }   /* #D92D20 */
+
+/* The glyph sits inside the field, which is what the 39px left padding on the
+ * control is for. It is centred on the control's first line: 15px padding plus
+ * the 1px border, plus half of what is left over between the 16.8px line and
+ * the 15px glyph. Beside a textarea the original pins it to the top instead. */
+/* Block, not flex, and carrying the page's own leading: the textarea below is
+ * an inline-block sitting on this line box's baseline, and the 7px of descender
+ * space beneath it is part of the field's measured height. A flex wrapper
+ * removes that space and the form comes out 7px short. */
+.frq__input-wrap {
+  position: relative;
+  display: block;
+  line-height: 26.04px;
+}
+.frq__icon {
+  position: absolute;
+  left: 15px;
+  top: 16.9px;
+  /* Height-driven: the `user` glyph is 448x512, so forcing a square would
+   * stretch it — it is 13.1px wide at 15px tall, and the original agrees. */
+  height: 15px;
+  width: auto;
+  fill: var(--color-ink-strong);            /* #101828 */
+  pointer-events: none;
+}
+.frq__field--textarea .frq__icon { top: 15px; }
+
+/* The envelope alone is #B8C2D2 while the other three are #101828. That is
+ * drift in the original — nothing distinguishes the email field — but it is
+ * plainly visible, so it is reproduced rather than tidied. Flagged in NOTES. */
+.frq__icon--faint { fill: var(--color-icon-faint); }
+
+/* `display: block` on the input so it does NOT pick up the descender space the
+ * textarea deliberately keeps. */
+.frq__field input { display: block; }
+
+.frq__field input,
+.frq__field textarea {
+  width: 100%;
+  padding: 15px 15px 15px 39px;
+  background: var(--color-gray-50);         /* #F9FAFB */
+  border: 1px solid var(--color-search-icon); /* #98A2B3 */
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;                      /* 14/16.8 */
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--color-muted);                /* #475467 */
+}
+/* 19.2, not the inputs' 16.8 — which is where the textarea's 108.8px height
+ * comes from: four rows plus 30px of padding and 2px of border. */
+.frq__field textarea { resize: vertical; line-height: 19.2px; }
+.frq__field input::placeholder,
+.frq__field textarea::placeholder { color: var(--color-search-icon); }  /* #98A2B3 */
+.frq__field input:focus,
+.frq__field textarea:focus {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 1px;
+}
+
+.frq__submit-wrap { margin-top: 20px; }
+
+/* `revert`, not "unset": Tailwind's preflight sets `font-family: inherit` on
+ * form controls, so leaving it alone would render the site's Inter here. The
+ * original has no preflight and no rule of its own, so its button renders in
+ * the browser's default UI face — which is what `revert` gets back to. */
+.frq__submit {
+  width: 100%;
+  font-family: revert;
+  padding: 15px 30px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--color-ink-strong);      /* #101828 */
+  font-size: 1rem;
+  line-height: 1.125;                       /* 18/16 */
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-default);
+}
+.frq__submit:hover { background: var(--color-ink-mid); }
+.frq__submit[disabled] { opacity: 0.6; cursor: default; }
+
+/* Always rendered, empty or not — 16px tall from its padding alone. That is
+ * what the original does, and it means a message appearing on submit does not
+ * shift the page. */
+.frq__status {
+  margin: 25px 0 0;
+  padding: 8px 15px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-body);
+}
+.frq__status[data-state='error'] { color: var(--color-danger); }

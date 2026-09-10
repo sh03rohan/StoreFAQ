@@ -1,0 +1,29 @@
+---
+import { formIcons, type Glyph } from '../data/form-icons';
+
+export interface Props {
+  id: string;
+  name: string;
+  label: string;
+  icon: keyof typeof formIcons;
+  type?: string;
+  placeholder: string;
+  required?: boolean;
+  textarea?: boolean;
+  rows?: number;
+  /** The original paints one of the four glyphs a lighter grey — see NOTES. */
+  faint?: boolean;
+}
+const { id, name, label, icon, type = 'text', placeholder,
+        required = false, textarea = false, rows = 4, faint = false } = Astro.props;
+const g: Glyph = formIcons[icon];
+---
+<div class:list={['frq__field', textarea && 'frq__field--textarea']}>
+  <label for={id}>{label}{required && <> <span class="frq__required" aria-hidden="true">*</span></>}</label>
+  <div class="frq__input-wrap">
+    <svg class:list={['frq__icon', faint && 'frq__icon--faint']} viewBox={g.box} aria-hidden="true" focusable="false"><path d={g.d} /></svg>
+    {textarea
+      ? <textarea id={id} name={name} rows={rows} placeholder={placeholder} required={required}></textarea>
+      : <input id={id} name={name} type={type} placeholder={placeholder} required={required} />}
+  </div>
+</div>

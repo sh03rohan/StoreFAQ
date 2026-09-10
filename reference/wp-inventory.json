@@ -1,0 +1,270 @@
+{
+  "posts": [
+    {
+      "id": 1337,
+      "date": "2026-09-08T15:00:00",
+      "modified": "2026-09-08T03:36:39",
+      "slug": "shopify-sidekick-integration",
+      "link": "https://storefaq.io/shopify-sidekick-integration/"
+    },
+    {
+      "id": 1244,
+      "date": "2026-08-10T06:29:46",
+      "modified": "2026-08-10T06:29:47",
+      "slug": "shopify-faq-builder-app",
+      "link": "https://storefaq.io/shopify-faq-builder-app/"
+    },
+    {
+      "id": 1216,
+      "date": "2026-07-21T14:42:20",
+      "modified": "2026-07-21T14:42:21",
+      "slug": "faq-schema-and-product-schema-shopify-ai-search",
+      "link": "https://storefaq.io/faq-schema-and-product-schema-shopify-ai-search/"
+    },
+    {
+      "id": 1175,
+      "date": "2026-07-07T15:53:35",
+      "modified": "2026-07-15T07:45:13",
+      "slug": "shopify-ai-chatbot-storefaq-guide",
+      "link": "https://storefaq.io/shopify-ai-chatbot-storefaq-guide/"
+    },
+    {
+      "id": 1141,
+      "date": "2026-06-22T16:18:55",
+      "modified": "2026-07-01T05:29:29",
+      "slug": "search-behavior-keywords-to-question-based-intent",
+      "link": "https://storefaq.io/search-behavior-keywords-to-question-based-intent/"
+    },
+    {
+      "id": 1102,
+      "date": "2026-06-17T13:01:29",
+      "modified": "2026-06-17T13:01:29",
+      "slug": "migrating-faqs-in-shopify-how-to-export-import-faqs",
+      "link": "https://storefaq.io/migrating-faqs-in-shopify-how-to-export-import-faqs/"
+    },
+    {
+      "id": 1050,
+      "date": "2026-06-04T18:42:03",
+      "modified": "2026-06-04T18:42:05",
+      "slug": "ai-faq-app-for-shopify",
+      "link": "https://storefaq.io/ai-faq-app-for-shopify/"
+    },
+    {
+      "id": 1031,
+      "date": "2026-05-28T08:34:48",
+      "modified": "2026-07-27T04:49:49",
+      "slug": "message-shortcuts-in-storefaq",
+      "link": "https://storefaq.io/message-shortcuts-in-storefaq/"
+    },
+    {
+      "id": 1021,
+      "date": "2026-05-25T13:44:57",
+      "modified": "2026-05-25T15:22:40",
+      "slug": "faq-page-vs-qapage-vs-product-schema-shopify",
+      "link": "https://storefaq.io/faq-page-vs-qapage-vs-product-schema-shopify/"
+    },
+    {
+      "id": 982,
+      "date": "2026-05-18T01:06:00",
+      "modified": "2026-08-27T07:01:26",
+      "slug": "shopify-instant-answer-app-to-answer-customer-queries",
+      "link": "https://storefaq.io/shopify-instant-answer-app-to-answer-customer-queries/"
+    },
+    {
+      "id": 941,
+      "date": "2026-05-11T16:05:45",
+      "modified": "2026-05-11T16:05:47",
+      "slug": "how-to-create-a-shopify-faq-page-using-storefaq",
+      "link": "https://storefaq.io/how-to-create-a-shopify-faq-page-using-storefaq/"
+    },
+    {
+      "id": 862,
+      "date": "2026-04-28T17:41:17",
+      "modified": "2026-08-04T06:55:59",
+      "slug": "shopify-ai-faq-builder-create-product-faqs-with-ai",
+      "link": "https://storefaq.io/shopify-ai-faq-builder-create-product-faqs-with-ai/"
+    },
+    {
+      "id": 847,
+      "date": "2026-04-21T12:36:05",
+      "modified": "2026-04-21T12:36:07",
+      "slug": "best-shopify-faq-apps",
+      "link": "https://storefaq.io/best-shopify-faq-apps/"
+    },
+    {
+      "id": 759,
+      "date": "2026-03-31T11:25:17",
+      "modified": "2026-03-31T11:25:18",
+      "slug": "how-shopify-faq-schema-helps-boost-aeo-and-geo",
+      "link": "https://storefaq.io/how-shopify-faq-schema-helps-boost-aeo-and-geo/"
+    },
+    {
+      "id": 736,
+      "date": "2026-03-24T06:00:00",
+      "modified": "2026-03-31T07:06:06",
+      "slug": "multilingual-faq-why-does-your-shopify-store-need-it",
+      "link": "https://storefaq.io/multilingual-faq-why-does-your-shopify-store-need-it/"
+    },
+    {
+      "id": 710,
+      "date": "2026-03-16T15:00:00",
+      "modified": "2026-03-17T05:48:50",
+      "slug": "top-reasons-add-shopify-faq-page",
+      "link": "https://storefaq.io/top-reasons-add-shopify-faq-page/"
+    }
+  ],
+  "pages": [
+    {
+      "id": 807,
+      "slug": "features",
+      "link": "https://storefaq.io/features/"
+    },
+    {
+      "id": 606,
+      "slug": "blog",
+      "link": "https://storefaq.io/blog/"
+    },
+    {
+      "id": 304,
+      "slug": "changelog",
+      "link": "https://storefaq.io/changelog/"
+    },
+    {
+      "id": 91,
+      "slug": "feature-request",
+      "link": "https://storefaq.io/feature-request/"
+    },
+    {
+      "id": 11,
+      "slug": "home",
+      "link": "https://storefaq.io/"
+    },
+    {
+      "id": 3,
+      "slug": "privacy-policy",
+      "link": "https://storefaq.io/privacy-policy/"
+    }
+  ],
+  "docs": [
+    {
+      "id": 1313,
+      "slug": "shopify-sidekick-integration-in-storefaq",
+      "link": "https://storefaq.io/docs/shopify-sidekick-integration-in-storefaq/"
+    },
+    {
+      "id": 1067,
+      "slug": "configure-ai-chatbot-in-storefaq",
+      "link": "https://storefaq.io/docs/configure-ai-chatbot-in-storefaq/"
+    },
+    {
+      "id": 1002,
+      "slug": "configure-message-shortcuts-in-storefaq",
+      "link": "https://storefaq.io/docs/configure-message-shortcuts-in-storefaq/"
+    },
+    {
+      "id": 782,
+      "slug": "configure-live-chat-support-in-storefaq",
+      "link": "https://storefaq.io/docs/configure-live-chat-support-in-storefaq/"
+    },
+    {
+      "id": 542,
+      "slug": "configure-multilingual-faq-support-in-storefaq",
+      "link": "https://storefaq.io/docs/configure-multilingual-faq-support-in-storefaq/"
+    },
+    {
+      "id": 483,
+      "slug": "how-to-upgrade-the-storefaq-plan",
+      "link": "https://storefaq.io/docs/how-to-upgrade-the-storefaq-plan/"
+    },
+    {
+      "id": 426,
+      "slug": "configure-instant-answer-with-storefaq",
+      "link": "https://storefaq.io/docs/configure-instant-answer-with-storefaq/"
+    },
+    {
+      "id": 368,
+      "slug": "enable-faq-schema-in-shopify-using-storefaq",
+      "link": "https://storefaq.io/docs/enable-faq-schema-in-shopify-using-storefaq/"
+    },
+    {
+      "id": 142,
+      "slug": "configure-general-settings-on-storefaq",
+      "link": "https://storefaq.io/docs/configure-general-settings-on-storefaq/"
+    },
+    {
+      "id": 157,
+      "slug": "add-new-faq-on-your-shopify-store",
+      "link": "https://storefaq.io/docs/add-new-faq-on-your-shopify-store/"
+    },
+    {
+      "id": 165,
+      "slug": "add-new-faq-group-on-your-shopify-store",
+      "link": "https://storefaq.io/docs/add-new-faq-group-on-your-shopify-store/"
+    },
+    {
+      "id": 173,
+      "slug": "design-faq-page-of-your-shopify-store",
+      "link": "https://storefaq.io/docs/design-faq-page-of-your-shopify-store/"
+    },
+    {
+      "id": 184,
+      "slug": "import-and-export-faqs-on-your-shopify-store",
+      "link": "https://storefaq.io/docs/import-and-export-faqs-on-your-shopify-store/"
+    },
+    {
+      "id": 132,
+      "slug": "generate-faqs-using-ai-autowrite",
+      "link": "https://storefaq.io/docs/generate-faqs-using-ai-autowrite/"
+    },
+    {
+      "id": 193,
+      "slug": "embed-faq-groups-on-specific-pages-on-shopify",
+      "link": "https://storefaq.io/docs/embed-faq-groups-on-specific-pages-on-shopify/"
+    },
+    {
+      "id": 84,
+      "slug": "how-to-install-storefaq",
+      "link": "https://storefaq.io/docs/how-to-install-storefaq/"
+    }
+  ],
+  "categories": [
+    {
+      "id": 40,
+      "count": 7,
+      "link": "https://storefaq.io/category/feature/",
+      "slug": "feature"
+    },
+    {
+      "id": 38,
+      "count": 12,
+      "link": "https://storefaq.io/category/guide/",
+      "slug": "guide"
+    },
+    {
+      "id": 39,
+      "count": 1,
+      "link": "https://storefaq.io/category/news/",
+      "slug": "news"
+    },
+    {
+      "id": 1,
+      "count": 0,
+      "link": "https://storefaq.io/category/uncategorized/",
+      "slug": "uncategorized"
+    }
+  ],
+  "docCategories": [
+    {
+      "id": 9,
+      "count": 13,
+      "link": "https://storefaq.io/docs-category/configuration/",
+      "slug": "configuration"
+    },
+    {
+      "id": 6,
+      "count": 3,
+      "link": "https://storefaq.io/docs-category/getting-started/",
+      "slug": "getting-started"
+    }
+  ]
+}

@@ -12,7 +12,7 @@
 @import './features.css';
 @import './docs.css';
 @import './changelog.css';
-@import './privacy.css';
+@import './plain-pages.css';
 @import './motion.css';
 
 @theme {
@@ -99,6 +99,8 @@
   --color-placeholder: #7D7E9D;/* docs search placeholder    */
   --color-icon-tile: #F9FBF6;  /* docs category icon tile    */
   --color-stamp: #F5F8F3;      /* docs "Last Updated" pill   */
+  --color-required: #D92D20;   /* the * on a required field  */
+  --color-icon-faint: #B8C2D2; /* the feature-request envelope, and only it */
   --color-slate: #F9FAFB;      /* changelog timeline ground  */
   --color-violet-2: #A741FF;   /* end of the AI label gradient */
   --color-quote: #4A4F48;      /* testimonial body          */

@@ -27,6 +27,7 @@ const REF = {
   docsHero: () => document.querySelector('.eb-wrapper-3lds7'),
   clHead: () => document.querySelector('.eb-wrapper-300d0'),
   privacyTop: () => document.querySelector('main'),
+  frqTop: () => document.querySelector('main'),
   clEntry: () => document.querySelectorAll('.timeline-row')[0],
   docsCats: () => document.querySelector('.eb-wrapper-e0v4v'),
   footerBar: () => { const vis = e => { const q = e.getBoundingClientRect(); return q.width > 0 && q.height > 0; };

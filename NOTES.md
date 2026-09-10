@@ -1342,3 +1342,80 @@ line, which is how a timed-out `diff-docs` read as a pass twice in a row.
 
 Use an individual diff while iterating; the suite is for checking the whole
 thing, and it is deliberately slow.
+
+## /feature-request/ — a published page nothing had built
+
+Found while starting Phase 8: `wp/v2/pages` lists **six** published pages, and
+one of them — `/feature-request/` — was never captured in Phase 1, is not in the
+header or footer nav, and was not in the guide's route list. It is a live page
+with a working four-field form. Migrating without it would have been a 404 on a
+URL that is presumably linked from inside the Shopify app and from support
+replies.
+
+It is built now: `diff-feature-request.mjs` reports **0 failures at 7
+viewports, worst 0.1px**, page total exact at 768 and 1024 and within 2px
+elsewhere.
+
+Because it was not captured, it also was not in `reference/html/`. It is now.
+
+### It shares the privacy page's shell
+
+Both are plain WordPress pages — a post title and a content block, no Essential
+Blocks — so `privacy.css` became `plain-pages.css` and `.policy*` became
+`.plain*`. The privacy diff was re-run after the rename and is unchanged at
+0 failures / 0.1px.
+
+### What the form's geometry actually is
+
+| | |
+|---|---|
+| block | `alignfull` — escapes the page inset, row back to the 1170 container |
+| columns | `calc(100% - 40px)` stacked, `calc(50% - 20px)` from 768, gap 40 |
+| form wrapper | `padding: 30px 0` |
+| fields | 15px above the first and 15px between |
+| label | Inter 15/18 #1D2939, 10px above its control |
+| control | 48.8 tall, `padding: 15px 15px 15px 39px`, #F9FAFB on a 1px #98A2B3 rule, 4px radius |
+| textarea | the same, but `line-height: 19.2px` — four rows plus 30px padding and 2px border is the 108.8 height |
+| submit | full width, #101828, 4px radius, `padding: 15px 30px` |
+
+Three of these took a measurement to find rather than a guess:
+
+- **The stacked column is a full gap narrower than the row**, not the row's
+  width — the same quirk the FAQ columns have. It changes where the intro
+  wraps, which is why the page was 78px short at 360 until it was right.
+- **The textarea's field is 7px taller than label + gap + control.** It is an
+  inline-block sitting on the wrapper's baseline, and those 7px are the line
+  box's descender space. A `display: flex` wrapper removes them and the whole
+  form comes out short — so the wrapper is a block, and the input inside it is
+  `display: block` precisely so it does *not* pick the same space up.
+- **The submit button renders in the browser's default UI face**, because the
+  original never sets a font-family on it. Tailwind's preflight sets
+  `font-family: inherit` on form controls, so leaving it alone would have
+  rendered Inter. It is `font-family: revert`.
+
+### Two paint differences the geometry could not see — again
+
+The diff passed to 0.1px while the required asterisks were the wrong colour and
+one icon was the wrong grey. The crop caught both, as it has every time.
+
+- The `*` on a required label is **#D92D20**, not inherited ink.
+- **The envelope glyph alone is #B8C2D2** while the other three are #101828.
+  Nothing distinguishes the email field; it is drift in the original. It is
+  plainly visible, and reproducing it costs one rule, so it is reproduced.
+  Flagged here rather than tidied silently.
+
+`diff-feature-request.mjs` now reads the icon fill and the asterisk colour per
+field, so this class of miss is caught on the page where it happened.
+
+The four glyphs are extracted from `@fortawesome/fontawesome-free` 6.4.2 into
+`src/data/form-icons.ts` — the package was installed for the extraction and
+removed again, so nothing ships but the four paths.
+
+### The form has no backend yet
+
+It posts to `/api/feature-request/`, which forwards to the CMS and, until the
+Phase 6 wiring exists, returns a plain "temporarily unavailable" rather than
+accepting a submission it would silently drop. Same posture as the newsletter
+form and the docs search. The status line is rendered empty at its full height
+from the start, as on the original, so a message appearing does not shift the
+page.
