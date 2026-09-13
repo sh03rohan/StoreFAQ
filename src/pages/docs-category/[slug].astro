@@ -1,0 +1,76 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Container from '../../components/Container.astro';
+import DocSidebar from '../../components/docs/DocSidebar.astro';
+import Breadcrumb from '../../components/docs/Breadcrumb.astro';
+import { routes } from '../../lib/routes';
+import { DOC_ICON } from '../../data/doc-icon';
+import taxonomy from '../../data/docs-taxonomy.json';
+import rocket from '../../assets/docs/tabler-icon-rocket.png';
+import settings from '../../assets/docs/tabler-icon-settings.png';
+
+export async function getStaticPaths() {
+  return taxonomy.map((c) => ({ params: { slug: c.slug }, props: { cat: c } }));
+}
+const { cat } = Astro.props;
+const ICONS: Record<string, ImageMetadata> = { 'getting-started': rocket, configuration: settings };
+
+/* Newest-published first — WordPress' default, and the order the original lists them in, which is not
+ * the sidebar's alphabetical order. */
+const docs = (await getCollection('docs'))
+  .filter((d) => d.data.category === cat.slug)
+  .sort((a, b) => b.data.published.localeCompare(a.data.published));
+const fmt = (iso: string) => new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const url = new URL(routes.docCategory(cat.slug), Astro.site).href;
+---
+<BaseLayout
+  title={`${cat.name} – StoreFAQ Docs`}
+  description={`${cat.name} documentation for StoreFAQ: ${docs.length} guides.`}
+  canonical={url}
+  schema={[{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: cat.name, url,
+    isPartOf: { '@type': 'WebSite', '@id': `${Astro.site?.href}#website` } }]}
+>
+  <Header />
+  <main class="dcat">
+    <Container class="dcat__row">
+      <div class="dcat__side"><DocSidebar current={docs[0]?.data.slug ?? ''} activeCategory={cat.slug} /></div>
+
+      <div class="dcat__main">
+        <!-- The original links the category to itself here rather than
+             marking it current; reproduced, with aria-current for the
+             semantics the original lacks. -->
+        <Breadcrumb padded items={[
+          { label: 'Home', href: routes.home() },
+          { label: 'Docs', href: routes.docs() },
+          { label: cat.name, href: routes.docCategory(cat.slug), current: true },
+        ]} />
+
+        <header class="dcat__head">
+          <span class="dcat__tile"><Image src={ICONS[cat.slug]} alt="" width={40} height={40} /></span>
+          <!-- <h2> on the original, with no <h1> on the page; the category is
+               the page's subject, so it is the <h1> here (§B7). -->
+          <h1 class="dcat__title">{cat.name}</h1>
+          <span class="dcat__count">{docs.length} docs</span>
+        </header>
+
+        <ol class="dcat__list">
+          {docs.map((d) => (
+            <li class="dcat__item">
+              <h2 class="dcat__item-title">
+                <span class="dcat__doc-icon"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d={DOC_ICON} fill="currentColor" /></svg></span>
+                <a href={routes.doc(d.data.slug)}>{d.data.title}</a>
+              </h2>
+              <span class="dcat__date">Last Updated: {fmt(d.data.updated)}</span>
+              {d.data.excerpt && <p class="dcat__excerpt">{d.data.excerpt}</p>}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </Container>
+  </main>
+  <Footer />
+</BaseLayout>

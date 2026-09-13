@@ -25,7 +25,7 @@ excerpt: "StoreFAQ now connects with Shopify Sidekick, so you can view FAQ group
 
 <p>Open Sidekick from the <strong>Sidekick icon</strong> in the top bar of your Shopify admin. The assistant opens as a side panel next to whatever you are working on, so nothing you were doing gets interrupted.</p>
 
-<figure><img loading="lazy" decoding="async" width="2048" height="957" src="https://storefaq.io/wp-content/uploads/2026/08/image-9.png" alt="Shopify Sidekick opens as a side panel inside your Shopify admin."></figure>
+<figure><img loading="lazy" decoding="async" width="2048" height="957" src="/media/2026/08/image-9.png" alt="Shopify Sidekick opens as a side panel inside your Shopify admin."></figure>
 
 <p>The panel header carries three controls:</p>
 
@@ -43,7 +43,7 @@ excerpt: "StoreFAQ now connects with Shopify Sidekick, so you can view FAQ group
 
 <p>You can also start from the <strong>Home</strong> page of your admin. Type your question into the ask bar under <strong>What do you want to work on next?</strong> and press the arrow to send it.</p>
 
-<figure><img loading="lazy" decoding="async" width="2048" height="957" src="https://storefaq.io/wp-content/uploads/2026/08/image-6.png" alt="Start a Sidekick conversation from the ask bar on your Shopify Home page."></figure>
+<figure><img loading="lazy" decoding="async" width="2048" height="957" src="/media/2026/08/image-6.png" alt="Start a Sidekick conversation from the ask bar on your Shopify Home page."></figure>
 
 <p>A few things worth noticing on this screen:</p>
 
@@ -65,7 +65,7 @@ excerpt: "StoreFAQ now connects with Shopify Sidekick, so you can view FAQ group
 
 <p>Sidekick calls StoreFAQ, shows a short <strong>steps completed</strong> indicator while it works, then returns the full list.</p>
 
-<figure><img loading="lazy" decoding="async" width="2048" height="957" src="https://storefaq.io/wp-content/uploads/2026/08/image-5.png" alt="How to Use Shopify Sidekick Integration in StoreFAQ?"></figure>
+<figure><img loading="lazy" decoding="async" width="2048" height="957" src="/media/2026/08/image-5.png" alt="How to Use Shopify Sidekick Integration in StoreFAQ?"></figure>
 
 <p>In the example above, the reply confirms five FAQ groups, notes that all of them are published and breaks down how many FAQs sit in each one, including the groups that are still empty. Sidekick then offers logical next steps such as viewing the FAQs inside a group, adding a new FAQ or attaching a group to a product.</p>
 
@@ -79,7 +79,7 @@ excerpt: "StoreFAQ now connects with Shopify Sidekick, so you can view FAQ group
 
 <p><em><code>“What is the status of my current subscription of StoreFAQ plan?”</code></em></p>
 
-<figure><img loading="lazy" decoding="async" width="2048" height="957" src="https://storefaq.io/wp-content/uploads/2026/08/image-7.png" alt="Sidekick returns your active StoreFAQ plan, price, renewal date and trial status."></figure>
+<figure><img loading="lazy" decoding="async" width="2048" height="957" src="/media/2026/08/image-7.png" alt="Sidekick returns your active StoreFAQ plan, price, renewal date and trial status."></figure>
 
 <p>The reply covers everything you would otherwise scan for manually:</p>
 
@@ -107,7 +107,7 @@ excerpt: "StoreFAQ now connects with Shopify Sidekick, so you can view FAQ group
 
 <p><code><em>"Is my store’s live chat enabled?”</em></code></p>
 
-<figure><img loading="lazy" decoding="async" width="2048" height="957" src="https://storefaq.io/wp-content/uploads/2026/08/image-8.png" alt="Sidekick confirms feature status and points you to the setting that controls it."></figure>
+<figure><img loading="lazy" decoding="async" width="2048" height="957" src="/media/2026/08/image-8.png" alt="Sidekick confirms feature status and points you to the setting that controls it."></figure>
 
 <p>In the example, Sidekick checks your StoreFAQ settings and reports that Live Chat is currently disabled, then tells you exactly where to turn it on, which is the Instant Answer widget settings. The card behind the panel shows the same <strong>Inactive</strong> state with an <strong>Enable Live Chat</strong> button, so the fix is one click away.</p>
 

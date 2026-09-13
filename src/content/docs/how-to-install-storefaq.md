@@ -19,13 +19,13 @@ excerpt: "Here is the step-by-step guideline on how to install StoreFAQ in Shopi
 
 <p>First, you need to click on the ‘<strong>Apps</strong>‘ option from your Shopify admin dashboard. And find StoreFAQ and then install it on your store. Afterward, click on the ‘<strong>Install app</strong>’ button.&nbsp;</p>
 
-<figure><img loading="lazy" decoding="async" width="1600" height="901" src="https://storefaq.io/wp-content/uploads/2023/12/image.png" alt="How To Install StoreFAQ"></figure>
+<figure><img loading="lazy" decoding="async" width="1600" height="901" src="/media/2023/12/image.png" alt="How To Install StoreFAQ"></figure>
 
 <h3><strong>Step 2: Navigate The StoreFAQ Dashboard&nbsp;</strong></h3>
 
 <p>Once you click on the ‘<strong>Install app</strong>’ button you will be redirected to StoreFAQ dashboard.&nbsp;</p>
 
-<figure><img loading="lazy" decoding="async" width="1600" height="901" src="https://storefaq.io/wp-content/uploads/2023/12/image-2.png" alt="How To Install StoreFAQ"></figure>
+<figure><img loading="lazy" decoding="async" width="1600" height="901" src="/media/2023/12/image-2.png" alt="How To Install StoreFAQ"></figure>
 
 <p>This is how easily you can install StoreFAQ app on your Shopify store.&nbsp;</p>
 

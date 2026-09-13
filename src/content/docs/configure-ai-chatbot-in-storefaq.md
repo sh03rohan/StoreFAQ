@@ -39,7 +39,7 @@ excerpt: "Configure AI Chatbot in StoreFAQ to automate live chat support, answer
 
 <p>To open the feature, go to your Shopify dashboard, find StoreFAQ under the <strong>Apps</strong> section in the left sidebar, then click <strong>StoreFAQ→AI Chatbot</strong>.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/06/image-15.png" alt="Enable AI Chatbot"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/06/image-15.png" alt="Enable AI Chatbot"></figure>
 
 <p>After turning on the toggle, click <strong>&#8216;Save&#8217;</strong> to save your changes.</p>
 
@@ -57,7 +57,7 @@ excerpt: "Configure AI Chatbot in StoreFAQ to automate live chat support, answer
 
 <p>Click inside the text editor on the right. Type a short description of your store, what you sell, who you serve, your tone and any key selling points.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/06/image-16.png" alt="Add AI store knowledge"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/06/image-16.png" alt="Add AI store knowledge"></figure>
 
 <p>After adding your store knowledge base content, be sure to click<strong> &#8216;Save&#8217;</strong> to apply the changes.</p>
 
@@ -69,7 +69,7 @@ excerpt: "Configure AI Chatbot in StoreFAQ to automate live chat support, answer
 
 <p>Click the <strong>‘Knowledge base’</strong> dropdown (placeholder text: <em>Product details, FAQs, Store info, Blogs</em>). Choose the resources you want the AI to use. In the example, the selected sources appear as removable chips: <strong>Products</strong>, <strong>Store policies</strong>, <strong>FAQ</strong>, <strong>Blog post,etc</strong>. To remove a source, click the ‘<strong>✕’</strong> on its chip.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/06/image-17.png" alt="Select Knowledge Base Sources"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/06/image-17.png" alt="Select Knowledge Base Sources"></figure>
 
 <p>Once you have added your store knowledge base sources, click <strong>&#8216;Save&#8217;</strong> to save your changes.</p>
 
@@ -79,7 +79,7 @@ excerpt: "Configure AI Chatbot in StoreFAQ to automate live chat support, answer
 
 <p>Click <strong>‘Upload avatar’</strong> under the Chatbot<strong> tab icon</strong>. Select an image file. Accepted formats are <strong>.svg, .jpg, .jpeg, and .png</strong>, with a <strong>maximum size of 10 MB</strong>.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/06/image-18.png" alt="Upload the chatbot tab icon"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/06/image-18.png" alt="Upload the chatbot tab icon"></figure>
 
 <h3><strong>Step 6: Upload the Chatbot Avatar</strong></h3>
 
@@ -87,7 +87,7 @@ excerpt: "Configure AI Chatbot in StoreFAQ to automate live chat support, answer
 
 <p>Click <strong>‘Upload avatar’</strong> under <strong>Chatbot avatar</strong>. Select an image file. Accepted formats are <strong>.svg, .jpg, .jpeg, and .png</strong>, with a <strong>maximum size of 10 MB</strong>.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/06/image-19.png" alt="Upload the chatbot avatar"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/06/image-19.png" alt="Upload the chatbot avatar"></figure>
 
 <p>Remember to <strong>‘Save’</strong> your changes after configuring these settings so they apply to your live store.</p>
 
@@ -99,7 +99,7 @@ excerpt: "Configure AI Chatbot in StoreFAQ to automate live chat support, answer
 
 <p>When you first open <strong>Sync Activity</strong> before selecting any sources, you will see an empty state that reads <strong>‘No sync activity found’</strong>.</p>
 
-<figure><img loading="lazy" decoding="async" width="880" height="396" src="https://storefaq.io/wp-content/uploads/2026/06/image-20.png" alt="Start syncing your store data"></figure>
+<figure><img loading="lazy" decoding="async" width="880" height="396" src="/media/2026/06/image-20.png" alt="Start syncing your store data"></figure>
 
 <p>To begin training, go back to the <strong>Settings</strong> tab and select your store resources in the <strong>Knowledge base</strong> (see Step 3). Once sources are selected, the AI agent starts syncing and learning from that content.</p>
 
@@ -111,11 +111,11 @@ excerpt: "Configure AI Chatbot in StoreFAQ to automate live chat support, answer
 
 <p>It helps you monitor which content has been successfully synced and identify any items that are still pending or have failed.&nbsp;</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/06/image-7.png" alt="Monitor Sync Progress"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/06/image-7.png" alt="Monitor Sync Progress"></figure>
 
 <p>If any content is not synced properly, you can click the <strong>&#8216;Resync&#8217;</strong> button to restart the synchronization process and update the affected content.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/06/image-8.png" alt="you can click the Resync button to restart the synchronization process and update the affected content."></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/06/image-8.png" alt="you can click the Resync button to restart the synchronization process and update the affected content."></figure>
 
 <p>Once the synchronization process is complete, the status card updates to indicate that syncing has finished successfully.&nbsp;</p>
 
@@ -123,7 +123,7 @@ excerpt: "Configure AI Chatbot in StoreFAQ to automate live chat support, answer
 
 <p>If you want, you can resync your store resources by clicking the <strong>&#8216;Resync</strong>&#8216; button.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/06/image-21.png" alt="AI Chatbot Sync Progress"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/06/image-21.png" alt="AI Chatbot Sync Progress"></figure>
 
 <h3><strong>Review Individual Content with the Activity Table</strong></h3>
 
@@ -141,7 +141,7 @@ excerpt: "Configure AI Chatbot in StoreFAQ to automate live chat support, answer
 <li><strong>Failed</strong> indicates that the synchronization was unsuccessful and may require attention.</li>
 </ul>
 
-<figure><img loading="lazy" decoding="async" width="1107" height="334" src="https://storefaq.io/wp-content/uploads/2026/06/image-22.png" alt="Review Individual Content with the Activity Table"></figure>
+<figure><img loading="lazy" decoding="async" width="1107" height="334" src="/media/2026/06/image-22.png" alt="Review Individual Content with the Activity Table"></figure>
 
 <h2><strong>Final Outcome</strong></h2>
 
@@ -151,9 +151,11 @@ excerpt: "Configure AI Chatbot in StoreFAQ to automate live chat support, answer
 
 <p>While the AI prepares a response, a <strong>‘Typing …’</strong> indicator with the agent icon appears, so the customer knows an answer is on the way.&nbsp;</p>
 
-<figure><img loading="lazy" decoding="async" width="424" height="687" src="https://storefaq.io/wp-content/uploads/2026/06/1-1.png" alt></figure>
+<div class="row row--nowrap">
+<figure><img loading="lazy" decoding="async" width="424" height="687" src="/media/2026/06/1-1.png" alt></figure>
 
-<figure><img loading="lazy" decoding="async" width="516" height="701" src="https://storefaq.io/wp-content/uploads/2026/06/2.png" alt></figure>
+<figure><img loading="lazy" decoding="async" width="516" height="701" src="/media/2026/06/2.png" alt></figure>
+</div>
 
 <h2><strong>Troubleshooting</strong></h2>
 

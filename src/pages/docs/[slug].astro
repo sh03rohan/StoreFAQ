@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Container from '../../components/Container.astro';
+import DocSidebar from '../../components/docs/DocSidebar.astro';
+import DocToc from '../../components/docs/DocToc.astro';
+import Breadcrumb from '../../components/docs/Breadcrumb.astro';
+import DocFooter from '../../components/docs/DocFooter.astro';
+import { routes } from '../../lib/routes';
+import { withToc } from '../../lib/toc';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  return docs.map((d) => ({ params: { slug: d.data.slug }, props: { doc: d } }));
+}
+const { doc } = Astro.props;
+const { html, toc } = withToc(doc.body ?? '');
+const url = new URL(routes.doc(doc.data.slug), Astro.site).href;
+---
+<BaseLayout
+  title={`${doc.data.title} – StoreFAQ Docs`}
+  description={doc.data.excerpt}
+  canonical={url}
+  type="article"
+  schema={[{
+    '@context': 'https://schema.org', '@type': 'TechArticle',
+    headline: doc.data.title, url,
+    datePublished: doc.data.published, dateModified: doc.data.updated,
+    isPartOf: { '@type': 'WebSite', '@id': `${Astro.site?.href}#website` },
+  }]}
+>
+  <Header />
+  <main class="doc">
+    <Container class="doc__row">
+      <div class="doc__side"><DocSidebar current={doc.data.slug} /></div>
+
+      <article class="doc__main">
+        <Breadcrumb items={[
+          { label: 'Home', href: routes.home() },
+          { label: 'Docs', href: routes.docs() },
+          { label: doc.data.categoryName, href: routes.docCategory(doc.data.category) },
+          { label: doc.data.title },
+        ]} />
+        <!-- The original marks the title <h2>, leaving the page without an
+             <h1>; it is the article's title, so it is the <h1> here (§B7). -->
+        <h1 class="doc__title">{doc.data.title}</h1>
+        <div class="prose" set:html={html} />
+        <DocFooter updated={doc.data.updated} url={url} slug={doc.data.slug} />
+      </article>
+
+      <div class="doc__toc"><DocToc toc={toc} /></div>
+    </Container>
+  </main>
+  <Footer />
+</BaseLayout>

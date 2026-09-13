@@ -1,13 +1,13 @@
 /**
  * /docs/ — the two BetterDocs category cards.
  *
- * `count` and `updated` are BetterDocs-derived on the original. They are
- * literals here so the Phase 5 shell renders the measured page exactly; once
- * the 16 articles land as a content collection (Phase A decision: MDX in
- * repo) both become derived — the count from the collection, the date from
- * the newest article's `updated` — and this file keeps only icon + title.
+ * `count` and `updated` are derived from the docs collection, so the cards
+ * cannot drift from the articles they front. Title, slug and icon come from
+ * docs-taxonomy.json (scripts/fetch-docs.mjs), in the original's order.
  */
 import type { ImageMetadata } from 'astro';
+import { getCollection } from 'astro:content';
+import taxonomy from './docs-taxonomy.json';
 import rocket from '../assets/docs/tabler-icon-rocket.png';
 import settings from '../assets/docs/tabler-icon-settings.png';
 
@@ -20,7 +20,14 @@ export interface DocsCategory {
   updated: string;
 }
 
-export const docsCategories: DocsCategory[] = [
-  { title: 'Getting Started', slug: 'getting-started', icon: rocket,   count: 3,  updated: 'October 8, 2025' },
-  { title: 'Configurations',  slug: 'configuration',   icon: settings, count: 13, updated: 'August 27, 2026' },
-];
+const ICONS: Record<string, ImageMetadata> = { 'getting-started': rocket, configuration: settings };
+const fmt = (iso: string) => new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+export async function getDocsCategories(): Promise<DocsCategory[]> {
+  const docs = await getCollection('docs');
+  return taxonomy.map((c) => {
+    const mine = docs.filter((d) => d.data.category === c.slug);
+    const newest = mine.map((d) => d.data.updated).sort().at(-1) ?? '';
+    return { title: c.name, slug: c.slug, icon: ICONS[c.slug], count: mine.length, updated: fmt(newest) };
+  });
+}

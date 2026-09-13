@@ -21,18 +21,18 @@ excerpt: "Want to unlock more FAQ pages views and priority support for StoreFAQ?
 
 <p>Click on the <strong>‘Subscriptions’</strong> tab from the navigation bar. You will see all StoreFAQ plans in one place. StoreFAQ is currently offering <strong>‘Professional’, ‘Growth’, and ‘Enterprise’</strong> plans you can choose on a monthly or yearly basis.</p>
 
-<figure><img loading="lazy" decoding="async" width="1600" height="707" src="https://storefaq.io/wp-content/uploads/2025/10/image.png" alt="Upgrade the StoreFAQ plan"></figure>
+<figure><img loading="lazy" decoding="async" width="1600" height="707" src="/media/2025/10/image.png" alt="Upgrade the StoreFAQ plan"></figure>
 
 <h3><strong>Step 2: Choose the Plan for Your Business</strong></h3>
 
 <p>Pick your preferred plan and hit the <strong>‘Subscribe now’</strong> button to upgrade the StoreFAQ plan. Afterward, click on the <strong>‘Subscribe now’ </strong>button from the <strong>‘Checkout’</strong> pop-up.</p>
 
-<figure><img loading="lazy" decoding="async" width="1600" height="707" src="https://storefaq.io/wp-content/uploads/2025/10/image.png" alt="Upgrade the StoreFAQ plan"></figure>
+<figure><img loading="lazy" decoding="async" width="1600" height="707" src="/media/2025/10/image.png" alt="Upgrade the StoreFAQ plan"></figure>
 
 <h3><strong>Step 3: Select the Payment Method &amp; Upgrade Your Plan</strong></h3>
 
 <p>Clicking the <strong>‘Subscribe now’</strong> button will take you to the next page. From here, select the payment method, fill in your necessary details and click on the <strong>‘Approve’</strong> button to upgrade your StoreFAQ plan. It will instantly upgrade your plan.</p>
 
-<figure><img loading="lazy" decoding="async" width="1600" height="757" src="https://storefaq.io/wp-content/uploads/2025/10/image-1.png" alt="Upgrade the StoreFAQ plan"></figure>
+<figure><img loading="lazy" decoding="async" width="1600" height="757" src="/media/2025/10/image-1.png" alt="Upgrade the StoreFAQ plan"></figure>
 
 <p>This is how easily you can <a href="/#pricing"><strong>upgrade the StoreFAQ plan</strong></a> and enjoy the premium features. Need assistance? Feel free to reach out to our <a href="https://storeware.io/support/" target="_blank" rel="noopener noreferrer"><strong>dedicated support team</strong></a> for any type of query.</p>

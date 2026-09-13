@@ -1,0 +1,37 @@
+---
+import type { TocEntry } from '../../lib/toc';
+export interface Props { toc: TocEntry[]; }
+const { toc } = Astro.props;
+---
+<!-- Collapsed to its title below 768 on the original, expanded above. -->
+{toc.length > 0 && (
+  <details class="dtoc" open>
+    <summary class="dtoc__title">On this page</summary>
+    <ul class="dtoc__list">
+      {toc.map((e) => (
+        <li class={`dtoc__l${e.level}`}>
+          <a href={`#${e.id}`}>{e.text}</a>
+          {e.children.length > 0 && (
+            <ul class="dtoc__sub">
+              {e.children.map((c) => (
+                <li class={`dtoc__l${c.level}`}>
+                  <a href={`#${c.id}`}>{c.text}</a>
+                  {c.children.length > 0 && (
+                    <ul class="dtoc__sub">
+                      {c.children.map((g) => <li class={`dtoc__l${g.level}`}><a href={`#${g.id}`}>{g.text}</a></li>)}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      ))}
+    </ul>
+  </details>
+)}
+<!-- Open by default so the contents are visible without JavaScript; collapsed
+     on small screens before first paint, where the original collapses it. -->
+<script is:inline>
+  if (!matchMedia('(min-width: 768px)').matches) document.querySelector('.dtoc')?.removeAttribute('open');
+</script>

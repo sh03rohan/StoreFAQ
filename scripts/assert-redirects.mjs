@@ -18,7 +18,9 @@ const p = (u) => new URL(u).pathname;
 const served = new Set(['/', '/features/', '/docs/', '/changelog/', '/privacy-policy/',
   '/feature-request/']);
 /** Routes that will exist once Phase 6 lands; not a file yet. */
-const planned = [/^\/blog\//, /^\/docs\//, /^\/category\//, /^\/docs-category\//, /^\/feed\/$/];
+const planned = [/^\/blog\//, /^\/category\//, /^\/docs-category\//, /^\/feed\/$/];
+/* Docs articles are real files now. */
+const servedGlob = [/^\/docs\/[^/]+\/$/];
 
 /* Vercel evaluates in phases. Only the routes BEFORE the first `handle` entry
  * run ahead of the filesystem; everything after it is the filesystem, the SSR
@@ -44,12 +46,12 @@ const resolve = (path) => {
 };
 
 const isServed = (path) =>
-  served.has(path) || planned.some((re) => re.test(path)) || /^https?:\/\//.test(path);
+  served.has(path) || servedGlob.some((re) => re.test(path)) || planned.some((re) => re.test(path)) || /^https?:\/\//.test(path);
 
 /* Distinguish "there is a file for this today" from "Phase 6 will build it".
  * Both are acceptable destinations for a redirect, but only one of them is
  * checkable right now, and the output should not blur the two. */
-const how = (path) => served.has(path) ? 'served'
+const how = (path) => served.has(path) || servedGlob.some((re) => re.test(path)) ? 'served'
   : planned.some((re) => re.test(path)) ? 'PLANNED (Phase 6)' : 'unknown';
 
 const cases = [

@@ -1569,3 +1569,108 @@ The home page's `WebPage` schema references a different upload from its
 og:images left the schema pointing at `/social/image-1.png`, which was not
 there. `extract-seo.mjs` now fails if any referenced social file is missing
 from `public/social/`.
+
+## Phase 6 (the part that needs no WordPress) — 16 docs articles and 2 category pages
+
+`/docs/<slug>/` × 16 and `/docs-category/<slug>/` × 2 are built from the
+content collection and verified against the live site:
+
+| | result |
+|---|---|
+| `/docs/how-to-install-storefaq/` | 0 failures, 1.1px; page total exact at 1280/1440/1920 |
+| `/docs/configure-ai-chatbot-in-storefaq/` (74 blocks) | exact at 1280; two knife-edge wraps elsewhere (below) |
+| `/docs/design-faq-page-of-your-shopify-store/` (h4s, 28 blocks) | exact at 1280+ |
+| `/docs-category/getting-started/` | 0 failures, 1px |
+| `/docs-category/configuration/` (13 entries) | 0 failures, 1.1px |
+
+The article template is the richest page on the site: a sticky, viewport-capped
+sidebar with live search and a category tree; a breadcrumb; a numbered
+three-level table of contents; the sanitised body; a right-aligned "Updated on"
+rule; a feedback widget; a share widget. `diff-doc.mjs` measures every one of
+those plus every block of the body, and reads the paint of the parts the crop
+kept catching.
+
+### What `.prose` had to learn, block by block
+
+The first doc passed; the second and third did not, and each failure was a
+block type the first one did not contain. §B1 says to style `.prose` against
+the longest post for exactly this reason.
+
+- **List items carry no margin.** `.prose p, .prose li { margin: 16px 0 }` made
+  a nine-line list 48px taller than nine lines.
+- **A flex group of two screenshots side by side is layout, and the guide's
+  sanitiser unwrapped it** — stacking them and adding 800px to the page. The
+  sanitiser now keeps `wp-block-group.is-layout-flex` as `<div class="row">`;
+  each figure's flex basis is its image's intrinsic width and both shrink to
+  share the column 19.2px apart.
+- **Images render at their `width` attribute, capped at the column.** An 880px
+  screenshot in a 972px column stays 880px; `width: 100%` stretched it.
+- **h4 is fluid** like the theme's other headings: `clamp(17.9px, 15.1456px +
+  0.767vw, 24px)`, the same slope as h3.
+- **Headings are weight 400 with a `<strong>` inside.** Setting 700 on the
+  heading rendered 900. The sanitiser keeps the `<strong>`; the heading stays
+  400.
+- **Links are `#0000EE` and underlined** — the UA defaults, because the
+  original never styles a link in a doc body. Tailwind's preflight strips the
+  underline; it is put back.
+- **The table of contents lists h4s** as a third level, numbered by CSS
+  counter (`1.`, `1.1.`, `1.1.1.`), which is also what pushes most entries onto
+  two lines.
+
+### The sidebar's states
+
+Hidden below 1280 on an article, but on a category page the original *reserves
+its column from 768* and only shows the sidebar from 1024 — a blank third of
+the row to the left of the content at tablet. Reproduced as found. Below 1280
+it is packed tighter (search 16 below, list 6 above, 12 between categories,
+against 24/10/16 above). From 1280 it is `position: sticky; top: 36px;
+max-height: calc(100vh - 45px); overflow-y: auto` — a 13-entry category scrolls
+inside the sidebar rather than pushing the page.
+
+The category tree is `<details>`; this Chromium still lays out a closed
+`<details>`' children with real boxes, so they are also hidden explicitly.
+Same for the contents list, which is collapsed to its title on a phone by
+removing `open` from an inline script before first paint — open by default so
+it is readable without JavaScript.
+
+### Paint the geometry could not see, on this page
+
+Six things, all from crops: the breadcrumb uses a 4x12 **slash** and clips its
+current title to 100px with an ellipsis; breadcrumb links carry 0.49px of
+letter-spacing (the only letter-spacing on the site) and are `#566E8B`
+between 768 and 1279 but `#7D7E9D` on either side of that band; the open
+category has a 1px `#D0D5DD` rule down it with the active entry's 4px
+`#548B2F` bar over it; "Updated on" is right-aligned; the contents list has a
+1px `#E8ECF4` rule down its left. The diff reads all of these now.
+
+### Knife-edge wraps, and an Inter experiment that regressed three pages
+
+Two paragraphs — one at 1024, one at 1440 — sit within a pixel of their column
+width and break onto a different number of lines on each side. Same text, same
+family, same size. Swapping my Inter for the Google Fonts v20 latin file the
+reference declares moved *which* paragraphs did it and fixed the 1440 case —
+and regressed testimonials, the features page and privacy (1→23, 1→49,
+0.1→235px). So the reference does not render with the file it declares either,
+or not that cut of it. Reverted. The original Inter matched ten pages to the
+pixel; two knife-edge lines on two long docs are the ceiling of what can be
+measured against a live site whose own 360px total swung 137px between runs
+(a lazy image slipping the 5s cap).
+
+### Phase 7 for the docs, and the gate that had a hole in it
+
+The doc bodies referenced **94 screenshots hotlinked from `/wp-content/uploads/`**,
+and `assert-clean.sh` passed — it grepped class names, not URLs.
+`scripts/download-media.mjs` mirrors every upload the content references into
+`public/media/<year>/<month>/`, rewrites the sources, and writes
+`media/report.txt` (14 under 1600px, all of them the original's own downscales,
+so nothing is served at lower resolution than before — the Phase 7 gate). The
+social images moved there too; `public/social/` is gone. The gate now fails on
+any `src`, `href`, `content` or `srcset` that mentions `wp-content`,
+`wp-json`, `wp-includes` or the CMS host.
+
+The docs index's category counts and "Last Updated" dates are derived from the
+collection now, so the cards cannot drift from the articles they front.
+
+`/api/doc-feedback/` is the same posture as the other forms — a clear
+"temporarily unavailable" until the CMS exists — and the question of whether
+the BetterDocs reaction data is worth keeping is still open (§B5).

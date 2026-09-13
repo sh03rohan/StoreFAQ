@@ -1,0 +1,50 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { routes } from '../../lib/routes';
+import taxonomy from '../../data/docs-taxonomy.json';
+import rocket from '../../assets/docs/tabler-icon-rocket.png';
+import settings from '../../assets/docs/tabler-icon-settings.png';
+
+/** The category tree, with the current doc's category expanded. */
+export interface Props { current: string; activeCategory?: string; }
+const { current, activeCategory } = Astro.props;
+
+const ICONS: Record<string, ImageMetadata> = { 'getting-started': rocket, configuration: settings };
+const all = (await getCollection('docs')).sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+const cats = taxonomy.map((c) => ({ ...c, docs: all.filter((d) => d.data.category === c.slug) }));
+const currentDoc = all.find((d) => d.data.slug === current);
+const openCat = activeCategory ?? currentDoc?.data.category;
+
+/* The original's search icon, verbatim. */
+const SEARCH =
+  'M14.4631 13.6407L17.8394 17.0162L16.724 18.1317L13.3485 14.7554C12.0925 15.7622 10.5303 16.3098 8.92061 16.3075C5.00435 16.3075 1.82593 13.1291 1.82593 9.21285C1.82593 5.29658 5.00435 2.11816 8.92061 2.11816C12.8369 2.11816 16.0153 5.29658 16.0153 9.21285C16.0176 10.8226 15.47 12.3848 14.4631 13.6407ZM12.8818 13.0558C13.8823 12.027 14.441 10.6479 14.4387 9.21285C14.4387 6.16371 11.969 3.69476 8.92061 3.69476C5.87147 3.69476 3.40252 6.16371 3.40252 9.21285C3.40252 12.2612 5.87147 14.7309 8.92061 14.7309C10.3557 14.7332 11.7347 14.1745 12.7636 13.174L12.8818 13.0558Z';
+---
+<aside class="dside" aria-label="Documentation">
+  <!-- Inert until the search index exists (Pagefind, once every doc route is
+       built). The action is the docs index so a submit lands somewhere real. -->
+  <form class="dside__search" role="search" action={routes.docs()} method="get">
+    <svg class="dside__search-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d={SEARCH} fill="currentColor" /></svg>
+    <label class="sr-only" for="dside-q">Search the documentation</label>
+    <input class="dside__search-input" id="dside-q" type="search" name="q" placeholder="Search..." autocomplete="off" />
+    <kbd class="dside__kbd" aria-hidden="true">⌘ K</kbd>
+  </form>
+
+  <div class="dside__cats">
+    {cats.map((c) => (
+      <details class="dside__cat" open={c.slug === openCat}>
+        <summary class="dside__cat-head">
+          <span class="dside__folder"><Image src={ICONS[c.slug]} alt="" width={14} height={14} /></span>
+          <span class="dside__cat-title">{c.name}</span>
+          <span class="dside__count">{c.docs.length}</span>
+        </summary>
+        <ul class="dside__list">
+          {c.docs.map((d) => (
+            <li><a class:list={['dside__link', !activeCategory && d.data.slug === current && 'is-active']} href={routes.doc(d.data.slug)}
+                   aria-current={!activeCategory && d.data.slug === current ? 'page' : undefined}><span>{d.data.title}</span></a></li>
+          ))}
+        </ul>
+      </details>
+    ))}
+  </div>
+</aside>

@@ -63,6 +63,21 @@ if [ "$FAIL" -eq 0 ]; then
   echo "OK: no WordPress markup in output"
 fi
 
+# Phase 7 / Phase 8 gate: nothing in the output may point at WordPress — not a
+# class, and not a URL either. 94 hotlinked doc screenshots passed the class
+# grep above without a murmur; this is the check that would have caught them.
+if [ -d dist/client ]; then
+  echo
+  wp_urls=$(grep -rhoE '(src|href|content|srcset)="[^"]*(wp-content|wp-json|wp-includes|cms\.storefaq\.io)[^"]*"' dist/client --include='*.html' | sort -u)
+  if [ -n "$wp_urls" ]; then
+    echo "FAIL: WordPress URLs in the output:"
+    echo "$wp_urls" | head -20 | sed 's/^/  /'
+    FAIL=1
+  else
+    echo "OK: no WordPress URL in the output"
+  fi
+fi
+
 # The <head> is the half of the page no pixel diff can see, and it is the half
 # search engines read. Every difference from the original must be an accounted
 # one — see the classification in the script.

@@ -1,0 +1,23 @@
+---
+import { routes } from '../../lib/routes';
+export interface Props {
+  items: { label: string; href?: string; current?: boolean }[];
+  /** The category page's list carries 6px 10px of padding; the article's none. */
+  padded?: boolean;
+}
+const { items, padded = false } = Astro.props;
+/* The original's delimiter, verbatim: a 4x12 slash. */
+const SLASH = 'M4.00568 0.863636L1.19318 11.3125H0.272727L3.08523 0.863636H4.00568Z';
+---
+<nav class="crumb" aria-label="Breadcrumb">
+  <ol class:list={['crumb__list', padded && 'crumb__list--padded']}>
+    {items.map((it, i) => (
+      <>
+        {i > 0 && <li class="crumb__sep" aria-hidden="true"><svg viewBox="0 0 4 12" width="4" height="12"><path d={SLASH} fill="currentColor" /></svg></li>}
+        <li class:list={['crumb__item', !it.href && 'is-current']}>
+          {it.href ? <a href={it.href} aria-current={it.current ? 'page' : undefined}>{it.label}</a> : <span aria-current="page">{it.label}</span>}
+        </li>
+      </>
+    ))}
+  </ol>
+</nav>

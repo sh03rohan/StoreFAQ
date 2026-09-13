@@ -13,6 +13,7 @@
 @import './docs.css';
 @import './changelog.css';
 @import './plain-pages.css';
+@import './doc.css';
 @import './motion.css';
 
 @theme {
@@ -101,6 +102,14 @@
   --color-stamp: #F5F8F3;      /* docs "Last Updated" pill   */
   --color-required: #D92D20;   /* the * on a required field  */
   --color-icon-faint: #B8C2D2; /* the feature-request envelope, and only it */
+  --color-prose: #4D4D4D;      /* doc body copy                  */
+  --color-link-default: #0000EE; /* doc links — the UA default, never styled on the original */
+  --color-rule-soft: #E8ECF4;  /* doc widget outlines and rules  */
+  --color-widget: #F4F6F8;     /* doc reaction / share box ground */
+  --color-slate-ink: #4B5D7B;  /* "Your feedback matters!"       */
+  --color-ink-mid-alt: #344054;/* breadcrumb current item        */
+  --color-crumb: #566E8B;      /* breadcrumb links below 1280    */
+  --color-rule-grey: #D0D5DD;  /* rule down an open doc category */
   --color-slate: #F9FAFB;      /* changelog timeline ground  */
   --color-violet-2: #A741FF;   /* end of the AI label gradient */
   --color-quote: #4A4F48;      /* testimonial body          */

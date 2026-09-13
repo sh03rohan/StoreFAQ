@@ -37,10 +37,9 @@ const description = Astro.props.description ?? seo?.description ?? '';
 
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
 
-/* Mirrored into /social/ rather than hotlinked from the WordPress uploads
+/* Mirrored into /media/ rather than hotlinked from the WordPress uploads
  * directory, which §B1 keeps out of the output entirely. */
-const social = Astro.props.ogImage
-  ?? (seo?.ogImage ? '/social/' + seo.ogImage.split('/').pop() : undefined);
+const social = Astro.props.ogImage ?? seo?.ogImage ?? undefined;
 const ogImage = social ? new URL(social, Astro.site).href : undefined;
 
 /* The original carries WebSite and Organization on the home page only, and a
@@ -64,7 +63,7 @@ const jsonLd = [
     url: canonicalUrl,
     ...(seo.schema.datePublished ? { datePublished: seo.schema.datePublished } : {}),
     ...(seo.schema.dateModified ? { dateModified: seo.schema.dateModified } : {}),
-    ...(seo.schema.image ? { image: new URL('/social/' + seo.schema.image.split('/').pop(), Astro.site).href } : {}),
+    ...(seo.schema.image ? { image: new URL(seo.schema.image, Astro.site).href } : {}),
     ...(seo.schema.type === 'CollectionPage'
       ? { isPartOf: { '@type': 'WebSite', '@id': `${site}/#website`, url: `${site}/` },
           description }

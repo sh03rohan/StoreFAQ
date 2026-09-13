@@ -19,20 +19,20 @@ excerpt: "Find out how to add new FAQ on your Shopify store using the StoreFAQ S
 
 <p>Once you have installed StoreFAQ, go to the app’s dashboard and click on the ‘<strong>Create FAQ</strong>’ button to start adding your FAQ. </p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="911" src="https://storefaq.io/wp-content/uploads/2024/07/1-add-new-FAQ.png" alt="click on the create FAQ button"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="911" src="/media/2024/07/1-add-new-FAQ.png" alt="click on the create FAQ button"></figure>
 
 <p>After you have added an FAQ group, you can also add FAQs to it. For this, from the ‘<strong>FAQs</strong>’ tab of StoreFAQ, click on the ‘<strong>Add new FAQ</strong>’ button for a FAQ group.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="911" src="https://storefaq.io/wp-content/uploads/2024/07/2-add-new-FAQ.png" alt="click on the add new FAQ button"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="911" src="/media/2024/07/2-add-new-FAQ.png" alt="click on the add new FAQ button"></figure>
 
 <h3><strong>Step 2: Enter The Necessary Information For The FAQ</strong></h3>
 
 <p>Enter the question for the FAQ and provide its answer in the designated fields. You can edit the answer using various text formatting options, hyperlinks, pictures, media, indentations, bullet points and more. Click on the ‘<strong><a href="/docs/generate-faqs-using-ai-autowrite-on-storefaq/" data-type="link">Generate With AI</a></strong>’ button to place an AI-generated answer to save more time.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="880" src="https://storefaq.io/wp-content/uploads/2024/07/3-add-new-FAQ.gif" alt="click on the generate with AI button"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="880" src="/media/2024/07/3-add-new-FAQ.gif" alt="click on the generate with AI button"></figure>
 
 <p>Set a status for the FAQ from the dropdown on the right side, Active or Draft. Then from the FAQ group dropdown below, select a group for the FAQ. If you have not set any group, you have to select the ‘<strong>Ungrouped</strong>’ option. Click on the ‘<strong>Save</strong>’ button when you are done.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="877" src="https://storefaq.io/wp-content/uploads/2024/07/4-add-new-FAQ.gif" alt="click on the save button to save everything"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="877" src="/media/2024/07/4-add-new-FAQ.gif" alt="click on the save button to save everything"></figure>
 
 <p>This is how easily you can add a new FAQ on your Shopify store using StoreFAQ Shopify app. Need assistance? Feel free to reach out to our <a href="https://storeware.io/support/" target="_blank" rel="noopener noreferrer"><strong>dedicated support team</strong></a> for any type of queries.</p>

@@ -1,12 +1,14 @@
 [
   {
-    "slug": "configuration",
-    "name": "Configurations",
-    "count": 13
-  },
-  {
+    "id": 6,
     "slug": "getting-started",
     "name": "Getting Started",
     "count": 3
+  },
+  {
+    "id": 9,
+    "slug": "configuration",
+    "name": "Configurations",
+    "count": 13
   }
 ]

@@ -25,11 +25,11 @@ excerpt: "StoreFAQ Message Shortcuts let you create and use pre-saved replies in
 
 <p>Open your Shopify dashboard and go to <strong>StoreFAQ → Instant Answer</strong>. Then scroll down to the <strong>Live Chat Settings</strong> section. Here, you will find the <strong>&#8216;Manage Shortcuts&#8217;</strong> button. Click on it to continue.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/05/image-19.png" alt="Open &amp; Manage the Message Shortcuts"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/05/image-19.png" alt="Open &amp; Manage the Message Shortcuts"></figure>
 
 <p>After clicking ‘<strong>Manage Shortcuts’</strong>, you will be redirected to the ‘<strong>Message Shortcuts’</strong> dashboard. To create your first shortcut, click either the <strong>‘Create’</strong> or ‘<strong>Create Shortcuts’</strong> button.</p>
 
-<figure><img loading="lazy" decoding="async" width="1024" height="463" src="https://storefaq.io/wp-content/uploads/2026/05/image-13-1024x463.png" alt="After clicking ‘Manage Shortcuts’, you will be redirected to the ‘Message Shortcuts’ dashboard."></figure>
+<figure><img loading="lazy" decoding="async" width="1024" height="463" src="/media/2026/05/image-13-1024x463.png" alt="After clicking ‘Manage Shortcuts’, you will be redirected to the ‘Message Shortcuts’ dashboard."></figure>
 
 <h3><strong>Step 3: Create, View &amp; Edit Shortcuts</strong></h3>
 
@@ -45,13 +45,13 @@ excerpt: "StoreFAQ Message Shortcuts let you create and use pre-saved replies in
 
 <p>Once everything is added, click the <strong>‘Create’</strong> button.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/05/image-14.png" alt="Create, View &amp; Manage Shortcuts"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/05/image-14.png" alt="Create, View &amp; Manage Shortcuts"></figure>
 
 <p>Your shortcut will now be successfully created. You can view and manage all your created shortcuts from the ‘<strong>Message Shortcuts’</strong> dashboard anytime.&nbsp;</p>
 
 <p>Click the ‘<strong>Edit’</strong> button, as shown, to manage and update your shortcuts. You can also delete any shortcut anytime from this panel.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/05/image-15.png" alt="Click the ‘Edit’ button, as shown, to manage and update your shortcuts."></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/05/image-15.png" alt="Click the ‘Edit’ button, as shown, to manage and update your shortcuts."></figure>
 
 <h3><strong>Step 5: Use Shortcuts in Live Chat</strong></h3>
 
@@ -59,18 +59,18 @@ excerpt: "StoreFAQ Message Shortcuts let you create and use pre-saved replies in
 
 <p>Simply type <strong>‘!’</strong> and your created shortcuts will appear automatically. From there, you can search for and select the shortcut you want to use.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/05/image-16.png" alt="Use Shortcuts in Live Chat"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/05/image-16.png" alt="Use Shortcuts in Live Chat"></figure>
 
 <p>Simply select the shortcut and the saved message will be inserted automatically into the chat box.</p>
 
 <p>With message shortcuts, your response will be ready within seconds. After reviewing the message, click <strong>‘Send’</strong> to deliver it to the user.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/05/image-18.png" alt="With message shortcuts, your response will be ready within seconds. After reviewing the message, click ‘Send’ to deliver it to the user."></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/05/image-18.png" alt="With message shortcuts, your response will be ready within seconds. After reviewing the message, click ‘Send’ to deliver it to the user."></figure>
 
 <h3><strong>Final Outcome</strong></h3>
 
 <p>This is how you can easily create, manage and send message shortcuts using StoreFAQ. Message shortcuts help you save time, improve response speed and provide better customer support through live chat.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2026/05/image-17.png" alt="This is how you can easily create, manage and send message shortcuts using StoreFAQ."></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2026/05/image-17.png" alt="This is how you can easily create, manage and send message shortcuts using StoreFAQ."></figure>
 
 <p>Need assistance? Feel free to reach out to our <a href="https://storeware.io/support/" target="_blank" rel="noopener noreferrer"><strong>dedicated support team</strong></a> for any type of query.&nbsp;</p>

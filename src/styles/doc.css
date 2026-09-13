@@ -1,0 +1,554 @@
+/* Docs article. All values measured from
+ * https://storefaq.io/docs/how-to-install-storefaq/ — see scripts/diff-doc.mjs.
+ */
+
+/* ---------- layout ---------- */
+.doc {
+  padding: 50px 0;                          /* 88px 0 from 1280 */
+  background: var(--color-white);
+}
+@media (min-width: 1280px) { .doc { padding: 88px 0; } }
+
+/* Three columns from 1280 — a quarter, a half, a quarter of what is left after
+ * two 24px gaps. Below that the sidebar is gone entirely and the table of
+ * contents sits ABOVE the article. */
+.doc__row { display: flex; flex-wrap: wrap; gap: 24px; }
+.doc__side { display: none; }
+/* The 24px above the contents while stacked is the flex gap the original's
+ * empty sidebar column still contributes. From 768 the two stacked columns are
+ * half a gap narrower than the row — the FAQ columns' quirk again. */
+.doc__toc  { order: 1; width: 100%; margin-top: 24px; }
+.doc__main { order: 2; width: 100%; min-width: 0; }
+@media (min-width: 768px) {
+  .doc__toc, .doc__main { width: calc(100% - 12px); }
+}
+
+@media (min-width: 1280px) {
+  .doc__toc { margin-top: 0; }
+  .doc__row  { flex-wrap: nowrap; }
+  .doc__side { display: block; order: 0; width: calc((100% - 48px) / 4); }
+  .doc__main { order: 1; width: calc((100% - 48px) / 2); }
+  .doc__toc  { order: 2; width: calc((100% - 48px) / 4); }
+}
+
+/* ---------- sidebar ---------- */
+/* Sticky, and never taller than the viewport less 45px — a 13-entry category
+ * scrolls inside the sidebar rather than pushing the page. */
+.dside {
+  position: sticky;
+  top: 36px;
+  max-height: calc(100vh - 45px);
+  overflow-y: auto;
+}
+.dside__search {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 44px;
+  margin-bottom: 16px;                      /* 24px from 1280 */
+  padding: 8px 10px;
+  border: 1px solid var(--color-search-rule);   /* #DAE2EF */
+  border-radius: 8px;
+  background: none;
+}
+.dside__search-icon {
+  position: absolute;
+  left: 13px;
+  width: 28px;
+  height: 28px;
+  padding: 5.5px;                           /* 16.9px glyph in a 28px box */
+  color: var(--color-ink);
+  pointer-events: none;
+}
+.dside__search-input {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0 16px 0 36px;
+  border: 0;
+  background: none;
+  font-family: var(--font-body);
+  font-size: 1rem;                          /* 16/24.8 */
+  line-height: 1.55;
+  color: var(--color-ink);
+}
+.dside__search-input::placeholder { color: var(--color-search-icon); }   /* #98A2B3 */
+.dside__search-input:focus { outline: none; }
+.dside__search:focus-within { border-color: var(--color-brand); }
+.dside__kbd {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--color-white);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  font-weight: 500;
+  color: var(--color-subtle);               /* #667085 */
+}
+
+.dside__cat { position: relative; }
+.dside__cat + .dside__cat { margin-top: 12px; }   /* 16px from 1280 */
+/* A 1px rule runs down the open category alongside its list, from just under
+ * the header to the bottom — and the active entry's green bar sits over it. */
+.dside__cat[open]::before {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 29px;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-rule-grey);       /* #D0D5DD */
+}
+.dside__cat-head {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
+  list-style: none;
+}
+.dside__cat-head::-webkit-details-marker { display: none; }
+.dside__folder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  border-radius: 4px;
+  background: var(--color-border);          /* #EAECF0 */
+}
+.dside__folder img { display: block; width: 14px; height: 14px; }
+.dside__cat-title {
+  font-family: var(--font-heading);
+  font-size: 1rem;                          /* 16/19.2 */
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--color-body);                 /* #45503F */
+}
+.dside__count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
+  border-radius: 50%;
+  background: var(--color-gray-100);        /* #F2F4F7 */
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  font-weight: 500;
+  color: var(--color-quote-meta);           /* #444565 */
+}
+.dside__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 6px 28px 0;                      /* 10px from 1280 */
+  list-style: none;
+  background: var(--color-white);
+}
+/* The sidebar only shows below 1280 on a category page, and there it is
+ * packed tighter. */
+@media (min-width: 1280px) {
+  .dside__search { margin-bottom: 24px; }
+  .dside__cat + .dside__cat { margin-top: 16px; }
+  .dside__list { padding-top: 10px; }
+}
+/* Belt and braces: this Chromium still lays out a closed <details>' children
+ * (they measure with real boxes), so hide them explicitly. */
+.dside__cat:not([open]) > .dside__list { display: none; }
+.dside__list li + li { margin-top: 12px; }
+.dside__link {
+  position: relative;
+  display: flex;
+  padding: 8px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;                      /* 14/18.2 */
+  line-height: 1.3;
+  font-weight: 500;
+  color: var(--color-period);               /* #869180 */
+  text-decoration: none;
+}
+.dside__link.is-active,
+.dside__link:hover {
+  background: var(--color-icon-tile);       /* #F9FBF6 */
+  color: var(--color-body);                 /* #45503F */
+}
+.dside__link.is-active::before {
+  content: '';
+  position: absolute;
+  left: -11px;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--color-brand);           /* #548B2F */
+}
+
+/* ---------- table of contents ---------- */
+/* Full width while collapsed on a phone; from 768 it is inline-block and
+ * shrink-wraps to its longest entry — 407px in a 728px row. */
+.dtoc { display: block; margin-top: 5px; border-radius: 5px; }
+@media (min-width: 768px) { .dtoc { display: inline-block; } }
+.dtoc__title {
+  display: block;
+  margin-bottom: 20px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;                       /* 12/19.2 */
+  line-height: 1.6;
+  font-weight: 500;
+  color: var(--color-period);               /* #869180 */
+  text-transform: uppercase;
+  list-style: none;
+  cursor: pointer;
+}
+.dtoc__title::-webkit-details-marker { display: none; }
+/* Numbered by CSS counter — "1. ", "1.1. " — which is also what pushes most
+ * entries onto two lines. */
+.dtoc__list, .dtoc__sub { margin: 0; padding: 0; list-style: none; counter-reset: item; }
+.dtoc__list { border-left: 1px solid var(--color-rule-soft); }   /* #E8ECF4 — the 1px the first entry sits after */
+.dtoc__sub  { padding-left: 10px; }
+.dtoc li { display: table; counter-increment: item; }
+.dtoc a::before { content: counters(item, '.') '. '; }
+.dtoc a {
+  display: inline-block;
+  margin: 5px 0;
+  padding-left: 12px;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;                      /* 14/22.4 */
+  line-height: 1.6;
+  font-weight: 600;
+  color: var(--color-period);               /* #869180 */
+  text-decoration: none;
+}
+.dtoc a:hover { color: var(--color-brand-dark); }
+/* The title is a toggle only on a phone. Belt and braces on the hiding, as
+ * with the sidebar: this Chromium lays out a closed <details>' children. */
+.dtoc:not([open]) > :not(summary) { display: none; }
+/* The original's chevron in this title is display:none at every size. */
+@media (min-width: 768px) { .dtoc__title { pointer-events: none; } }
+
+/* ---------- breadcrumb ---------- */
+.crumb { margin-bottom: 24px; }                   /* 40px from 1280 */
+@media (min-width: 1280px) { .crumb { margin-bottom: 40px; } }
+.crumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;                         /* the 16.8px line, not the page's 26.04 */
+  list-style: none;
+}
+.crumb__item { display: flex; }
+.crumb__list--padded { padding: 6px 10px; }
+@media (min-width: 1440px) { .crumb__list--padded { padding: 8px 12px; } }
+.crumb__item a, .crumb__item span {
+  font-family: var(--font-body);
+  font-size: 0.875rem;                      /* 14/16.8 */
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0.49px;                   /* the only letter-spacing on the site */
+  color: var(--color-placeholder);          /* #7D7E9D */
+  text-decoration: none;
+}
+/* #566E8B between 768 and 1279 only — a phone and a desktop both get #7D7E9D.
+ * Measured, not designed; reproduced as found. */
+@media (min-width: 768px) and (max-width: 1279px) { .crumb__item a, .crumb__item span { color: var(--color-crumb); } }
+/* The current title is clipped to 100px with an ellipsis — "How To Inst…" —
+ * so the trail never wraps on a desktop. */
+.crumb__item.is-current span {
+  display: block;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  letter-spacing: 0.42px;
+  color: var(--color-ink-mid-alt);          /* #344054 */
+}
+.crumb__sep { display: flex; align-items: center; width: 8px; height: 16px; margin: 0 7px; color: var(--color-subtle); }   /* #667085 */
+.crumb__sep svg { width: 4px; height: 12px; }
+
+/* ---------- article ---------- */
+.doc__title {
+  margin: 0 0 15px;
+  font-family: var(--font-heading);
+  font-size: 2.5rem;                        /* 40/44 */
+  line-height: 1.1;
+  font-weight: 600;
+  color: var(--color-brand-dark);           /* #16250E */
+}
+
+/* .prose — the sanitised body. Styled against the longest post, per §B1. The
+ * type here is the WordPress theme's own: Cardo headings, and links in the
+ * browser's default blue because the original never styles them. */
+.prose { margin-bottom: 40px; }
+.prose > :first-child { margin-top: 0; }
+.prose p, .prose li {
+  font-family: var(--font-body);
+  font-size: 1rem;                          /* 16/24.8 */
+  line-height: 1.55;
+  font-weight: 400;
+  color: var(--color-prose);                /* #4D4D4D */
+}
+/* Weight 400 on the heading itself, as the theme has it. The sanitised body
+ * keeps the <strong> WordPress wraps most headings in, and that is what makes
+ * them 700 on screen; putting 700 here too would render 900. */
+.prose h2, .prose h3, .prose h4 {
+  font-family: var(--font-serif);           /* Cardo */
+  font-weight: 400;
+  color: var(--color-ink);
+}
+.prose h2 { margin: 0.83em 0; font-size: clamp(30.03px, 26.1344px + 1.083vw, 40px); line-height: 1.2; }
+.prose h3 { margin: 1em 0;    font-size: clamp(22.55px, 19.786px + 0.767vw, 29.6px); line-height: 1.2; }
+.prose h4 { margin: 1.33em 0; font-size: clamp(17.9px, 15.1456px + 0.767vw, 24px); line-height: 1.2; }
+/* #0000EE and underlined — the UA defaults, because the original never styles
+ * a link in a doc body. Tailwind's preflight strips the underline, so it is
+ * put back here. */
+.prose a { color: var(--color-link-default); text-decoration: underline; }
+.prose figure { margin: 0 0 16px; }
+/* At the image's own `width` attribute, capped at the column — an 880px
+ * screenshot in a 972px column stays 880px. Not stretched. */
+.prose img { display: block; max-width: 100%; height: auto; }
+/* Two screenshots side by side: each figure keeps its image's intrinsic width
+ * as its flex basis and both shrink to share the column, 19.2px apart. */
+.prose .row { display: flex; flex-wrap: wrap; gap: 19.2px; align-items: center; }
+.prose .row--nowrap { flex-wrap: nowrap; }
+.prose .row > figure { flex: 0 1 auto; min-width: 0; margin: 0; }
+.prose .row img { width: auto; max-width: 100%; }
+.prose p { margin: 16px 0; }
+/* Items carry no margin of their own — a nine-line list is nine lines tall. */
+.prose ul, .prose ol { margin: 16px 0; padding-left: 16px; }
+.prose li { margin: 0; }
+.prose blockquote { margin: 16px 0; padding-left: 1em; border-left: 3px solid var(--color-rule); }
+.prose code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em; }
+.prose pre { overflow-x: auto; padding: 1em; background: var(--color-gray-50); }
+.prose table { width: 100%; border-collapse: collapse; }
+.prose th, .prose td { padding: 8px; border: 1px solid var(--color-rule); text-align: left; }
+.prose hr { border: 0; border-top: 1px solid var(--color-rule); margin: 24px 0; }
+
+/* ---------- footer widgets ---------- */
+.dfoot__updated {
+  margin: 0;
+  padding: 16px 0 60px;
+  text-align: right;
+  border-top: 1px solid var(--color-rule-soft);   /* #E8ECF4 */
+  font-family: var(--font-body);
+  font-size: 0.875rem;                      /* 14/18.2 */
+  line-height: 1.3;
+  color: var(--color-period);               /* #869180 */
+}
+.dfoot__ask {
+  margin: 0 0 24px;                         /* the h3's 15 and its wrapper's 24 collapse to 24 */
+  font-family: var(--font-heading);
+  font-size: 1.375rem;                      /* 22/26.4 -> 32/38.4 */
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--color-brand-dark);
+}
+@media (min-width: 1280px) { .dfoot__ask { font-size: 2rem; } }
+.dfoot__reactions,
+.dfoot__share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px;
+  border: 1px solid var(--color-rule-soft);
+  border-radius: 4px;
+  background: var(--color-widget);          /* #F4F6F8 */
+}
+/* The reactions row never wraps: at 360 the subheading squeezes to three lines
+ * and the list runs 14px into the right padding, as on the original. */
+.dfoot__reactions { flex-wrap: nowrap; margin-bottom: 60px; }
+.dfoot__sub {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1rem;                          /* 16/22.4 -> 18/25.2 from 1440 */
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--color-slate-ink);            /* #4B5D7B */
+}
+@media (min-width: 1440px) { .dfoot__sub { font-size: 1.125rem; } }
+/* The list carries 1.05em of vertical margin — which is the only reason the
+ * box is 139.6px tall and not 106. */
+.dfoot__emoji-list {
+  display: flex;
+  gap: 12px;
+  margin: 16.8px 0;
+  padding: 0 0 0 40px;
+  padding: 0;
+  list-style: none;
+}
+.dfoot__emoji {
+  position: relative;
+  display: flex;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-gray-100);        /* #F2F4F7 */
+  cursor: pointer;
+}
+.dfoot__emoji img { width: 24px; height: 24px; }
+.dfoot__tip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--color-white);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--color-subtle);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-fast);
+}
+.dfoot__emoji:hover .dfoot__tip, .dfoot__emoji:focus-visible .dfoot__tip { opacity: 1; }
+.dfoot__status { width: 100%; margin: 12px 0 0; font-family: var(--font-body); font-size: 0.875rem; color: var(--color-body); }
+.dfoot__status:empty { display: none; }
+
+.dfoot__share { margin-top: 44px; }
+.dfoot__share-title {
+  margin: 0 10px 0 0;
+  font-family: var(--font-heading);
+  font-size: 1rem;                          /* 16/20.8 -> 24/31.2 */
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--color-brand-dark);
+}
+.dfoot__share-list { display: flex; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 1280px) { .dfoot__share-title { font-size: 1.5rem; } }
+/* The anchor is inline on the original, so its 30px image sits on a 26.04px
+ * line box and the item comes out 37px tall — the descender gap again. Below
+ * 768 the items are padded 3px all round instead of 8px at the sides. */
+.dfoot__share-list li { padding: 3px; line-height: 26.04px; }
+@media (min-width: 768px) { .dfoot__share-list li { padding: 0 8px; } }
+.dfoot__share-list a { display: inline-block; }
+.dfoot__share-list img { width: 30px; height: 30px; vertical-align: baseline; }
+
+/* ---------- category page ---------- */
+/* Two columns: the sidebar shows from 768 here (it is hidden on an article
+ * until 1280), at a third of the row less most of the gap; from 1280 it is
+ * 30/70 of what is left after the gap. */
+/* 88px at every width — unlike the article page, which steps down to 50px
+ * below 1280. Different block instances on the original. */
+.dcat { padding: 88px 0; background: var(--color-white); }
+.dcat__row { display: flex; flex-wrap: wrap; gap: 24px; }
+.dcat__side { display: none; }
+/* The 24px above the content on a phone is the flex gap the original's empty
+ * sidebar column still contributes. */
+.dcat__main { width: 100%; min-width: 0; margin-top: 24px; }
+@media (min-width: 768px) { .dcat__main { margin-top: 0; } }
+/* From 768 the original reserves the sidebar's column but hides what is in
+ * it — a blank third of the row to the left of the content — until 1024,
+ * where the sidebar appears. Reproduced as found; see NOTES. */
+@media (min-width: 768px) {
+  .dcat__row { flex-wrap: nowrap; }
+  .dcat__side { display: block; width: calc(33.33% - 14.4px); }
+  .dcat__side > .dside { display: none; }
+  .dcat__main { width: calc(66.67% - 9.6px); }
+}
+@media (min-width: 1024px) { .dcat__side > .dside { display: block; } }
+@media (min-width: 1280px) {
+  .dcat__side { width: calc((100% - 24px) * 0.3); }
+  .dcat__main { width: calc((100% - 24px) * 0.7); }
+}
+
+.dcat__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;                      /* 32px from 768 */
+  padding: 40px;                            /* 60px from 768 */
+  border-radius: 8px;
+  background: var(--color-gray-50);         /* #F9FAFB */
+}
+@media (min-width: 768px) { .dcat__head { margin-bottom: 32px; padding: 60px; } }
+.dcat__tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 44px;                             /* 56px from 1280 */
+  margin-bottom: 8px;                       /* 12px from 1280 */
+  border-radius: 8px;
+  background: var(--color-gray-100);        /* #F2F4F7 */
+}
+.dcat__tile img { display: block; width: 40px; height: 40px; }
+@media (min-width: 1280px) { .dcat__tile { height: 56px; margin-bottom: 12px; } }
+.dcat__title {
+  margin: 0 0 6px;                          /* 8px from 1280 */
+  font-family: var(--font-heading);
+  font-size: 1.5rem;                        /* 24/36 */
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--color-body);                 /* #45503F */
+}
+@media (min-width: 1280px) { .dcat__title { margin-bottom: 8px; } }
+.dcat__count {
+  font-family: var(--font-body);
+  font-size: 1rem;                          /* 16/19.2 */
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--color-body);
+}
+
+/* 40px between entries below 1280 (the first entry's 40 collapses into the
+ * list's 60), none above. */
+.dcat__list { margin: 60px 0 0; padding: 0; list-style: none; }
+.dcat__item {
+  margin-top: 40px;
+  padding: 16px;                            /* 24px from 1280 */
+  border-bottom: 1px solid var(--color-border);   /* #EAECF0 */
+  background: var(--color-white);
+}
+@media (min-width: 1280px) { .dcat__item { margin-top: 0; padding: 24px; } }
+.dcat__item-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;                         /* 24px from 1280 */
+}
+@media (min-width: 1280px) { .dcat__item-title { margin-bottom: 24px; } }
+.dcat__doc-icon { display: flex; align-items: center; justify-content: center; flex: none; width: 32px; height: 32px; color: var(--color-ink); }
+.dcat__doc-icon svg { width: 18px; height: 20px; }
+.dcat__item-title a {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;                        /* 24/28.8 */
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--color-ink-mid);              /* #1D2939 */
+  text-decoration: none;
+}
+.dcat__date {
+  display: inline-block;
+  margin-bottom: 16px;                      /* 24px from 1280 */
+  padding: 8px;
+  border-radius: 4px;
+  background: var(--color-widget);          /* #F4F6F8 — not the docs index pill's #F5F8F3 */
+  font-family: var(--font-body);
+  font-size: 0.75rem;                       /* 12/14.4 */
+  line-height: 1.2;
+  color: var(--color-period);               /* #869180 */
+}
+@media (min-width: 1280px) { .dcat__date { margin-bottom: 24px; } }
+.dcat__excerpt {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1rem;                          /* 16/25.6 */
+  line-height: 1.6;
+  color: var(--color-body);
+}

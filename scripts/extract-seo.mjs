@@ -72,7 +72,10 @@ for (const [route, file] of PAGES) {
     title: head.querySelector('title').text.trim(),
     description: meta('meta[name=description]'),
   };
-  const ogImage = meta('meta[property="og:image"]');
+  /* Uploads are mirrored into /media/<year>/<month>/<file> by
+   * scripts/download-media.mjs; the emitted path is the mirror's. */
+  const mediaPath = (u) => u ? u.replace(/^https?:\/\/(?:cms\.)?storefaq\.io\/wp-content\/uploads\//, '/media/') : null;
+  const ogImage = mediaPath(meta('meta[property="og:image"]'));
   const keywords = meta('meta[name=keywords]');
   const ogImageAlt = meta('meta[property="og:image:alt"]');
   /* A page can advertise more than one feed: /docs/ carries the site's AND its
@@ -85,7 +88,7 @@ for (const [route, file] of PAGES) {
    * declared. The original only states them on the home page, so they are read
    * off the mirrored files instead — a PNG/JPEG header parse, rather than a
    * dependency for twelve bytes. */
-  const dims = ogImage ? imageSize(`public/social/${ogImage.split('/').pop()}`) : null;
+  const dims = ogImage ? imageSize(`public${ogImage}`) : null;
 
   /* The WebPage / CollectionPage node, minus anything that points back at
    * WordPress. `potentialAction` is dropped with it — it advertises
@@ -99,7 +102,7 @@ for (const [route, file] of PAGES) {
       if (node['@type'] === 'WebPage' || node['@type'] === 'CollectionPage') {
         schema = { type: node['@type'], name: node.name,
           datePublished: node.datePublished ?? null, dateModified: node.dateModified ?? null,
-          image: node.image ?? null };
+          image: mediaPath(node.image) };
       }
     }
   }
@@ -145,8 +148,8 @@ writeFileSync('src/data/seo.ts', `/**
  * Phase 5 replaced every one of them with copy I wrote, which would have
  * changed the title and description of every page on the site at launch.
  *
- * \`ogImage\` is the original's URL; the file itself is mirrored into
- * /social/ so nothing is hotlinked from WordPress. Three routes carry an
+ * \`ogImage\` is the mirrored path under /media/ (scripts/download-media.mjs),
+ * so nothing is hotlinked from WordPress. Three routes carry an
  * override: the original is a WordPress placeholder, and the string it
  * replaces is kept in the comment above it.
  */
@@ -192,10 +195,10 @@ export const seoFor = (route: string): PageSeo | undefined =>
  * pointing structured data at a 404 is worse than omitting it. */
 const referenced = new Set();
 for (const e of entries) {
-  if (e.ogImage) referenced.add(e.ogImage.split('/').pop());
-  if (e.schema?.image) referenced.add(e.schema.image.split('/').pop());
+  if (e.ogImage) referenced.add(e.ogImage);
+  if (e.schema?.image) referenced.add(e.schema.image);
 }
-const absent = [...referenced].filter((f) => { try { readFileSync(`public/social/${f}`); return false; } catch { return true; } });
+const absent = [...referenced].filter((f) => { try { readFileSync(`public${f}`); return false; } catch { return true; } });
 
 console.log(`${entries.length} routes -> src/data/seo.ts`);
 for (const e of entries) {
@@ -203,10 +206,10 @@ for (const e of entries) {
 }
 
 if (absent.length) {
-  console.log('\nERROR: referenced but not mirrored into public/social/:');
+  console.log('\nERROR: referenced but not mirrored into public/media/:');
   for (const f of absent) console.log('  ' + f);
-  console.log('Download them, then re-run.');
+  console.log('Run scripts/download-media.mjs, then re-run.');
   process.exitCode = 1;
 } else {
-  console.log(`\nall ${referenced.size} referenced social images present in public/social/`);
+  console.log(`\nall ${referenced.size} referenced social images present in public/media/`);
 }

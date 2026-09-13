@@ -66,8 +66,10 @@ ${body}
   written++;
 }
 
+/* Ordered by term id — that is the order the original's sidebar lists them in
+ * (Getting Started, id 6, before Configurations, id 9), not alphabetical. */
 writeFileSync('src/data/docs-taxonomy.json', JSON.stringify(
-  cats.map((c) => ({ slug: c.slug, name: decode(c.name), count: c.count })), null, 2) + '\n');
+  [...cats].sort((a, b) => a.id - b.id).map((c) => ({ id: c.id, slug: c.slug, name: decode(c.name), count: c.count })), null, 2) + '\n');
 
 console.log(`${written} docs -> ${dir}/`);
 console.log(`${cats.length} categories -> src/data/docs-taxonomy.json`);

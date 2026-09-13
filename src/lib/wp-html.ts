@@ -36,11 +36,21 @@ export function cleanWpHtml(html: string): string {
   // 1. Drop builder-only nodes entirely.
   for (const sel of DROP) root.querySelectorAll(sel).forEach((n) => n.remove());
 
+  // 1b. A flex group IS layout — two screenshots side by side — and unwrapping
+  //     it stacks them. Keep it, under a class of this build's own. The guide's
+  //     UNWRAP list did not anticipate it; the docs use it.
+  for (const el of root.querySelectorAll('.wp-block-group.is-layout-flex')) {
+    const nowrap = (el.getAttribute('class') ?? '').includes('is-nowrap');
+    el.setAttribute('class', nowrap ? 'row row--nowrap' : 'row');
+    el.setAttribute('data-keep', '');
+  }
+
   // 2. Unwrap layout containers, keeping their children. Repeated, because
   //    these nest — unwrapping once leaves the inner ones behind.
   for (let pass = 0; pass < 8; pass++) {
     let unwrapped = 0;
     for (const el of root.querySelectorAll('div,section,figure')) {
+      if (el.hasAttribute('data-keep')) continue;
       const cls = (el.getAttribute('class') ?? '').split(/\s+/);
       // A <figure> that holds a caption is meaningful; one that is only a
       // builder wrapper is not.
@@ -78,6 +88,8 @@ export function cleanWpHtml(html: string): string {
     const id = el.getAttribute('id');
     if (id && !/^H[1-6]$/.test(el.tagName)) el.removeAttribute('id');
   }
+
+  for (const el of root.querySelectorAll('[data-keep]')) el.removeAttribute('data-keep');
 
   // 4. Semantic normalisation.
   for (const b of root.querySelectorAll('b')) b.tagName = 'strong';

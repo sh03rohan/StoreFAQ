@@ -1,0 +1,76 @@
+---
+import { Image } from 'astro:assets';
+import happy from '../../assets/docs/widgets/happy.png';
+import normal from '../../assets/docs/widgets/normal.png';
+import sad from '../../assets/docs/widgets/sad.png';
+import facebook from '../../assets/docs/widgets/facebook.svg';
+import twitter from '../../assets/docs/widgets/twitter.svg';
+import linkedin from '../../assets/docs/widgets/linkedin.svg';
+import pinterest from '../../assets/docs/widgets/pinterest.svg';
+
+export interface Props { updated: string; url: string; slug: string; }
+const { updated, url, slug } = Astro.props;
+const date = new Date(updated).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const enc = encodeURIComponent(url);
+const shares = [
+  { name: 'Facebook',  icon: facebook,  href: `https://www.facebook.com/sharer/sharer.php?u=${enc}` },
+  { name: 'X',         icon: twitter,   href: `https://twitter.com/intent/tweet?url=${enc}` },
+  { name: 'LinkedIn',  icon: linkedin,  href: `https://www.linkedin.com/shareArticle?mini=true&url=${enc}` },
+  { name: 'Pinterest', icon: pinterest, href: `https://pinterest.com/pin/create/button/?url=${enc}` },
+];
+const reactions = [
+  { key: 'happy',  label: 'Happy',  icon: happy },
+  { key: 'normal', label: 'Normal', icon: normal },
+  { key: 'sad',    label: 'Sad',    icon: sad },
+];
+---
+<div class="dfoot">
+  <p class="dfoot__updated">Updated on {date}</p>
+
+  <h3 class="dfoot__ask">Was this helpful?</h3>
+  <!-- Posts to the CMS through /api/doc-feedback/; says so plainly until the
+       Phase 6 wiring exists, rather than swallowing a click. -->
+  <form class="dfoot__reactions" method="post" action="/api/doc-feedback/" data-doc={slug}>
+    <p class="dfoot__sub">Your feedback matters!</p>
+    <ul class="dfoot__emoji-list">
+      {reactions.map((r) => (
+        <li>
+          <button class="dfoot__emoji" type="submit" name="reaction" value={r.key} aria-label={r.label}>
+            <Image src={r.icon} alt="" width={24} height={24} />
+            <span class="dfoot__tip" aria-hidden="true">{r.label}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+    <p class="dfoot__status" role="status" aria-live="polite"></p>
+  </form>
+
+  <div class="dfoot__share">
+    <h4 class="dfoot__share-title">Share this Document</h4>
+    <ul class="dfoot__share-list">
+      {shares.map((s) => (
+        <li><a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={`Share on ${s.name}`}>
+          <Image src={s.icon} alt="" width={30} height={30} />
+        </a></li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.dfoot__reactions');
+  const status = form?.querySelector<HTMLElement>('.dfoot__status');
+  if (form && status) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.submitter as HTMLButtonElement | null;
+      try {
+        const res = await fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ doc: form.dataset.doc, reaction: btn?.value }) });
+        const body = await res.json().catch(() => ({ message: 'Something went wrong.' }));
+        status.textContent = body.message;
+        status.dataset.state = res.ok ? 'ok' : 'error';
+      } catch { status.textContent = 'Something went wrong. Please try again.'; status.dataset.state = 'error'; }
+    });
+  }
+</script>

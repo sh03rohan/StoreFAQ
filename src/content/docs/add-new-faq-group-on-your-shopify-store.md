@@ -19,20 +19,20 @@ excerpt: "Discover how to add new FAQ group on your Shopify store using the Stor
 
 <p>Once you have installed StoreFAQ, go to the app’s dashboard. Now, from the ‘<strong>FAQs</strong>’ tab, click on the ‘<strong>Add FAQ group</strong>’ button to start adding an FAQ group. </p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="879" src="https://storefaq.io/wp-content/uploads/2024/07/1-add-FAQ-group.gif" alt="Add A New FAQ Group From The ‘FAQs’ Tab"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="879" src="/media/2024/07/1-add-FAQ-group.gif" alt="Add A New FAQ Group From The ‘FAQs’ Tab"></figure>
 
 <h3><strong>Step 2: Enter The Necessary Information For The FAQ Group</strong></h3>
 
 <p>Now, input a title for the FAQ group. You can also add an image for the FAQ group (GIF, JPG or PNG) which should be within 1MB file size. Next, from the checkboxes below, you can choose to show the FAQ group on all products and pages. You can decide to show them on specific products or pages if needed.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="877" src="https://storefaq.io/wp-content/uploads/2024/07/2-add-FAQ-group.gif" alt="Enter The Necessary Information For The FAQ Group"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="877" src="/media/2024/07/2-add-FAQ-group.gif" alt="Enter The Necessary Information For The FAQ Group"></figure>
 
 <p>Check to see if everything is in order. Click on the ‘<strong>Save</strong>’ button when you are done.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="911" src="https://storefaq.io/wp-content/uploads/2024/07/3-add-FAQ-group.png" alt="click the save button after you are finished with everything"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="911" src="/media/2024/07/3-add-FAQ-group.png" alt="click the save button after you are finished with everything"></figure>
 
 <p>You will now see the newly added FAQ group in the list of FAQ groups. You can now add a new FAQ to the group with the ‘<strong>Add new FAQ</strong>’ button. From the ‘<strong>More options</strong>’ dropdown, you can also edit, draft or delete the group. Moreover, you will be able to drag and drop individual FAQ groups in the list.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="911" src="https://storefaq.io/wp-content/uploads/2024/07/4-add-FAQ-group.png" alt="list of all FAQ groups"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="911" src="/media/2024/07/4-add-FAQ-group.png" alt="list of all FAQ groups"></figure>
 
 <p>This is how easily you can add new FAQ group on your Shopify store using StoreFAQ Shopify app. Need assistance? Feel free to reach out to our <a href="https://storeware.io/support/" target="_blank" rel="noopener noreferrer"><strong>dedicated support team</strong></a> for any type of queries.</p>

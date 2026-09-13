@@ -19,13 +19,13 @@ excerpt: "Learn how to import and export FAQs on your Shopify store using StoreF
 
 <p>Once you have installed StoreFAQ, go to the app’s dashboard. Now, from the ‘<strong>FAQs</strong>’ tab, you will find the ‘<strong>Import</strong>’ button on the top.&nbsp;</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="911" src="https://storefaq.io/wp-content/uploads/2024/07/1-import-export-FAQs.png" alt="Navigate To The ‘FAQs’ Tab for importing"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="911" src="/media/2024/07/1-import-export-FAQs.png" alt="Navigate To The ‘FAQs’ Tab for importing"></figure>
 
 <h3><strong>Step 2: Import FAQs For Shopify</strong></h3>
 
 <p>Now, click on the ‘<strong>Import</strong>’ button and then add the CSV file containing the FAQs you want to import. Click on the ‘<strong>Upload and Continue</strong>’ button to proceed. You will then see the preview. Click on the ‘<strong>Import FAQs</strong>’ button to complete the import process. You can also download a sample CSV file if required.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="877" src="https://storefaq.io/wp-content/uploads/2024/07/2-import-export-FAQs.gif" alt="Import Your FAQs"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="877" src="/media/2024/07/2-import-export-FAQs.gif" alt="Import Your FAQs"></figure>
 
 <h2><strong>How To Export FAQs On StoreFAQ?</strong></h2>
 
@@ -35,12 +35,12 @@ excerpt: "Learn how to import and export FAQs on your Shopify store using StoreF
 
 <p>Go to the StoreFAQ dashboard. Now, from the ‘<strong>FAQs</strong>’ tab, you will find the ‘<strong>Export</strong>’ button on the top.&nbsp;</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="911" src="https://storefaq.io/wp-content/uploads/2024/07/3-import-export-FAQs.png" alt="Navigate To The ‘FAQs’ Tab for exporting"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="911" src="/media/2024/07/3-import-export-FAQs.png" alt="Navigate To The ‘FAQs’ Tab for exporting"></figure>
 
 <h3><strong>Step 2: Export Your FAQs</strong></h3>
 
 <p>Click on the ‘<strong>Export</strong>’ button. Then, click on ‘<strong>Export FAQs</strong>’ to download all your FAQs in CSV format.&nbsp;</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="911" src="https://storefaq.io/wp-content/uploads/2024/07/4-import-export-FAQs.png" alt="Export Your FAQs"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="911" src="/media/2024/07/4-import-export-FAQs.png" alt="Export Your FAQs"></figure>
 
 <p>This is how easily you can import or export FAQs on your Shopify store using StoreFAQ Shopify app. Need assistance? Feel free to reach out to our <a href="https://storeware.io/support/" target="_blank" rel="noopener noreferrer"><strong>dedicated support team</strong></a> for any type of queries.</p>

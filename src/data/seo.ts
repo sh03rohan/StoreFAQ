@@ -6,8 +6,8 @@
  * Phase 5 replaced every one of them with copy I wrote, which would have
  * changed the title and description of every page on the site at launch.
  *
- * `ogImage` is the original's URL; the file itself is mirrored into
- * /social/ so nothing is hotlinked from WordPress. Three routes carry an
+ * `ogImage` is the mirrored path under /media/ (scripts/download-media.mjs),
+ * so nothing is hotlinked from WordPress. Three routes carry an
  * override: the original is a WordPress placeholder, and the string it
  * replaces is kept in the comment above it.
  */
@@ -45,21 +45,21 @@ export const pageSeo: PageSeo[] = [
     route: "/",
     title: "StoreFAQ: Ultimate Shopify FAQ Builder App",
     description: "StoreFAQ is a Shopify FAQ builder app to easily add FAQs in your store and reduce your support tickets",
-    ogImage: "https://storefaq.io/wp-content/uploads/2023/12/headerLogo.png",
+    ogImage: "/media/2023/12/headerLogo.png",
     ogImageSize: { width: 357, height: 120, type: "image/png" },
     keywords: "StoreFAQ, Shopify FAQ Builder, FAQ Builder App",
     feeds: [{ title: "storefaq.io » Feed", href: "/feed/" }],
-    schema: { type: "WebPage", name: "Home", datePublished: "2023-12-24T10:59:40+00:00", dateModified: "2026-08-20T04:10:17+00:00", image: "https://storefaq.io/wp-content/uploads/2023/12/image-1.png" },
+    schema: { type: "WebPage", name: "Home", datePublished: "2023-12-24T10:59:40+00:00", dateModified: "2026-08-20T04:10:17+00:00", image: "/media/2023/12/image-1.png" },
   },
   {
     route: "/features/",
     title: "StoreFAQ Features: AI-powered FAQ Builder for Shopify",
     description: "Create and manage FAQ, enable live chat support and answer customer queries instantly with StoreFAQ for Shopify to improve support and conversions.",
-    ogImage: "https://storefaq.io/wp-content/uploads/2026/04/Feature-Image-1024x525.jpg",
+    ogImage: "/media/2026/04/Feature-Image-1024x525.jpg",
     ogImageSize: { width: 1024, height: 525, type: "image/jpeg" },
     keywords: "StoreFAQ Features, Shopify FAQ app, Live chat support Shopify, FAQ builder for Shopify, customer support Shopify app, Shopify helpdesk app, FAQ and live chat Shopify, improve Shopify customer experience",
     feeds: [{ title: "storefaq.io » Feed", href: "/feed/" }],
-    schema: { type: "WebPage", name: "Features", datePublished: "2026-04-07T10:52:30+00:00", dateModified: "2026-08-24T07:09:14+00:00", image: "https://storefaq.io/wp-content/uploads/2026/04/Feature-Image.jpg" },
+    schema: { type: "WebPage", name: "Features", datePublished: "2026-04-07T10:52:30+00:00", dateModified: "2026-08-24T07:09:14+00:00", image: "/media/2026/04/Feature-Image.jpg" },
   },
   {
     route: "/docs/",
@@ -70,7 +70,7 @@ export const pageSeo: PageSeo[] = [
     title: "StoreFAQ Docs: Setup Guides and Feature Walkthroughs",
     description: "Set up StoreFAQ and get the most out of it — installation, FAQ groups, AI-generated questions, layouts and FAQ schema, step by step.",
     replacedPlaceholder: true,
-    ogImage: "https://storefaq.io/wp-content/uploads/2023/12/headerLogo.png",
+    ogImage: "/media/2023/12/headerLogo.png",
     ogImageSize: { width: 357, height: 120, type: "image/png" },
     feeds: [{ title: "storefaq.io » Feed", href: "/feed/" }, { title: "storefaq.io » Docs Feed", href: "/docs/feed/" }],
     schema: { type: "CollectionPage", name: "Docs", datePublished: null, dateModified: null, image: null },
@@ -79,12 +79,12 @@ export const pageSeo: PageSeo[] = [
     route: "/changelog/",
     title: "StoreFAQ Changelog",
     description: "Discover the latest updates in StoreFAQ – new features, improvements, and bug fixes added regularly to enhance your experience.",
-    ogImage: "https://storefaq.io/wp-content/uploads/2025/04/StoreFAQ-Changelog.png",
+    ogImage: "/media/2025/04/StoreFAQ-Changelog.png",
     ogImageSize: { width: 780, height: 311, type: "image/png" },
     keywords: "StoreFAQ Changelog",
     ogImageAlt: "StoreFAQ Changelog",
     feeds: [{ title: "storefaq.io » Feed", href: "/feed/" }],
-    schema: { type: "WebPage", name: "StoreFAQ Changelog", datePublished: "2025-04-30T05:58:21+00:00", dateModified: "2026-08-20T09:06:31+00:00", image: "https://storefaq.io/wp-content/uploads/2025/04/StoreFAQ-Changelog.png" },
+    schema: { type: "WebPage", name: "StoreFAQ Changelog", datePublished: "2025-04-30T05:58:21+00:00", dateModified: "2026-08-20T09:06:31+00:00", image: "/media/2025/04/StoreFAQ-Changelog.png" },
   },
   {
     route: "/privacy-policy/",
@@ -95,7 +95,7 @@ export const pageSeo: PageSeo[] = [
     title: "Privacy Policy - StoreFAQ",
     description: "What StoreFAQ collects when you install and use the app for your Shopify store, how it is used, and the rights you have over it.",
     replacedPlaceholder: true,
-    ogImage: "https://storefaq.io/wp-content/uploads/2023/12/headerLogo.png",
+    ogImage: "/media/2023/12/headerLogo.png",
     ogImageSize: { width: 357, height: 120, type: "image/png" },
     feeds: [{ title: "storefaq.io » Feed", href: "/feed/" }],
     schema: { type: "WebPage", name: "Privacy Policy", datePublished: "2023-12-20T09:23:21+00:00", dateModified: "2026-06-17T09:18:04+00:00", image: null },
@@ -109,7 +109,7 @@ export const pageSeo: PageSeo[] = [
     title: "Feature Request - StoreFAQ",
     description: "Cannot find your favourite feature in StoreFAQ? Tell us what you would like us to build next.",
     replacedPlaceholder: true,
-    ogImage: "https://storefaq.io/wp-content/uploads/2023/12/headerLogo.png",
+    ogImage: "/media/2023/12/headerLogo.png",
     ogImageSize: { width: 357, height: 120, type: "image/png" },
     feeds: [{ title: "storefaq.io » Feed", href: "/feed/" }],
     schema: { type: "WebPage", name: "Feature Request", datePublished: "2023-12-26T09:26:38+00:00", dateModified: "2025-04-27T12:31:30+00:00", image: null },

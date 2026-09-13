@@ -2,7 +2,8 @@
 import { Image } from 'astro:assets';
 import Container from '../Container.astro';
 import { routes } from '../../lib/routes';
-import { docsCategories } from '../../data/docs-categories';
+import { getDocsCategories } from '../../data/docs-categories';
+const docsCategories = await getDocsCategories();
 ---
 <section class="docs-cats">
   <Container>

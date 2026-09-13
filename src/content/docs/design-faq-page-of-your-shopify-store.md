@@ -19,13 +19,13 @@ excerpt: "Learn how to design FAQ page of your Shopify store using StoreFAQ Shop
 
 <p>Once you have installed <strong>StoreFAQ</strong>, open the app dashboard and navigate to the <strong>&#8216;Design&#8217;</strong> tab in the left‑side panel. From there, click <strong>&#8216;Open Visual Editor&#8217;</strong> to begin customizing your FAQ layout.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2024/07/image.png" alt="Navigate to the ‘Design’ Tab On StoreFAQ"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2024/07/image.png" alt="Navigate to the ‘Design’ Tab On StoreFAQ"></figure>
 
 <h3><strong>Step 2: Design Your FAQ Page As You Want</strong></h3>
 
 <p>Now, it is time to design the FAQ page. With StoreFAQ, you can design the header title section, group items and FAQ items easily.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2024/07/image-2.png" alt="Design Your FAQ Page As You Want"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2024/07/image-2.png" alt="Design Your FAQ Page As You Want"></figure>
 
 <h4><strong>Design the Header Title Section</strong></h4>
 
@@ -33,23 +33,23 @@ excerpt: "Learn how to design FAQ page of your Shopify store using StoreFAQ Shop
 
 <p>Just select the section you want to update and the customization panel will open on the right side as shown.</p>
 
-<figure><img loading="lazy" decoding="async" width="1024" height="463" src="https://storefaq.io/wp-content/uploads/2024/07/image-3-1024x463.png" alt></figure>
+<figure><img loading="lazy" decoding="async" width="1024" height="463" src="/media/2024/07/image-3-1024x463.png" alt></figure>
 
 <h4><strong>Design the Group Items</strong></h4>
 
 <p>Next, we have the option to design the group items. For this click on the ‘<strong>Group Items</strong>’ button on the left side. Now, you can design the FAQ groups by customizing their title tag, font size, font color and background color.</p>
 
-<figure><img loading="lazy" decoding="async" width="1024" height="463" src="https://storefaq.io/wp-content/uploads/2024/07/image-4-1024x463.png" alt></figure>
+<figure><img loading="lazy" decoding="async" width="1024" height="463" src="/media/2024/07/image-4-1024x463.png" alt></figure>
 
 <h4><strong>Design the FAQ Items</strong></h4>
 
 <p>To design the FAQ items, click on the ‘<strong>FAQ Items</strong>’ button on the left side. Then, you can customize many things like font size, background color, font color, icon size, icon color, icon alignment, box-shadow and more.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2024/07/image-5.png" alt="Design the FAQ Items"></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2024/07/image-5.png" alt="Design the FAQ Items"></figure>
 
 <p>After selecting a section, you can design your FAQs by clicking directly on its elements. Choosing an FAQ element will open the customization panel in the right sidebar for that section.</p>
 
-<figure><img loading="lazy" decoding="async" width="1920" height="869" src="https://storefaq.io/wp-content/uploads/2024/07/image-6.png" alt="After selecting a section, you can design your FAQs by clicking directly on its elements."></figure>
+<figure><img loading="lazy" decoding="async" width="1920" height="869" src="/media/2024/07/image-6.png" alt="After selecting a section, you can design your FAQs by clicking directly on its elements."></figure>
 
 <h4><strong>Additional Options</strong></h4>
 
@@ -57,10 +57,10 @@ excerpt: "Learn how to design FAQ page of your Shopify store using StoreFAQ Shop
 
 <p>You will find desktop, mobile and full screen preview options there. These will help you show what your FAQ page’s design looks like. You can also click on the ‘<strong>View</strong>’ button for a live view of the page.</p>
 
-<figure><img loading="lazy" decoding="async" width="1024" height="463" src="https://storefaq.io/wp-content/uploads/2024/07/image-7-1024x463.png" alt></figure>
+<figure><img loading="lazy" decoding="async" width="1024" height="463" src="/media/2024/07/image-7-1024x463.png" alt></figure>
 
 <p>When you are satisfied with the design, save all the changes you have made. So, click on the ‘<strong>Save</strong>’ button once you are done.</p>
 
-<figure><img loading="lazy" decoding="async" width="1024" height="463" src="https://storefaq.io/wp-content/uploads/2024/07/image-8-1024x463.png" alt></figure>
+<figure><img loading="lazy" decoding="async" width="1024" height="463" src="/media/2024/07/image-8-1024x463.png" alt></figure>
 
 <p>This is how easily you can design FAQ page of your Shopify store using StoreFAQ Shopify app. Need assistance? Feel free to reach out to our <a href="https://storeware.io/support/" target="_blank" rel="noopener noreferrer"><strong>dedicated support team</strong></a> for any type of queries.</p>
