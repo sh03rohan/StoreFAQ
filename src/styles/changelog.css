@@ -42,11 +42,18 @@
 /* The scroll indicator: a 500px bar that rests 44px below the list and, once
  * the list has scrolled past, hangs from the top of the viewport. The gradient
  * runs left-to-right across 2px, so what shows is a green line whose right
- * edge is slightly soft. */
+ * edge is slightly soft.
+ *
+ * No `left`, deliberately. With `left: auto` the bar keeps its STATIC
+ * horizontal position — the column it sits in — even once it is fixed. A
+ * `left: 4px` measures identically while absolute and then, the moment the
+ * bar is fixed, resolves against the viewport and throws it to the window's
+ * edge. That is exactly how the original does it (`margin-left: 4px`, no
+ * `left`), and the probe that had only compared `position` missed it. */
 .cl__line {
   position: absolute;
   top: 44px;
-  left: 4px;
+  margin-left: 4px;
   width: 2px;
   height: 500px;
   background-image: linear-gradient(90.2deg, #548B2F -7.6%, rgba(0, 0, 0, 0) 94.2%);

@@ -1674,3 +1674,18 @@ collection now, so the cards cannot drift from the articles they front.
 `/api/doc-feedback/` is the same posture as the other forms — a clear
 "temporarily unavailable" until the CMS exists — and the question of whether
 the BetterDocs reaction data is worth keeping is still open (§B5).
+
+### Changelog: the pinned bar was jumping to the window's edge — reported and fixed
+
+Reported from the browser: once the timeline scrolls, the green bar should stay
+at the top. It did go `position: fixed` at the right moment — and then
+appeared at x=4 of the *viewport* instead of x=59 in the date column, because
+the rule set `left: 4px`. While absolute that resolves against the wrapper;
+the instant the bar is fixed it resolves against the window. The original
+never sets `left` at all: `margin-left: 4px` with `left: auto`, so the fixed
+bar keeps its static horizontal position — the column it started in.
+Reproduced the same way. Verified at 1440/1280/768/360: x and top now match
+the live site in both states.
+
+`probe-cl-scroll.mjs` had passed six scroll positions on this bug because it
+compared `position` and not where the bar *was*. It compares x and top now.
