@@ -223,6 +223,11 @@
 
 html.has-menu-open { overflow: hidden; }
 
+/* Tailwind v4's preflight leaves buttons on the default arrow cursor.
+ * Everything clickable shows a hand — reported on the newsletter button. */
+button, [role="button"], summary, label[for], input[type="submit"], .fpost__tab { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+
 /* ---------- newsletter band ---------- */
 /* Card: #6AA63C, 24px radius, padding 80/20/56, width = wide container.
  * Heading 24px (<600) / 30px (600-1279) / 48px (>=1280). */
