@@ -1,6 +1,7 @@
 ---
 import '../styles/tokens.css';
 import Motion from '../components/Motion.astro';
+import Effects from '../components/Effects.astro';
 import { seoFor } from '../data/seo';
 
 /**
@@ -144,7 +145,7 @@ const jsonLd = [
          the module takes over. -->
     <script is:inline>
       if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
-        document.documentElement.classList.add('js-anim');
+        document.documentElement.classList.add('js-anim', 'fx');
         window.__animFailsafe = setTimeout(function () {
           // The module has not arrived. Reveal everything and leave a flag, so
           // that if it turns up late it does NOT hide the content again to
@@ -162,5 +163,6 @@ const jsonLd = [
   <body class="bg-page text-ink font-body text-base antialiased">
     <slot />
     <Motion />
+    <Effects />
   </body>
 </html>

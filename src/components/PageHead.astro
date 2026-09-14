@@ -1,5 +1,6 @@
 ---
 import Container from './Container.astro';
+import { splitWords } from '../lib/split';
 
 /**
  * Page header: a centred, fixed-width column of title + subtitle.
@@ -15,7 +16,7 @@ const { title, sub } = Astro.props;
 <section class="page-head">
   <Container>
     <div class="page-head__col">
-      <h1 class="page-head__title" data-anim="heading" data-anim-intro style="--anim-d:.05s;--anim-y:24px">{title}</h1>
+      <h1 class="page-head__title" set:html={splitWords(title, 0.05)} />
       {sub && <p class="page-head__sub" data-anim="text" data-anim-intro style="--anim-d:.14s;--anim-y:16px">{sub}</p>}
     </div>
   </Container>

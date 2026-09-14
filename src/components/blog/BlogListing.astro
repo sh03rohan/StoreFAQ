@@ -9,6 +9,7 @@
 import Container from '../Container.astro';
 import PostCard from './PostCard.astro';
 import { routes } from '../../lib/routes';
+import { splitWords } from '../../lib/split';
 import type { Page, PostCategory, PostSummary } from '../../lib/wp';
 
 export interface Props {
@@ -41,9 +42,7 @@ pages.push('…');
   <Container>
     <div class="blog-hero__card">
       <div class="blog-hero__col">
-        <h1 class="blog-hero__title" data-anim="heading" data-anim-intro style="--anim-d:.05s;--anim-y:24px">
-          StoreFAQ Blog: Subscribe For Shopify FAQ Guides, Hacks, Customer Support Strategies, And Latest Updates!
-        </h1>
+        <h1 class="blog-hero__title" set:html={splitWords('StoreFAQ Blog: Subscribe For Shopify FAQ Guides, Hacks, Customer Support Strategies, And Latest Updates!', 0.05)} />
         <!-- The original posts to WordPress's /?s=; this one searches the
              blog in place and stays on the blog. -->
         <form class="blog-search" role="search" action={routes.blogSearch()} method="get"

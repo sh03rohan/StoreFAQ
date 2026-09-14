@@ -4,6 +4,7 @@ import Container from '../Container.astro';
 import hero from '../../assets/home/hero.webp';
 import badgeIcon from '../../assets/home/badge-icon.png';
 import { external } from '../../lib/routes';
+import { splitWords } from '../../lib/split';
 ---
 <section class="hero">
   <Container class="hero__row">
@@ -16,7 +17,7 @@ import { external } from '../../lib/routes';
         <span>Shopify FAQ Builder App</span>
       </p>
 
-      <h1 class="hero__title" data-anim="heading" data-anim-intro style="--anim-d:.14s;--anim-y:24px">Grab The Ultimate Shopify FAQ Builder App For Your Store</h1>
+      <h1 class="hero__title" set:html={splitWords('Grab The Ultimate Shopify FAQ Builder App For Your Store', 0.14)} />
 
       <p class="hero__sub" data-anim="text" data-anim-intro style="--anim-d:.23s;--anim-y:16px">
         Get the simplest Shopify FAQ Builder to answer your customer queries with
@@ -28,7 +29,7 @@ import { external } from '../../lib/routes';
       </a>
     </div>
 
-    <div class="hero__media" data-anim="media" data-anim-intro style="--anim-d:.18s;--anim-y:20px;--anim-s:.985">
+    <div class="hero__media fx-unmask" data-anim="media" data-anim-intro style="--anim-d:.18s;--fx-d:.18s;--anim-y:20px;--anim-s:.985">
       <Image
         src={hero}
         alt="StoreFAQ FAQ page builder shown on a Shopify storefront"

@@ -16,6 +16,7 @@
 @import './doc.css';
 @import './blog.css';
 @import './motion.css';
+@import './effects.css';
 
 @theme {
   /* ---- Reset Tailwind's defaults so only our scale exists (§B3) ---- */

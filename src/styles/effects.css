@@ -1,0 +1,243 @@
+/* Effects layer — motion and polish on top of the measured layout.
+ *
+ * Everything here animates opacity, transform, filter, clip-path, box-shadow
+ * or background — never a layout property — so every measurement in NOTES
+ * still holds at rest and mid-tween. `.fx` is put on <html> by the inline
+ * head script only when motion is welcome; without it none of this applies.
+ * Hover effects are further gated on a hovering pointer.
+ */
+
+/* ---------- ambient hero ---------- */
+/* Two soft colour fields drifting behind the hero, under the content. */
+.fx .hero { position: relative; isolation: isolate; overflow: hidden; }
+.fx .hero > * { position: relative; z-index: 1; }
+.fx .hero::before,
+.fx .hero::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  width: 46vw;
+  height: 46vw;
+  max-width: 720px;
+  max-height: 720px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  pointer-events: none;
+  will-change: transform;
+}
+.fx .hero::before {
+  top: -12%;
+  left: -10%;
+  background: radial-gradient(circle at 30% 30%, #DDEFC9 0%, rgba(221, 239, 201, 0) 70%);
+  animation: fx-drift-a 18s ease-in-out infinite alternate;
+}
+.fx .hero::after {
+  right: -14%;
+  bottom: -30%;
+  background: radial-gradient(circle at 60% 60%, #EAF4DC 0%, rgba(234, 244, 220, 0) 70%);
+  animation: fx-drift-b 22s ease-in-out infinite alternate;
+}
+@keyframes fx-drift-a { from { transform: translate(0, 0) scale(1); } to { transform: translate(6vw, 4vw) scale(1.12); } }
+@keyframes fx-drift-b { from { transform: translate(0, 0) scale(1.05); } to { transform: translate(-5vw, -6vw) scale(0.95); } }
+
+/* The hero image floats, and tilts toward the pointer (script). */
+.fx .hero__media { perspective: 1200px; }
+.fx .hero__media img {
+  transform-style: preserve-3d;
+  animation: fx-float 6s ease-in-out infinite;
+  filter: drop-shadow(0 24px 40px rgba(22, 37, 14, 0.14));
+  will-change: transform;
+}
+@keyframes fx-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+
+/* ---------- word-by-word title reveal ---------- */
+/* `.fx-w` wraps each word; the inner span rises out of a clipped box. The
+ * outer is inline-block so it wraps exactly where the word did. */
+.fx-w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+.fx-w > span { display: inline-block; }
+.fx .fx-w > span {
+  animation: fx-word 0.9s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--fx-d, 0s) + var(--fx-i, 0) * 0.045s) both;
+}
+@keyframes fx-word {
+  from { transform: translateY(110%) rotate(2deg); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+/* ---------- blur-in reveals ---------- */
+/* The scroll reveals (Motion.astro) add a slight de-blur to the rise. */
+.fx [data-anim="heading"], .fx [data-anim="text"] { filter: blur(6px); }
+.fx [data-anim-intro] { filter: none; }
+
+/* Media unmasks from the bottom up as it rises. */
+@keyframes fx-unmask { from { clip-path: inset(12% 0 0 0 round 16px); } to { clip-path: inset(0 0 0 0 round 16px); } }
+.fx .fx-unmask { animation: fx-unmask 1s cubic-bezier(0.22, 1, 0.36, 1) var(--fx-d, 0s) both; }
+/* On an element that also has the CSS intro, both play — one shorthand
+ * would replace the other and leave it at opacity 0. */
+.fx .fx-unmask[data-anim-intro] {
+  animation:
+    anim-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--anim-d, 0s) both,
+    fx-unmask 1s cubic-bezier(0.22, 1, 0.36, 1) var(--fx-d, 0s) both;
+}
+
+/* ---------- buttons ---------- */
+.fx .btn, .fx .blog-search__submit, .fx .newsletter__submit, .fx .docs-search__submit, .fx .pricing__cta {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, background-color 0.25s ease, border-color 0.25s ease;
+}
+@media (hover: hover) {
+  .fx .btn::after, .fx .newsletter__submit::after, .fx .blog-search__submit::after, .fx .pricing__cta::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.28) 50%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform 0.7s ease;
+    pointer-events: none;
+  }
+  .fx .btn:hover::after, .fx .newsletter__submit:hover::after, .fx .blog-search__submit:hover::after, .fx .pricing__cta:hover::after { transform: translateX(120%); }
+  .fx .btn:hover, .fx .newsletter__submit:hover, .fx .blog-search__submit:hover, .fx .pricing__cta:hover {
+    box-shadow: 0 10px 24px -8px rgba(22, 37, 14, 0.45);
+  }
+  .fx .btn:active, .fx .newsletter__submit:active, .fx .blog-search__submit:active, .fx .pricing__cta:active { transform: scale(0.97); }
+}
+
+/* ---------- cards ---------- */
+/* Lift, deepen the shadow, and a spotlight that follows the pointer. */
+.fx .feature, .fx .fcard, .fx .tm__card, .fx .pcard, .fx .faq__item, .fx .cta__card,
+.fx .dcat__item, .fx .cat-card, .fx .fpost__item {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, border-color 0.3s ease;
+}
+@media (hover: hover) {
+  .fx .feature:hover, .fx .fcard:hover, .fx .tm__card:hover, .fx .cat-card:hover, .fx .dcat__item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 48px -20px rgba(22, 37, 14, 0.28);
+  }
+  .fx .pcard:hover { transform: translateY(-4px); }
+  .fx .faq__item:hover { border-color: var(--color-brand); }
+  .fx .cta__card:hover { box-shadow: 0 30px 60px -24px rgba(47, 70, 33, 0.6); }
+}
+/* The image inside a card zooms, clipped to the card's own radius. */
+.fx .pcard__media, .fx .fcard__band { overflow: hidden; }
+.fx .pcard__img, .fx .fcard__band img, .fx .feature__media img, .fx .fpost__thumb img {
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+@media (hover: hover) {
+  .fx .pcard:hover .pcard__img, .fx .fcard:hover .fcard__band img, .fx .fpost__item:hover .fpost__thumb img { transform: scale(1.05); }
+  .fx .feature:hover .feature__media img { transform: scale(1.03) translateY(-4px); }
+}
+/* Spotlight: a radial highlight at the pointer, painted over the card. */
+.fx [data-spot] { position: relative; }
+.fx [data-spot]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.35), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.fx [data-spot]:hover::before { opacity: 1; }
+.fx .cta__card[data-spot]::before,
+.fx .feature[data-spot]::before { background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.16), transparent 60%); }
+
+/* ---------- links ---------- */
+/* Nav and footer links get a drawn underline. */
+.fx .header__link, .fx .footer__link {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  transition: background-size 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.25s ease;
+}
+@media (hover: hover) {
+  .fx .header__link:hover, .fx .footer__link:hover { background-size: 100% 1px; }
+}
+
+/* ---------- header ---------- */
+/* Sticks, and turns to frosted glass once the page has scrolled. */
+.fx .header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+}
+.fx .header.is-scrolled {
+  background-color: rgba(249, 249, 249, 0.82);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  box-shadow: 0 8px 30px -18px rgba(22, 37, 14, 0.35);
+}
+/* The dropdown's items cascade in. */
+.fx .header__submenu li { opacity: 0; transform: translateY(-6px); transition: opacity 0.25s ease, transform 0.25s ease; }
+.fx .header__item:hover > .header__submenu li,
+.fx .header__item:focus-within > .header__submenu li,
+.fx .header__item.is-open > .header__submenu li { opacity: 1; transform: none; }
+.fx .header__submenu li:nth-child(2) { transition-delay: 0.05s; }
+.fx .header__submenu li:nth-child(3) { transition-delay: 0.1s; }
+
+/* ---------- reading progress (posts, docs) ---------- */
+.fx-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-brand), var(--color-accent));
+  transform: scaleX(var(--fx-progress, 0));
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+/* ---------- table of contents: the section being read ---------- */
+.fx .ptoc a, .fx .dtoc a { transition: color 0.25s ease, transform 0.25s ease; }
+.fx .ptoc a.is-reading, .fx .dtoc a.is-reading { color: var(--color-brand); }
+
+/* ---------- changelog ---------- */
+/* Entries drift in from the left as they light. */
+.fx.js-cl .cl__entry { transform: translateX(-14px); transition: opacity 0.5s var(--ease-default), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.fx.js-cl .cl__entry.is-active { transform: none; }
+/* The lit entry's dot breathes. */
+.fx .cl__entry.is-active .cl__dot svg { animation: fx-pulse 2.4s ease-in-out infinite; }
+@keyframes fx-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.35); } }
+
+/* ---------- testimonials ---------- */
+.fx .tm__stars svg { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@media (hover: hover) {
+  .fx .tm__card:hover .tm__stars svg { transform: scale(1.18) rotate(-8deg); }
+  .fx .tm__card:hover .tm__stars svg:nth-child(2) { transition-delay: 0.04s; }
+  .fx .tm__card:hover .tm__stars svg:nth-child(3) { transition-delay: 0.08s; }
+  .fx .tm__card:hover .tm__stars svg:nth-child(4) { transition-delay: 0.12s; }
+  .fx .tm__card:hover .tm__stars svg:nth-child(5) { transition-delay: 0.16s; }
+}
+
+/* ---------- newsletter ---------- */
+/* A slow sheen across the green card. */
+.fx .newsletter__card { position: relative; overflow: hidden; }
+.fx .newsletter__card::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background: linear-gradient(110deg, transparent 40%, rgba(255, 255, 255, 0.12) 50%, transparent 60%);
+  animation: fx-sheen 7s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes fx-sheen { 0% { transform: translateX(-60%); } 60%, 100% { transform: translateX(60%); } }
+
+/* ---------- pricing ---------- */
+.fx .pricing__badge { animation: fx-badge 3s ease-in-out infinite; }
+@keyframes fx-badge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+/* ---------- smooth anchors ---------- */
+.fx { scroll-behavior: smooth; }
+
+/* ---------- off ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .fx *, .fx *::before, .fx *::after { animation: none !important; transition: none !important; }
+  .fx { scroll-behavior: auto; }
+}

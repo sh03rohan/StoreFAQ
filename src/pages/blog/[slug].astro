@@ -17,6 +17,7 @@ import ShareBox from '../../components/blog/ShareBox.astro';
 import SubscribeBox from '../../components/blog/SubscribeBox.astro';
 import { getPost, getRecent, getPopular } from '../../lib/wp';
 import { withToc } from '../../lib/toc';
+import { splitWords } from '../../lib/split';
 import { routes } from '../../lib/routes';
 import calendar from '../../assets/blog/calender-line.png';
 import tag from '../../assets/blog/price-tag-line.png';
@@ -63,7 +64,7 @@ const ogImage = post.seo?.ogImage ?? post.image?.src;
     <section class="post-hero">
       <Container class="post-hero__row">
         <div class="post-hero__col">
-          <h1 class="post-hero__title" data-anim="heading" data-anim-intro style="--anim-d:.05s;--anim-y:24px">{post.title}</h1>
+          <h1 class="post-hero__title" set:html={splitWords(post.title, 0.05)} />
           <div class="post-meta" data-anim="text" data-anim-intro style="--anim-d:.14s;--anim-y:16px">
             <span class="post-meta__item">
               <img class="post-meta__icon" src={calendar.src} width="18" height="18" alt="" />
@@ -80,7 +81,7 @@ const ogImage = post.seo?.ogImage ?? post.image?.src;
         </div>
         <div class="post-hero__col post-hero__col--img" data-anim="media" data-anim-intro style="--anim-d:.2s;--anim-y:20px">
           {post.image && (
-            <img class="post-hero__img" src={post.image.src} alt={post.image.alt} width={post.image.width} height={post.image.height} decoding="async" fetchpriority="high" />
+            <img class="post-hero__img fx-unmask" style="--fx-d:.2s" src={post.image.src} alt={post.image.alt} width={post.image.width} height={post.image.height} decoding="async" fetchpriority="high" />
           )}
         </div>
       </Container>

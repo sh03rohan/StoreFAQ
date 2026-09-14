@@ -1,0 +1,127 @@
+---
+/**
+ * Interactive effects on top of the measured layout — pointer tilt on the
+ * hero image, magnetic buttons, card spotlights, a glass header, scroll
+ * parallax, a reading-progress bar, and the contents list following the
+ * section being read. Transform/opacity/filter only; nothing here can move
+ * the layout. Gated on `.fx`, which the head script sets only when motion
+ * is welcome.
+ */
+---
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  const root = document.documentElement;
+  if (root.classList.contains('fx')) {
+    gsap.registerPlugin(ScrollTrigger);
+    const hovers = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    /* ---- header: glass once scrolled ---- */
+    const header = document.querySelector<HTMLElement>('.header');
+    if (header) {
+      const onScroll = () => header.classList.toggle('is-scrolled', scrollY > 8);
+      addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
+
+    /* ---- hero image: tilt toward the pointer ---- */
+    const heroImg = document.querySelector<HTMLElement>('.hero__media img');
+    const heroBox = document.querySelector<HTMLElement>('.hero');
+    if (hovers && heroImg && heroBox) {
+      const rx = gsap.quickTo(heroImg, 'rotationX', { duration: 0.8, ease: 'power3.out' });
+      const ry = gsap.quickTo(heroImg, 'rotationY', { duration: 0.8, ease: 'power3.out' });
+      heroBox.addEventListener('pointermove', (e) => {
+        const r = heroImg.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+        const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+        ry(dx * 8); rx(-dy * 8);
+      });
+      heroBox.addEventListener('pointerleave', () => { rx(0); ry(0); });
+    }
+
+    /* ---- magnetic buttons ---- */
+    if (hovers) {
+      for (const btn of document.querySelectorAll<HTMLElement>('.btn, .newsletter__submit, .blog-search__submit, .pricing__cta, .docs-search__submit')) {
+        const tx = gsap.quickTo(btn, 'x', { duration: 0.5, ease: 'power3.out' });
+        const ty = gsap.quickTo(btn, 'y', { duration: 0.5, ease: 'power3.out' });
+        btn.addEventListener('pointermove', (e) => {
+          const r = btn.getBoundingClientRect();
+          tx((e.clientX - (r.left + r.width / 2)) * 0.18);
+          ty((e.clientY - (r.top + r.height / 2)) * 0.28);
+        });
+        btn.addEventListener('pointerleave', () => { tx(0); ty(0); });
+      }
+    }
+
+    /* ---- card spotlight: the pointer's position as CSS variables ---- */
+    if (hovers) {
+      for (const card of document.querySelectorAll<HTMLElement>('.feature, .fcard, .tm__card, .cta__card, .pricing__frame, .cat-card, .dcat__item')) {
+        card.dataset.spot = '';
+        card.addEventListener('pointermove', (e) => {
+          const r = card.getBoundingClientRect();
+          card.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
+          card.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
+        });
+      }
+    }
+
+    /* ---- parallax: media drifts slower than the page ---- */
+    /* Only free-standing images: anything inside a clipped card would be cut. */
+    for (const el of document.querySelectorAll<HTMLElement>('.cta__media img, .flead__media img, .post-hero__img, .blog-hero__img')) {
+      gsap.fromTo(el, { y: 14 }, {
+        y: -14, ease: 'none',
+        scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: 0.6 },
+      });
+    }
+
+    /* ---- reading progress on long pages ---- */
+    const article = document.querySelector<HTMLElement>('.prose');
+    if (article) {
+      const bar = document.createElement('div');
+      bar.className = 'fx-progress';
+      bar.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(bar);
+      const update = () => {
+        const r = article.getBoundingClientRect();
+        const total = r.height - innerHeight;
+        const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 1;
+        bar.style.setProperty('--fx-progress', String(p));
+      };
+      addEventListener('scroll', update, { passive: true });
+      addEventListener('resize', update);
+      update();
+    }
+
+    /* ---- contents: mark the section being read ---- */
+    const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.ptoc a, .dtoc a')];
+    if (tocLinks.length) {
+      const byId = new Map(tocLinks.map((a) => [a.hash.slice(1), a]));
+      const headings = [...byId.keys()].map((id) => document.getElementById(id)).filter((h): h is HTMLElement => !!h);
+      let current: HTMLAnchorElement | null = null;
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const a = byId.get(e.target.id);
+          if (!a || a === current) continue;
+          current?.classList.remove('is-reading');
+          a.classList.add('is-reading');
+          current = a;
+        }
+      }, { rootMargin: '-10% 0px -70% 0px' });
+      headings.forEach((h) => io.observe(h));
+    }
+
+    /* ---- anchors inside the page scroll smoothly, with the header's height allowed for ---- */
+    document.addEventListener('click', (e) => {
+      const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+      if (!a) return;
+      const target = document.getElementById(a.hash.slice(1));
+      if (!target) return;
+      e.preventDefault();
+      const offset = (header?.offsetHeight ?? 0) + 16;
+      scrollTo({ top: target.getBoundingClientRect().top + scrollY - offset, behavior: 'smooth' });
+      history.pushState(null, '', a.hash);
+    });
+  }
+</script>

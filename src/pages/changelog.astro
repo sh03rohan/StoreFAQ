@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import Container from '../components/Container.astro';
 import Timeline from '../components/changelog/Timeline.astro';
 import { changelog } from '../data/changelog';
+import { splitWords } from '../lib/split';
 ---
 <BaseLayout route="/changelog/">
   <Header />
@@ -12,7 +13,7 @@ import { changelog } from '../data/changelog';
     <section class="cl-head">
       <Container>
         <div class="cl-head__card">
-          <h1 class="cl-head__title" data-anim="heading" data-anim-intro style="--anim-d:.05s;--anim-y:24px">Changelog</h1>
+          <h1 class="cl-head__title" set:html={splitWords('Changelog', 0.05)} />
           <p class="cl-head__sub" data-anim="text" data-anim-intro style="--anim-d:.14s;--anim-y:16px">
             Stay up to date with the latest StoreFAQ features, fixes, and improvements
           </p>
