@@ -1898,3 +1898,24 @@ colour): a post or category lights "Blog", a doc or docs category lights
 inside the panel; cream in the phone overlay. The original marks nothing —
 this was deferred from Phase 5 and is added at the client's request. The
 chrome diff does not read `aria-current`, so it still measures 0px.
+
+### Deploy: the first row of /blog/ came up broken — found and fixed (2026-09-14)
+
+First Vercel deploy (storefaq.vercel.app): the three eager featured images on
+/blog/ showed as broken while the lazy ones below loaded. The URLs were
+answering 200 with image bodies by the time they were checked, so it was not
+the rewrite itself. What it was: nothing had mirrored the BLOG's images (the
+docs' were mirrored in Phase 7; the blog is on demand), so every one went
+through the `/media/` proxy to WordPress — which rate-limits under a burst,
+as every diff script here has found — and the proxy route forced
+`cache-control: … immutable` onto whatever came back, including a failure.
+A one-off refusal, cached for a year in the browser that saw it.
+
+Two changes. `scripts/mirror-blog-media.mjs` (`npm run media:blog`) pulls
+every post's featured image and every upload its body references into
+`public/media/` — 487 files, 145MB, committed — so the proxy is reached only
+by a post newer than the last run. And the proxy route sets no cache header
+of its own: a served image already carries the origin's year-long
+`immutable`; a failed one now carries nothing and is retried. Anyone who saw
+the broken row needs a hard reload once, since the failure is in their
+browser's cache, not the edge's.

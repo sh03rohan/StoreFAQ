@@ -11,6 +11,7 @@
     "capture:motion": "node scripts/capture-motion.mjs",
     "tokens": "node scripts/extract-tokens.mjs && node scripts/extract-tokens-visible.mjs",
     "assert:clean": "bash scripts/assert-clean.sh",
+    "media:blog": "node scripts/mirror-blog-media.mjs",
     "test": "playwright test"
   },
   "keywords": [],

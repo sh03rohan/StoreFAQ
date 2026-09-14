@@ -56,10 +56,15 @@ const platformRouting = {
       const routes = [...extra, ...slashed];
       /* After `handle: filesystem`, so a mirrored file wins and only what is
        * missing goes to WordPress. Guide §B5's /wp-content proxy, under the
-       * one path the output is allowed to contain. */
+       * one path the output is allowed to contain. No cache header of its
+       * own: WordPress already sends a year's `immutable` on a served
+       * image, and forcing the same header onto a response that FAILED
+       * (the origin rate-limits under a burst) is what left the first row
+       * of /blog/ broken after the first deploy — a year-long cache of an
+       * error. scripts/mirror-blog-media.mjs keeps the proxy for new posts
+       * only. */
       const fs = routes.findIndex((r) => r.handle === 'filesystem');
-      const proxy = { src: '^/media/(.*)$', dest: `${WP_URL}/wp-content/uploads/$1`,
-        headers: { 'cache-control': 'public, max-age=31536000, immutable' } };
+      const proxy = { src: '^/media/(.*)$', dest: `${WP_URL}/wp-content/uploads/$1` };
       routes.splice(fs < 0 ? routes.length : fs + 1, 0, proxy);
       config.routes = routes;
       await writeFile(path, JSON.stringify(config, null, 2));
