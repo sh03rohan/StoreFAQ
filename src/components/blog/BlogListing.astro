@@ -1,0 +1,105 @@
+---
+/**
+ * The blog index, a category archive and a search result are one page with
+ * a different query: hero, category tabs, 3-up grid, pager. The original
+ * filters and paginates in JavaScript against admin-ajax; here every state
+ * is a URL — /blog/, /blog/page/2/, /category/guide/, /blog/?s=schema — so
+ * each is a real, cacheable, linkable page.
+ */
+import Container from '../Container.astro';
+import PostCard from './PostCard.astro';
+import { routes } from '../../lib/routes';
+import type { Page, PostCategory, PostSummary } from '../../lib/wp';
+
+export interface Props {
+  page: Page<PostSummary>;
+  categories: PostCategory[];
+  /** Slug of the active tab; undefined is "All". */
+  active?: string;
+  /** Page n of this listing. */
+  pageUrl: (n: number) => string;
+  search?: string;
+}
+const { page, categories, active, pageUrl, search } = Astro.props;
+const { items, totalPages } = page;
+const current = page.page;
+
+/* Search-glass from the original's Essential Blocks search form, verbatim. */
+const GLASS = 'M21 3C11.602 3 4 10.602 4 20s7.602 17 17 17c3.355 0 6.46-.984 9.094-2.656l12.281 12.281 4.25-4.25L34.5 30.281C36.68 27.421 38 23.88 38 20c0-9.398-7.602-17-17-17zm0 4c7.2 0 13 5.8 13 13s-5.8 13-13 13S8 27.2 8 20 13.8 7 21 7z';
+
+/* 1 … current-1 current current+1 … last. The original's pager also puts a
+ * "..." tile after the last number whatever the count — with two pages it
+ * reads "< 1 2 ... >". Reproduced as the tile it is (see NOTES). */
+const pages: (number | '…')[] = [];
+for (let n = 1; n <= totalPages; n++) {
+  if (n === 1 || n === totalPages || Math.abs(n - current) <= 1) pages.push(n);
+  else if (pages[pages.length - 1] !== '…') pages.push('…');
+}
+pages.push('…');
+---
+<section class="blog-hero">
+  <Container>
+    <div class="blog-hero__card">
+      <div class="blog-hero__col">
+        <h1 class="blog-hero__title" data-anim="heading" data-anim-intro style="--anim-d:.05s;--anim-y:24px">
+          StoreFAQ Blog: Subscribe For Shopify FAQ Guides, Hacks, Customer Support Strategies, And Latest Updates!
+        </h1>
+        <!-- The original posts to WordPress's /?s=; this one searches the
+             blog in place and stays on the blog. -->
+        <form class="blog-search" role="search" action={routes.blogSearch()} method="get"
+              data-anim="media" data-anim-intro style="--anim-d:.14s;--anim-y:20px">
+          <svg class="blog-search__icon" viewBox="0 0 50 50" aria-hidden="true" focusable="false"><path d={GLASS} fill="currentColor" /></svg>
+          <div class="blog-search__field">
+            <label class="sr-only" for="blog-q">Search the blog</label>
+            <input class="blog-search__input" id="blog-q" type="search" name="s" value={search ?? ''} placeholder="Search ...." autocomplete="off" />
+          </div>
+          <button class="blog-search__submit" type="submit">Search</button>
+        </form>
+      </div>
+      <div class="blog-hero__col blog-hero__col--img" data-anim="media" data-anim-intro style="--anim-d:.2s;--anim-y:20px">
+        <img class="blog-hero__img" src="/media/2026/02/storefaq-blog-hero.webp" alt="" width="1362" height="996" decoding="async" />
+      </div>
+    </div>
+  </Container>
+</section>
+
+<section class="blog-list">
+  <Container>
+    <nav class="cattabs" aria-label="Post categories">
+      <ul class="cattabs__list">
+        <li><a class:list={['cattabs__link', !active && !search && 'is-active']} href={routes.blog()} aria-current={!active && !search ? 'page' : undefined}>All</a></li>
+        {categories.map((c) => (
+          <li><a class:list={['cattabs__link', active === c.slug && 'is-active']} href={routes.category(c.slug)} aria-current={active === c.slug ? 'page' : undefined}>{c.name}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    {search && (
+      <p class="blog-list__result" role="status">
+        {page.total === 0 ? `Nothing found for “${search}”.` : `${page.total} result${page.total === 1 ? '' : 's'} for “${search}”`}
+      </p>
+    )}
+
+    {items.length > 0 && (
+      <div class="pgrid">
+        {items.map((p, i) => <PostCard post={p} eager={i < 3} />)}
+      </div>
+    )}
+
+    {totalPages > 1 && (
+      <nav class="pager" aria-label="Pagination">
+        {current > 1
+          ? <a class="pager__item pager__item--arrow" href={pageUrl(current - 1)} aria-label="Previous page">&lt;</a>
+          : <span class="pager__item pager__item--arrow is-disabled" aria-hidden="true">&lt;</span>}
+        {pages.map((n) => n === '…'
+          ? <span class="pager__item pager__item--gap" aria-hidden="true">...</span>
+          : n === current
+            ? <span class="pager__item is-active" aria-current="page">{n}</span>
+            : <a class="pager__item" href={pageUrl(n)}>{n}</a>)}
+        {current < totalPages
+          ? <a class="pager__item pager__item--arrow" href={pageUrl(current + 1)} aria-label="Next page">&gt;</a>
+          : <span class="pager__item pager__item--arrow is-disabled" aria-hidden="true">&gt;</span>}
+      </nav>
+    )}
+  </Container>
+</section>

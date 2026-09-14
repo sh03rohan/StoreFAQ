@@ -17,7 +17,7 @@ excerpt: "StoreFAQ Message Shortcuts let you create and use pre-saved replies in
 
 <p>Follow the step-by-step guide to add and configure Message Shortcuts in StoreFAQ for Shopify. Before you start, make sure you have the StoreFAQ <a href="/docs/how-to-install-storefaq/"><strong>app installed</strong></a> on your Shopify store.&nbsp;</p>
 
-<figure class="is-type-video is-provider-youtube"><div>
+<figure class="embed embed--16-9"><div>
 <iframe loading="lazy" title="How to Use Live Chat with Message Shortcut on Shopify? | StoreFAQ | Storeware" width="500" height="281" src="https://www.youtube.com/embed/WmmxHsN90B8?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div></figure>
 

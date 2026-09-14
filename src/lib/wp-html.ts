@@ -18,7 +18,7 @@ const CMS = import.meta.env?.CMS_URL ?? 'https://cms.storefaq.io';
 const SITE = 'https://storefaq.io';
 
 const KILL_CLASS =
-  /^(wp-|eb-|root-eb-|is-layout-|is-style-|has-fixed-layout$|has-.*-(color|background|font-size)$|elementor|essential-blocks|thinkrank|betterdocs|notificationx|nx-|ff-|fluentform|size-|attachment-|align(wide|full|center|left|right)$)/;
+  /^(wp-|eb-|root-eb-|is-layout-|is-style-|is-type-|is-provider-|has-fixed-layout$|has-.*-(color|background|font-size)$|elementor|essential-blocks|thinkrank|betterdocs|notificationx|nx-|ff-|fluentform|size-|attachment-|align(wide|full|center|left|right)$)/;
 
 const KILL_ATTR = /^(data-(block|eb|id|widget|element|settings|icon|new-tab|link|show-badge)|itemprop|itemscope|itemtype|aria-describedby$)/;
 
@@ -28,7 +28,10 @@ const UNWRAP = ['wp-block-group', 'wp-block-columns', 'wp-block-column', 'eb-wra
 /** Blocks that carry no meaning once the builder is gone. */
 const DROP = ['.wp-block-spacer', 'style', 'script', 'noscript', '.screen-reader-text',
   '.wp-block-post-navigation-link', '.betterdocs-entry-footer', '.betterdocs-feedback',
-  '#betterdocs-ia', '.notificationx'];
+  '#betterdocs-ia', '.notificationx',
+  // Post Views Counter appends its line to every post body; a number only
+  // WordPress can count is not content.
+  '.post-views'];
 
 export function cleanWpHtml(html: string): string {
   let root = parse(html, { blockTextElements: { script: false, style: false } });
@@ -42,6 +45,16 @@ export function cleanWpHtml(html: string): string {
   for (const el of root.querySelectorAll('.wp-block-group.is-layout-flex')) {
     const nowrap = (el.getAttribute('class') ?? '').includes('is-nowrap');
     el.setAttribute('class', nowrap ? 'row row--nowrap' : 'row');
+    el.setAttribute('data-keep', '');
+  }
+
+  // 1c. An embed (a YouTube iframe in a figure) carries its aspect ratio as a
+  //     class; without it the iframe falls back to 300x150. Kept, under a
+  //     class of this build's own — the docs use it.
+  for (const el of root.querySelectorAll('figure.wp-block-embed')) {
+    const cls = el.getAttribute('class') ?? '';
+    const ratio = cls.match(/wp-embed-aspect-(\d+)-(\d+)/);
+    el.setAttribute('class', ratio ? `embed embed--${ratio[1]}-${ratio[2]}` : 'embed');
     el.setAttribute('data-keep', '');
   }
 

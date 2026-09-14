@@ -1,0 +1,44 @@
+---
+/**
+ * /category/<slug>/ — the archive for one category, and /category/<slug>/page/N/
+ * through the rest parameter. The original's archive is the same page as
+ * /blog/ with a tab lit; so is this one.
+ */
+export const prerender = false;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import BlogListing from '../../components/blog/BlogListing.astro';
+import { loadListing } from '../../lib/blog-page';
+import { routes } from '../../lib/routes';
+
+const raw = Astro.params.slug ?? '';
+// "guide" or "guide/page/2"
+const m = raw.match(/^([a-z0-9-]+)(?:\/page\/(\d+))?$/);
+if (!m) return new Response(null, { status: 404 });
+const slug = m[1];
+const n = m[2] ? Number(m[2]) : 1;
+if (m[2] && n < 2) return Astro.redirect(routes.category(slug), 301);
+
+const listing = await loadListing(Astro, { categorySlug: slug, pageNumber: n });
+if (listing instanceof Response) return listing;
+---
+<BaseLayout
+  title={listing.title}
+  description={listing.description}
+  canonical={listing.canonical}
+  robots={listing.robots}
+  ogImage="/media/2026/03/blog-og-img-1-1024x525.png"
+  feeds={[{ title: 'storefaq.io » Feed', href: routes.feed() }]}
+  schema={[{
+    '@context': 'https://schema.org', '@type': 'CollectionPage',
+    name: listing.active!.name, url: listing.canonical,
+    isPartOf: { '@type': 'WebSite', '@id': `${Astro.site?.href}#website`, url: Astro.site?.href },
+  }]}
+>
+  <Header />
+  <main>
+    <BlogListing page={listing.page} categories={listing.categories} active={slug} pageUrl={listing.pageUrl} search={listing.search} />
+  </main>
+  <Footer />
+</BaseLayout>

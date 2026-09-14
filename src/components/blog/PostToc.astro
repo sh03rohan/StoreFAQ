@@ -1,0 +1,30 @@
+---
+/**
+ * The sidebar contents list: "-" before each entry, h3s nested under their
+ * h2 with a rule down the left. Built from the article's actual headings —
+ * the original's block stores a snapshot of the headings from when the post
+ * was edited, and on the sample post it lists two of five h3s. See NOTES.
+ */
+import type { TocEntry } from '../../lib/toc';
+
+export interface Props { toc: TocEntry[] }
+const { toc } = Astro.props;
+---
+{toc.length > 0 && (
+  <nav class="ptoc" aria-label="Contents">
+    <ol class="ptoc__list">
+      {toc.map((e) => (
+        <li class="ptoc__item">
+          <a class="ptoc__link" href={`#${e.id}`}>{e.text}</a>
+          {e.children.length > 0 && (
+            <ol class="ptoc__sub">
+              {e.children.map((c) => (
+                <li class="ptoc__subitem"><a class="ptoc__sublink" href={`#${c.id}`}>{c.text}</a></li>
+              ))}
+            </ol>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}

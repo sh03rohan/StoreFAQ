@@ -1689,3 +1689,141 @@ the live site in both states.
 
 `probe-cl-scroll.mjs` had passed six scroll positions on this bug because it
 compared `position` and not where the bar *was*. It compares x and top now.
+
+## Phase 6 — the blog, on demand from WordPress
+
+`/blog/`, `/blog/page/N/`, `/blog/<slug>/` (16), `/category/<slug>/` (3, with
+`/page/N/`), `/blog/search/?s=`, `/feed/`, `/docs/feed/`, `/sitemap-blog.xml`,
+and a `/404`. All of it against the **public** REST API on the live site —
+`WP_URL` defaults to `https://storefaq.io` because that is where the content
+is; the day `cms.storefaq.io` exists it is one environment variable.
+
+Measured against `/blog/` and `/best-shopify-faq-apps/` at 360/768/1024/1280/
+1440/1920 by `diff-blog.mjs` and `diff-post.mjs`: **0 failures each**. The
+post diff normalises two deliberate differences (below) so that everything
+else is held to 2px.
+
+### Rendering, caching, publishing (§B6, rewritten for Vercel)
+
+The blog routes are `prerender = false` and Vercel ISR holds them — a day's
+expiry as the safety net, and `VERCEL_BYPASS_TOKEN` for the mu-plugin's purge
+on publish. Three things the adapter does that would have shipped broken:
+
+1. **ISR keys on the path and drops the query string.** A search on
+   `/blog/?s=…` would have been answered with the cached index, silently. The
+   search is its own route, `/blog/search/`, excluded from ISR and cached at
+   the edge by full URL for five minutes; `/blog/?s=` bounces to it.
+2. **The non-ISR on-demand routes are emitted slash-less** (`^/api/subscribe$`)
+   under a `trailingSlash: 'always'` config whose own rule 308s every request
+   to the slashed form first. The slashed request matched nothing and fell to
+   the 404 catch-all — every API endpoint dead on deploy, since Phase 5, and
+   the build said nothing. The same defect as the redirect map in Phase 8,
+   and the same fix: the platform-routes integration rewrites those patterns
+   to accept the slash either way.
+3. `exclude` takes regexes, not globs — `'/api/*'` became `^/api/\*$`.
+
+`assert-redirects.mjs` now also walks ten on-demand paths through the
+post-filesystem rules and requires each to land on a function — the search
+and the API routes on the plain function, never ISR. It is the check that
+found (2) and (3).
+
+### Media without a mirror
+
+A post published tomorrow has images nothing mirrored at build time. They are
+served through **`/media/`** — the same URL space the mirrored docs images
+already live in: what is on disk is served from disk (Vercel's filesystem
+phase), and a rewrite after it proxies anything missing from
+`${WP_URL}/wp-content/uploads/`. The dev server does the same with a Vite
+proxy that bypasses for files in `public/`. So the output never contains a
+WordPress URL, in either mode, and the gate now checks the **rendered** blog
+pages (index, page 2, a category, a search, the longest post, the feed)
+through the dev server as well as `dist/` — §B1's "not just `dist/`".
+
+Old root-level post links inside bodies are pointed straight at `/blog/…/`
+at render time (from the redirect map), so no reader pays the 301.
+
+### What the page is made of — facts the diff had to be taught
+
+- The listing's hero card has **no bottom padding side by side**: the 72px
+  under the heading column is the card's bottom and the image column sits on
+  it (bottom-aligned — 33px down at 1440, 86 at 1280; both the remainder of
+  the heading column). Below 1280 the card is `40px 20px` all round and the
+  columns stack. A soft green blur (`hero-bg-ovrly.png`) sits in the card's
+  bottom-left corner over the gradient, on both heroes — hotlinked on the post
+  hero from a **Templately demo host**, as are the two 18px meta icons.
+  Mirrored.
+- The post's columns are halves until 1280 and 66/34 after, with **12px of
+  air inside each until 1280 and 48 after**, and a **1px `#EAECF0` rule down
+  the main column's right edge** — inside its width, which is why the body
+  measured one pixel narrower than the column's padding could explain and
+  every paragraph under the first wrapped differently until it was found.
+- The date is 16px until 1280 and 18px after; the category beside it is
+  18px throughout. Below 768 each stacks its icon *centred* over left-aligned
+  text — ugly, and the original's. Reproduced.
+- Sidebar titles are cut to their **first seven words with no ellipsis**
+  ("Shopify FAQ Builder App: Why Do You"); the full title is on the link's
+  `title` and the page it goes to. The three-tab row draws a full-width rule
+  as a pseudo-element with the active tab's darker rule over it. "Share this
+  Story" is `text-transform: capitalize`. Share tiles carry 10px of margin
+  only from 1280.
+- The comparison table's cells are `word-break: break-word` — without it a
+  six-column table at 360 is 440px shorter than the original, and the
+  difference reads as a wrap bug rather than a missing rule. Applied to every
+  `.prose` table.
+- The pager shows `< 1 2 ... >` for two pages — the "..." tile is
+  unconditional on the original. Reproduced as the tile it is.
+
+### Deliberate differences (three), and two content bugs
+
+1. **"Post Views: 659" is dropped.** Post Views Counter appends it to every
+   body; a number only WordPress can count is not content. The sanitiser
+   drops `.post-views`, and the post diff subtracts its height from the
+   original's boxes below the body (the 44px the page totals differ by).
+2. **The contents list is built from the article's actual headings.** The
+   original's block stores a *snapshot* of the headings from when the post
+   was last edited, and on the sample post lists two of five h3s and three of
+   five h2s. The diff compares the first two entries' geometry and the card
+   by width only.
+3. **The "Visit & Follow Us In" row shows two networks, not six.** Four of the
+   original's six link to `#`. The two with destinations are the footer's
+   two.
+- The feed keeps WordPress's `?p=ID` as each item's `<guid>` — an opaque id,
+  not a link; changing it would make every subscribed reader re-deliver the
+  last ten posts as new. The gate exempts `<guid>` and nothing else.
+- The "Popular" tab is ranked by Post Views Counter's public endpoint, one
+  request per post (it sums when given a list). It falls back to recency if
+  the plugin goes.
+
+### Still blocked on the mu-plugin
+
+Per-post **title and description** are ThinkRank overrides that the public
+API does not expose (`_thinkrank_*` meta is present but the resolved
+title/description are not). Until `storefaq-headless.php` is deployed the
+post `<title>` is `<title> | storefaq.io` (the site's own pattern) and the
+description is the excerpt; the sample post's live description ("Looking for
+the best Shopify FAQ apps? …") is therefore not reproduced yet. The `seo`
+field is read the moment it appears.
+
+### Also in this batch
+
+- A YouTube embed in a doc rendered at 300x150: the sanitiser had stripped
+  `wp-embed-aspect-16-9` and left `is-type-video is-provider-youtube` behind —
+  two more class prefixes the gate did not know. Embeds keep their ratio under
+  a class of this build's own; `is-type-` and `is-provider-` are in both
+  KILL_CLASS and the gate. Two docs affected; the docs refetched and
+  re-mirrored.
+- `/404` is the theme's own — Cardo "Page Not Found", its sentence, a search
+  box (which now searches the blog) — served with HTTP 404 by Vercel for any
+  unmatched path and by the on-demand routes for an unknown post or category.
+- `sitemap-index.xml` lists the static sitemap and `/sitemap-blog.xml`;
+  `robots.txt` points at the index.
+- While re-checking the docs: `configure-instant-answer-with-storefaq` at 1440
+  has one paragraph that wraps to four lines on the original and three here —
+  the same knife-edge as the two long docs noted before. And the live docs
+  sidebar sometimes reads with a category collapsed at 1920; it is the
+  original's script, not a regression.
+
+**Decisions still open** (unchanged): Crisp, Instant Answer, GSAP vs IO,
+changelog resting opacity, the six empty alts, BetterDocs reaction data —
+plus, new: whether the two `#` social links should instead get real
+destinations (X, YouTube, Instagram, Pinterest exist for Storeware?).

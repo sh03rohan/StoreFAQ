@@ -1,0 +1,30 @@
+---
+/** /blog/page/N/ — page N of the blog index. */
+export const prerender = false;
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import BlogListing from '../../../components/blog/BlogListing.astro';
+import { loadListing } from '../../../lib/blog-page';
+import { routes } from '../../../lib/routes';
+import { seoFor } from '../../../data/seo';
+
+const n = Number(Astro.params.n);
+if (!Number.isInteger(n) || n < 2) return Astro.redirect(routes.blog(), 301);
+
+const listing = await loadListing(Astro, { pageNumber: n });
+if (listing instanceof Response) return listing;
+const blog = seoFor('/blog/')!;
+---
+<BaseLayout
+  route="/blog/"
+  title={listing.title ?? `${blog.title.replace(/ \| storefaq\.io$/, '')} - Page ${n} | storefaq.io`}
+  canonical={listing.canonical}
+  robots={listing.robots}
+>
+  <Header />
+  <main>
+    <BlogListing page={listing.page} categories={listing.categories} pageUrl={listing.pageUrl} search={listing.search} />
+  </main>
+  <Footer />
+</BaseLayout>

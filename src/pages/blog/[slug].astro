@@ -1,0 +1,121 @@
+---
+/**
+ * /blog/<slug>/ — one post, rendered on demand (guide §B6). Gradient hero
+ * with the featured image, the sanitised body beside a sidebar of featured
+ * posts, contents, share and subscribe, then the author and three recent
+ * posts. Measured from /best-shopify-faq-apps/.
+ */
+export const prerender = false;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Container from '../../components/Container.astro';
+import PostCard from '../../components/blog/PostCard.astro';
+import FeaturedPosts from '../../components/blog/FeaturedPosts.astro';
+import PostToc from '../../components/blog/PostToc.astro';
+import ShareBox from '../../components/blog/ShareBox.astro';
+import SubscribeBox from '../../components/blog/SubscribeBox.astro';
+import { getPost, getRecent, getPopular } from '../../lib/wp';
+import { withToc } from '../../lib/toc';
+import { routes } from '../../lib/routes';
+import calendar from '../../assets/blog/calender-line.png';
+import tag from '../../assets/blog/price-tag-line.png';
+
+const slug = Astro.params.slug ?? '';
+if (!/^[a-z0-9-]+$/.test(slug)) return new Response(null, { status: 404 });
+
+const post = await getPost(slug);
+if (!post) return new Response(null, { status: 404 });
+
+const [recent, popular] = await Promise.all([getRecent(3, post.id), getPopular(3)]);
+const { html, toc } = withToc(post.content);
+const url = new URL(routes.post(post.slug), Astro.site).href;
+const primary = post.categories[0];
+
+/* Until the mu-plugin exposes ThinkRank's resolved meta (`seo`), the title
+ * follows the site's pattern and the description is the excerpt. */
+const title = post.seo?.title ?? `${post.title} | storefaq.io`;
+const description = post.seo?.description ?? post.excerpt;
+const ogImage = post.seo?.ogImage ?? post.image?.src;
+---
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={url}
+  ogImage={ogImage}
+  type="article"
+  article={{ published: post.dateIso, modified: post.modifiedIso, author: post.author.name, section: primary?.name }}
+  feeds={[{ title: 'storefaq.io » Feed', href: routes.feed() }]}
+  schema={[{
+    '@context': 'https://schema.org', '@type': 'BlogPosting',
+    headline: post.title, url,
+    datePublished: post.dateIso, dateModified: post.modifiedIso,
+    description,
+    author: { '@type': 'Person', name: post.author.name },
+    publisher: { '@type': 'Organization', name: 'storefaq.io', url: Astro.site?.href.replace(/\/$/, '') },
+    ...(post.image ? { image: new URL(post.image.src, Astro.site).href } : {}),
+    ...(primary ? { articleSection: primary.name } : {}),
+    isPartOf: { '@type': 'WebSite', '@id': `${Astro.site?.href}#website` },
+  }]}
+>
+  <Header />
+  <main class="post">
+    <section class="post-hero">
+      <Container class="post-hero__row">
+        <div class="post-hero__col">
+          <h1 class="post-hero__title" data-anim="heading" data-anim-intro style="--anim-d:.05s;--anim-y:24px">{post.title}</h1>
+          <div class="post-meta" data-anim="text" data-anim-intro style="--anim-d:.14s;--anim-y:16px">
+            <span class="post-meta__item">
+              <img class="post-meta__icon" src={calendar.src} width="18" height="18" alt="" />
+              <time datetime={post.dateIso}>{post.date}</time>
+            </span>
+            {primary && (
+              <span class="post-meta__item post-meta__item--tag">
+                <img class="post-meta__icon" src={tag.src} width="18" height="18" alt="" />
+                <a href={routes.category(primary.slug)}>{primary.name}</a>
+              </span>
+            )}
+          </div>
+          <p class="post-by" data-anim="text" data-anim-intro style="--anim-d:.2s;--anim-y:16px">by <span class="post-by__name">{post.author.name}</span></p>
+        </div>
+        <div class="post-hero__col post-hero__col--img" data-anim="media" data-anim-intro style="--anim-d:.2s;--anim-y:20px">
+          {post.image && (
+            <img class="post-hero__img" src={post.image.src} alt={post.image.alt} width={post.image.width} height={post.image.height} decoding="async" fetchpriority="high" />
+          )}
+        </div>
+      </Container>
+    </section>
+
+    <section class="post-body">
+      <Container class="post-body__row">
+        <div class="post-main">
+          <article class="prose prose--post" set:html={html} />
+
+          <div class="author-box">
+            {post.author.avatar && <img class="author-box__avatar" src={post.author.avatar} alt="" width="24" height="24" loading="lazy" />}
+            <span class="author-box__name">{post.author.name}</span>
+          </div>
+
+          {recent.length > 0 && (
+            <section class="recent" aria-labelledby="recent-title">
+              <h2 class="recent__title" id="recent-title">Recent Posts</h2>
+              <div class="pgrid pgrid--sm">
+                {recent.map((p) => <PostCard post={p} size="sm" />)}
+              </div>
+            </section>
+          )}
+        </div>
+
+        <aside class="post-side">
+          <FeaturedPosts recent={recent} popular={popular} />
+          <div class="post-side__card">
+            <PostToc toc={toc} />
+            <ShareBox url={url} title={post.title} />
+          </div>
+          <SubscribeBox />
+        </aside>
+      </Container>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

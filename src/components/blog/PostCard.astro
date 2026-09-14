@@ -1,0 +1,28 @@
+---
+/**
+ * One post in a grid: 16:9 thumbnail (fixed 240px tall, cropped) over the
+ * title. Measured from the /blog/ grid and the "Recent Posts" grid under a
+ * post, which is the same card at 258px wide with a 156px image and an 18px
+ * title — `size="sm"`.
+ */
+import type { PostSummary } from '../../lib/wp';
+import { routes } from '../../lib/routes';
+
+export interface Props {
+  post: PostSummary;
+  size?: 'md' | 'sm';
+  /** The first row of a listing is above the fold; the rest can wait. */
+  eager?: boolean;
+}
+const { post, size = 'md', eager = false } = Astro.props;
+const href = routes.post(post.slug);
+---
+<article class:list={['pcard', size === 'sm' && 'pcard--sm']}>
+  <a class="pcard__media" href={href} tabindex="-1" aria-hidden="true">
+    {post.image && (
+      <img class="pcard__img" src={post.image.src} alt="" width={post.image.width} height={post.image.height}
+           loading={eager ? 'eager' : 'lazy'} decoding="async" />
+    )}
+  </a>
+  <h3 class="pcard__title"><a class="pcard__link" href={href}>{post.title}</a></h3>
+</article>

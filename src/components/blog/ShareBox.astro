@@ -1,0 +1,26 @@
+---
+/** "Share this Story" — Facebook, X, LinkedIn, WhatsApp. */
+import { socialIcons } from '../../data/social-icons';
+
+export interface Props { url: string; title: string }
+const { url, title } = Astro.props;
+const u = encodeURIComponent(url), t = encodeURIComponent(title);
+const links = [
+  { name: 'Facebook', icon: socialIcons.facebook, href: `https://www.facebook.com/sharer/sharer.php?u=${u}` },
+  { name: 'X',        icon: socialIcons.x,        href: `https://twitter.com/share?text=${t}&url=${u}` },
+  { name: 'LinkedIn', icon: socialIcons.linkedin, href: `https://www.linkedin.com/shareArticle?title=${t}&url=${u}` },
+  { name: 'WhatsApp', icon: socialIcons.whatsapp, href: `https://api.whatsapp.com/send?text=${t}%20${u}` },
+];
+---
+<div class="pshare">
+  <h2 class="pshare__title">Share this Story</h2>
+  <ul class="pshare__list">
+    {links.map((l) => (
+      <li>
+        <a class="pshare__link" href={l.href} target="_blank" rel="noopener noreferrer" aria-label={`Share on ${l.name}`}>
+          <svg viewBox={l.icon.box} aria-hidden="true" focusable="false"><path d={l.icon.d} fill="currentColor" /></svg>
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>

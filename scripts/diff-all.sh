@@ -16,7 +16,8 @@ fi
 
 SCRIPTS=(diff-section diff-features diff-cta diff-testimonials diff-faq diff-pricing
          diff-chrome diff-footer diff-features-page diff-home-page diff-docs
-         diff-changelog diff-privacy)
+         diff-changelog diff-privacy diff-feature-request diff-doc diff-doc-category
+         diff-blog diff-post)
 
 # The reference is somebody's PRODUCTION site. Each diff loads it once per
 # viewport, so the whole suite is ~100 page loads; run back to back it gets

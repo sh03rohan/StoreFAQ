@@ -1,0 +1,37 @@
+---
+/**
+ * The sidebar subscribe card. Same endpoint as the footer newsletter
+ * (/api/subscribe -> FluentCRM), a different id so the page has no duplicate
+ * ids (§B7 item 10).
+ *
+ * The follow row: the original lists six networks and four of them link to
+ * "#" — dead links, so only the two with a destination (the same two the
+ * footer has) are rendered. See NOTES.
+ */
+import { socialIcons } from '../../data/social-icons';
+import { socialLinks } from '../../data/nav';
+
+const icon = (label: string) =>
+  /facebook/i.test(label) ? socialIcons.facebook : /linkedin/i.test(label) ? socialIcons.linkedin : socialIcons.x;
+---
+<section class="psub" aria-labelledby="psub-title">
+  <h2 class="psub__title" id="psub-title">Subscribe for the latest updates</h2>
+  <form class="psub__form" method="post" action="/api/subscribe" data-newsletter>
+    <label class="sr-only" for="psub-email">Your Email Address</label>
+    <input class="psub__input" id="psub-email" type="email" name="email" placeholder="Enter email address here" autocomplete="email" required />
+    <button class="psub__submit" type="submit" aria-label="Subscribe">
+      <svg viewBox={socialIcons.arrowRight.box} aria-hidden="true" focusable="false"><path d={socialIcons.arrowRight.d} fill="currentColor" /></svg>
+    </button>
+  </form>
+  <p class="psub__status" data-newsletter-status role="status" aria-live="polite"></p>
+  <p class="psub__follow">Visit &amp; Follow Us In:</p>
+  <ul class="psub__social">
+    {socialLinks.map((s) => (
+      <li>
+        <a class="psub__social-link" href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}>
+          <svg viewBox={icon(s.label).box} aria-hidden="true" focusable="false"><path d={icon(s.label).d} fill="currentColor" /></svg>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>

@@ -14,6 +14,7 @@
 @import './changelog.css';
 @import './plain-pages.css';
 @import './doc.css';
+@import './blog.css';
 @import './motion.css';
 
 @theme {
@@ -110,6 +111,18 @@
   --color-ink-mid-alt: #344054;/* breadcrumb current item        */
   --color-crumb: #566E8B;      /* breadcrumb links below 1280    */
   --color-rule-grey: #D0D5DD;  /* rule down an open doc category */
+  --color-mint-deep: #EEF5E6;  /* start of the blog hero gradient (ends in --color-mint) */
+  --color-mint-card: #F1F8EA;  /* post author card                */
+  --color-side: #F8FAFE;       /* post sidebar cards              */
+  --color-search-mint: #E6F1E8;/* blog search box outline         */
+  --color-search-glass: #949494;/* blog search glass + placeholder */
+  --color-input: #666666;      /* blog search typed text          */
+  --color-brand-edge: #497829; /* blog search button border       */
+  --color-tab-rule: #F5F1FA;   /* category tab box outline        */
+  --color-pager: #F2F4FC;      /* pager tile                      */
+  --color-toc-rule: #D5DBE4;   /* rule beside nested contents     */
+  --color-arrow: #515151;      /* subscribe arrow                 */
+  --color-black: #000000;      /* author name                     */
   --color-slate: #F9FAFB;      /* changelog timeline ground  */
   --color-violet-2: #A741FF;   /* end of the AI label gradient */
   --color-quote: #4A4F48;      /* testimonial body          */

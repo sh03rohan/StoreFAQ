@@ -17,6 +17,7 @@ const PAGES = [
   ['/changelog/',       'changelog'],
   ['/privacy-policy/',  'privacy-policy'],
   ['/feature-request/', 'feature-request'],
+  ['/blog/',            'blog'],
 ];
 
 /* The original's own copy is an auto-generated placeholder on these three: a

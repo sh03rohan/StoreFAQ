@@ -13,6 +13,7 @@ export const routes = {
   docCategory: (slug: string) => `/docs-category/${slug}/`,
   blog:        () => '/blog/',
   blogPage:    (n: number) => (n <= 1 ? '/blog/' : `/blog/page/${n}/`),
+  blogSearch:  () => '/blog/search/',
   post:        (slug: string) => `/blog/${slug}/`,
   category:    (slug: string) => `/category/${slug}/`,
   changelog:   () => '/changelog/',

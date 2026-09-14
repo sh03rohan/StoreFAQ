@@ -19,6 +19,10 @@ export interface Props {
   type?: 'website' | 'article';
   /** Extra JSON-LD nodes for a page that needs more than its own WebPage. */
   schema?: Record<string, unknown>[];
+  /** Open Graph article facts, for blog posts. */
+  article?: { published: string; modified: string; author: string; section?: string };
+  /** Feeds a generated page advertises (listed pages take theirs from seo.ts). */
+  feeds?: { title: string; href: string }[];
 }
 
 const {
@@ -27,11 +31,13 @@ const {
   robots = 'index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large',
   type = 'website',
   schema: extraSchema = [],
+  article,
 } = Astro.props;
 
 const seo = route ? seoFor(route) : undefined;
 if (route && !seo) throw new Error(`No SEO entry for route "${route}" — add it to src/data/seo.ts`);
 
+const feeds = Astro.props.feeds ?? seo?.feeds ?? [];
 const title = Astro.props.title ?? seo?.title ?? '';
 const description = Astro.props.description ?? seo?.description ?? '';
 
@@ -92,6 +98,14 @@ const jsonLd = [
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content="storefaq.io" />
     <meta property="og:locale" content="en_US" />
+    {article && (
+      <>
+        <meta property="article:published_time" content={article.published} />
+        <meta property="article:modified_time" content={article.modified} />
+        <meta property="article:author" content={article.author} />
+        {article.section && <meta property="article:section" content={article.section} />}
+      </>
+    )}
     {ogImage && <meta property="og:image" content={ogImage} />}
     {ogImage && <meta property="og:image:secure_url" content={ogImage} />}
     {ogImage && seo?.ogImageSize && (
@@ -119,7 +133,7 @@ const jsonLd = [
 
     {/* Per-route, and a page can advertise more than one: /docs/ carries the
         site feed AND its own. */}
-    {(seo?.feeds ?? []).map((f) => (
+    {feeds.map((f) => (
       <link rel="alternate" type="application/rss+xml" title={f.title} href={f.href} />
     ))}
 

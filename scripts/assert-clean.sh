@@ -12,7 +12,7 @@
 set -uo pipefail
 
 FAIL=0
-PATTERN='(wp-|eb-|is-layout-|is-style-|has-fixed-layout|elementor|essential-blocks|thinkrank-|betterdocs-|fluentform|notificationx|nx-)'
+PATTERN='(wp-|eb-|is-layout-|is-style-|is-type-|is-provider-|has-fixed-layout|elementor|essential-blocks|thinkrank-|betterdocs-|fluentform|notificationx|nx-)'
 
 report() { echo "FAIL: $1"; shift; printf '  %s\n' "$@" | head -20; FAIL=1; }
 
@@ -76,6 +76,28 @@ if [ -d dist/client ]; then
   else
     echo "OK: no WordPress URL in the output"
   fi
+fi
+
+# Phase 6 gate: the blog is rendered on demand, so it is not in dist/ and the
+# checks above never see it. Rendered pages are checked through the dev server
+# when one is up — every listing state and the longest post — with the URL
+# check as well as the class check. `BLOG_BASE` points it elsewhere.
+BLOG_BASE="${BLOG_BASE:-http://localhost:4321}"
+if curl -fs -o /dev/null --max-time 5 "$BLOG_BASE/blog/"; then
+  echo
+  for path in /blog/ /blog/page/2/ /category/guide/ "/blog/search/?s=schema" /blog/faq-schema-and-product-schema-shopify-ai-search/ /feed/; do
+    echo "checking rendered $path"
+    html="$(curl -fsSL "$BLOG_BASE$path")"
+    # The feed keeps WordPress's `?p=ID` as each item's <guid>: it is an opaque
+    # id, not a link, and changing it would make every reader already
+    # subscribed re-deliver the last ten posts as new. Exempt, deliberately.
+    printf '%s' "$html" | sed -E 's#<guid[^>]*>[^<]*</guid>##g' | check_stream "$path"
+    hits="$(printf '%s' "$html" | grep -oE '(src|href|content|srcset)="[^"]*(wp-content|wp-json|wp-includes|cms\.storefaq\.io)[^"]*"' | sort -u)"
+    [ -n "$hits" ] && report "WordPress URL in rendered $path" "$hits"
+  done
+else
+  echo
+  echo "skipping the rendered blog check: nothing at $BLOG_BASE (start astro dev, or set BLOG_BASE)"
 fi
 
 # The <head> is the half of the page no pixel diff can see, and it is the half

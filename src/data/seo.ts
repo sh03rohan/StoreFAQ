@@ -114,6 +114,16 @@ export const pageSeo: PageSeo[] = [
     feeds: [{ title: "storefaq.io » Feed", href: "/feed/" }],
     schema: { type: "WebPage", name: "Feature Request", datePublished: "2023-12-26T09:26:38+00:00", dateModified: "2025-04-27T12:31:30+00:00", image: null },
   },
+  {
+    route: "/blog/",
+    title: "StoreFAQ Blog | Shopify FAQ, Customer Support & Help Center Resources",
+    description: "Read StoreFAQ blogs for tips on Shopify FAQs, customer support, help center, and self-service strategies to enhance customer satisfaction and reduce support tickets.",
+    ogImage: "/media/2026/03/blog-og-img-1-1024x525.png",
+    ogImageSize: { width: 1024, height: 525, type: "image/png" },
+    keywords: "StoreFAQ Blog, Shopify FAQ Guide, Shopify FAQ App, FAQ schema Shopify, FAQ accordion Shopify, Shopify Instant Answers, multilingual FAQs Shopify, AI FAQ generator, reduce support tickets Shopify, Shopify Customer Support, Shopify FAQ builder",
+    feeds: [{ title: "storefaq.io » Feed", href: "/feed/" }],
+    schema: { type: "WebPage", name: "Blog", datePublished: "2026-03-12T09:31:08+00:00", dateModified: "2026-04-02T10:33:57+00:00", image: "/media/2026/03/blog-og-img-1.png" },
+  },
 ];
 
 export const seoFor = (route: string): PageSeo | undefined =>

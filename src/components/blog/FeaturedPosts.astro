@@ -1,0 +1,52 @@
+---
+/**
+ * The sidebar's "Featured Posts" card: three tabs over a list of three. The
+ * original swaps the list in JavaScript; here all three lists are rendered
+ * and a radio group picks one, so the widget works without a script and
+ * every title is in the HTML for a crawler.
+ *
+ * "Popular" is ranked by Post Views Counter's public endpoint (see wp.ts);
+ * "All" and "Recent" are both the three latest, which is what the original
+ * shows for them too.
+ */
+import type { PostSummary } from '../../lib/wp';
+import { routes } from '../../lib/routes';
+
+export interface Props {
+  recent: PostSummary[];
+  popular: PostSummary[];
+}
+const { recent, popular } = Astro.props;
+/* The original cuts a sidebar title to its first seven words, with no
+ * ellipsis — "Shopify FAQ Builder App: Why Do You". Reproduced; the full
+ * title is on the link's title attribute and the target page. */
+const short = (t: string) => t.split(/\s+/).slice(0, 7).join(' ');
+const tabs = [
+  { id: 'all', label: 'All', posts: recent },
+  { id: 'recent', label: 'Recent', posts: recent },
+  { id: 'popular', label: 'Popular', posts: popular },
+];
+---
+<section class="fpost" aria-labelledby="fpost-title">
+  <h2 class="fpost__title" id="fpost-title">Featured Posts</h2>
+  <div class="fpost__tabs" role="tablist">
+    {tabs.map((t, i) => (
+      <>
+        <input class="fpost__radio sr-only" type="radio" name="fpost-tab" id={`fpost-${t.id}`} checked={i === 0} />
+        <label class="fpost__tab" for={`fpost-${t.id}`}>{t.label}</label>
+      </>
+    ))}
+  </div>
+  {tabs.map((t) => (
+    <ul class="fpost__list" data-tab={t.id}>
+      {t.posts.map((p) => (
+        <li class="fpost__item">
+          <a class="fpost__thumb" href={routes.post(p.slug)} tabindex="-1" aria-hidden="true">
+            {p.image && <img src={p.image.src} alt="" width="40" height="40" loading="lazy" decoding="async" />}
+          </a>
+          <h3 class="fpost__name"><a href={routes.post(p.slug)} title={p.title}>{short(p.title)}</a></h3>
+        </li>
+      ))}
+    </ul>
+  ))}
+</section>

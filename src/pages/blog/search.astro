@@ -1,0 +1,33 @@
+---
+/**
+ * /blog/search/?s=… — the blog search. Its own route because ISR caches by
+ * path and drops the query string: a search on /blog/?s= would be answered
+ * with the cached index. This route is excluded from ISR (astro.config) and
+ * cached at the edge by full URL for five minutes instead.
+ */
+export const prerender = false;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import BlogListing from '../../components/blog/BlogListing.astro';
+import { loadListing } from '../../lib/blog-page';
+import { routes } from '../../lib/routes';
+
+const listing = await loadListing(Astro, {});
+if (listing instanceof Response) return listing;
+if (!listing.search) return Astro.redirect(routes.blog(), 302);
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=60');
+---
+<BaseLayout
+  route="/blog/"
+  title={listing.title}
+  canonical={listing.canonical}
+  robots="noindex, follow"
+>
+  <Header />
+  <main>
+    <BlogListing page={listing.page} categories={listing.categories} pageUrl={listing.pageUrl} search={listing.search} />
+  </main>
+  <Footer />
+</BaseLayout>

@@ -226,3 +226,51 @@
   color: var(--color-body);
 }
 .frq__status[data-state='error'] { color: var(--color-danger); }
+
+/* ---------- 404 ---------- */
+/* The theme's own template: a 620px column with 104px above and below. */
+.nf {
+  width: min(100% - 2 * min(8vw, 104px), 620px);
+  margin: 104px auto;
+}
+.nf__title {
+  margin: 0;
+  font-family: var(--font-serif);           /* Cardo */
+  font-size: clamp(2rem, 1.5rem + 1.6vw, 3.27rem);   /* 52.32/60.168 at 1440 */
+  line-height: 1.15;
+  font-weight: 400;
+  color: var(--color-ink);
+}
+.nf__text {
+  margin: 40px 0 0;
+  font-family: var(--font-body);
+  font-size: 1.05rem;                       /* 16.8/26.04 */
+  line-height: 1.55;
+  color: var(--color-ink);
+}
+.nf__form { display: flex; margin-top: 40px; }
+.nf__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 8px;
+  background: var(--color-white);
+  border: 1px solid var(--color-search-glass);   /* #949494 */
+  border-radius: 5.28px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--color-black);
+}
+.nf__submit {
+  margin-left: 10px;
+  padding: 9.6px 16px;
+  background: var(--color-ink);
+  border: 0;
+  border-radius: 5.28px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  font-weight: 500;
+  color: var(--color-page);
+  cursor: pointer;
+}

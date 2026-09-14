@@ -17,7 +17,7 @@ excerpt: "Easily add an interactive Instant Answer to your Shopify store with St
 
 <p>Follow the easy steps to add and configure Instant Answers with StoreFAQ for Shopify. Before you start, make sure you have the StoreFAQ <a href="/docs/how-to-install-storefaq/"><strong>app installed</strong></a> on your Shopify store.</p>
 
-<figure class="is-type-video is-provider-youtube"><div>
+<figure class="embed embed--16-9"><div>
 <iframe loading="lazy" title="How to Configure Instant Answers in Shopify? | StoreFAQ | Storeware" width="500" height="281" src="https://www.youtube.com/embed/PNGnL1mCh_I?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div></figure>
 
