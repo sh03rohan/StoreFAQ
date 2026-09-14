@@ -1,7 +1,6 @@
 ---
 /**
- * Interactive effects on top of the measured layout — pointer tilt on the
- * hero image, magnetic buttons, card spotlights, a glass header, scroll
+ * Interactive effects on top of the measured layout — magnetic buttons, card spotlights, a glass header, scroll
  * parallax, a reading-progress bar, and the contents list following the
  * section being read. Transform/opacity/filter only; nothing here can move
  * the layout. Gated on `.fx`, which the head script sets only when motion
@@ -23,21 +22,6 @@
       const onScroll = () => header.classList.toggle('is-scrolled', scrollY > 8);
       addEventListener('scroll', onScroll, { passive: true });
       onScroll();
-    }
-
-    /* ---- hero image: tilt toward the pointer ---- */
-    const heroImg = document.querySelector<HTMLElement>('.hero__media img');
-    const heroBox = document.querySelector<HTMLElement>('.hero');
-    if (hovers && heroImg && heroBox) {
-      const rx = gsap.quickTo(heroImg, 'rotationX', { duration: 0.8, ease: 'power3.out' });
-      const ry = gsap.quickTo(heroImg, 'rotationY', { duration: 0.8, ease: 'power3.out' });
-      heroBox.addEventListener('pointermove', (e) => {
-        const r = heroImg.getBoundingClientRect();
-        const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
-        const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
-        ry(dx * 8); rx(-dy * 8);
-      });
-      heroBox.addEventListener('pointerleave', () => { rx(0); ry(0); });
     }
 
     /* ---- magnetic buttons ---- */
