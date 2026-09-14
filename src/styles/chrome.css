@@ -230,8 +230,13 @@ html.has-menu-open { overflow: hidden; }
  * Pure paint, so no geometry check can see it: the section, the card and the
  * footer all measure the same with and without it. */
 .newsletter {
+  position: relative;   /* paints over the changelog's fixed timeline bar */
   padding-block: 60px 30px;
-  background-image: linear-gradient(var(--color-white) 50%, var(--color-brand-dark) 50%);
+  /* The upper half takes the colour of whatever page it sits on — white
+   * everywhere but the changelog, whose timeline ground is slate. On the
+   * original the strip is white there too and reads as a band of the wrong
+   * colour; changed at the client's request (2026-09-14). */
+  background-image: linear-gradient(var(--newsletter-above, var(--color-white)) 50%, var(--color-brand-dark) 50%);
 }
 
 /* Two decorative bitmaps, measured off the original:

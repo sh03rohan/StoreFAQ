@@ -37,6 +37,9 @@
   padding: 80px 0;
   background: var(--color-slate);           /* #F9FAFB */
 }
+/* The newsletter band under the timeline continues its ground rather than
+ * dropping back to white for 60px — see the note on .newsletter. */
+main:has(.cl) + .newsletter { --newsletter-above: var(--color-slate); }
 .cl__wrap { position: relative; }
 
 /* The scroll indicator: a 500px bar that rests 44px below the list and, once

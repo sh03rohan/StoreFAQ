@@ -1865,3 +1865,15 @@ original's. The one deliberate deviation: the original snaps in with a
 0.1s linear fade and was reported as not smooth, so this one eases in over
 0.16s with a 4px rise (and no rise under `prefers-reduced-motion`). The
 panel also opens on keyboard focus now, which the original's does not.
+
+### Changelog: the white band above the newsletter — reported and changed (2026-09-14)
+
+The newsletter section paints its upper half white so the card straddles
+the boundary into the footer. On every page but the changelog the section
+above is white too, so the join is invisible; the changelog's timeline sits
+on slate (#F9FAFB), so a 60px white band appeared between them. **The
+original has the same band** — measured, it is the same gradient on the
+same element — but it reads as a mistake, and the client asked for it to go.
+The upper half now takes `--newsletter-above`, white by default and slate
+when the section follows the timeline. Known difference from the original,
+by request.
