@@ -1836,3 +1836,19 @@ and the social images — had been untracked since Phase 7 while every check
 passed against the working copy. Anchored to `/media/`; the mirror (50MB) is
 committed. A fresh clone or a Vercel build now has every image the static
 pages reference, rather than depending on the `/media/` proxy for all of them.
+
+### Focus rings off, sidebar sticky — reported and done (2026-09-14)
+
+Two focus rings removed at the client's request: the footer newsletter field
+(a 2px dark outline of this build's own — the original shows none) and the
+blog search field (the browser's default ring). Both fields now show nothing
+on focus, as the original does. Worth knowing: a keyboard user tabbing
+through the page gets no indication of which field is active on these two;
+the docs search already behaved this way.
+
+The post sidebar is taller than a screen, so it sticks by its bottom: it
+scrolls with the article until its last card reaches the bottom of the
+viewport, holds there while the article carries on, and leaves with the end
+of the row. `position: sticky; bottom: 0` on a column aligned to the row's
+end — at the top of the page that resolves to the row's top, so nothing
+measured moves.

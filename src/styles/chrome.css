@@ -296,7 +296,9 @@ html.has-menu-open { overflow: hidden; }
   color: var(--color-body);        /* rgb(69,80,63) */
 }
 .newsletter__input::placeholder { color: var(--color-body); }
-.newsletter__input:focus-visible { outline: 2px solid var(--color-brand-dark); outline-offset: -2px; }
+/* No focus ring, at the client's request (2026-09-14): the original shows
+ * none, and the field's white-on-green already reads as the target. */
+.newsletter__input:focus, .newsletter__input:focus-visible { outline: none; }
 
 .newsletter__submit {
   flex: none;

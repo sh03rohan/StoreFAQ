@@ -99,8 +99,9 @@
   font-size: 1rem;
   font-weight: 400;
   color: var(--color-input);                    /* #666666 */
-  outline-offset: 2px;
 }
+/* No focus ring, at the client's request — the original has none either. */
+.blog-search__input:focus, .blog-search__input:focus-visible { outline: none; }
 .blog-search__input::placeholder { color: var(--color-search-glass); opacity: 1; }
 .blog-search__submit {
   height: 40px;
@@ -327,6 +328,15 @@
 @media (min-width: 1280px) {
   .post-main { width: 66%; padding-right: 48px; }
   .post-side { width: calc(34% - 20px); padding-left: 48px; }
+}
+/* The sidebar is taller than a screen, so it sticks by its BOTTOM: it scrolls
+ * with the article until its last card reaches the bottom of the viewport,
+ * then holds there while the article carries on (client request,
+ * 2026-09-14). Aligned to the row's end so the sticky offset has somewhere
+ * to pull it up from; at the top of the page that resolves to the row's top,
+ * which is where it sat before. */
+@media (min-width: 768px) {
+  .post-side { position: sticky; bottom: 0; align-self: flex-end; }
 }
 
 /* The post body: the theme's own type — Inter 16.8/26.04 in near-black, and
