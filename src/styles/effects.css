@@ -164,17 +164,17 @@
 }
 
 /* ---------- header ---------- */
-/* Sticks, and turns to frosted glass once the page has scrolled. */
+/* Sticks, on a solid ground, and picks up a shadow once the page has
+ * scrolled. Solid, not glass: with a translucent bar the page's headings
+ * showed through the nav as they passed under it (reported on Vercel). */
 .fx .header {
   position: sticky;
   top: 0;
   z-index: 40;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+  background-color: var(--color-page);
+  transition: box-shadow 0.3s ease;
 }
 .fx .header.is-scrolled {
-  background-color: rgba(249, 249, 249, 0.82);
-  backdrop-filter: saturate(160%) blur(14px);
-  -webkit-backdrop-filter: saturate(160%) blur(14px);
   box-shadow: 0 8px 30px -18px rgba(22, 37, 14, 0.35);
 }
 /* The dropdown's items cascade in. */
