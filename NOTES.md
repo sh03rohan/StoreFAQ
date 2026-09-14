@@ -1919,3 +1919,27 @@ of its own: a served image already carries the origin's year-long
 `immutable`; a failed one now carries nothing and is retried. Anyone who saw
 the broken row needs a hard reload once, since the failure is in their
 browser's cache, not the edge's.
+
+## Effects layer — approved and shipped (2026-09-14)
+
+At the client's request, motion beyond the original's: `src/styles/effects.css`
+and `src/components/Effects.astro`, gated on `html.fx` (set with `js-anim`
+only when motion is welcome; every rule and script is off under
+`prefers-reduced-motion`). Everything animates transform, opacity, filter,
+clip-path, box-shadow or background — never a layout property — so the
+measured geometry is unchanged at rest; the only thing the diffs now read
+differently is a title's glyph range, 3px taller from the word wrappers'
+descender padding, at the same position.
+
+What it does: two colour fields drift behind the home hero; every heading
+reveals word by word (`Words.astro` / `splitWords`; page titles on load,
+section headings when they scroll into view); scroll reveals de-blur;
+the header sticks and frosts once scrolled, with a drawn underline on nav
+links and a cascading dropdown; buttons are magnetic with a hover sweep;
+cards lift with a pointer-following spotlight and a zooming image; testimonial
+stars pop; free-standing images parallax slightly; posts and docs get a
+reading-progress bar, a contents list that follows the reader, and smooth
+in-page anchors; changelog entries drift in and the lit dot breathes; the
+newsletter card carries a slow sheen. Reviewed and adjusted: the home hero
+image keeps only its original entrance (no tilt, float, shadow or unmask),
+and the footer's hover underline fits the words rather than the column.
