@@ -1827,3 +1827,12 @@ field is read the moment it appears.
 changelog resting opacity, the six empty alts, BetterDocs reaction data —
 plus, new: whether the two `#` social links should instead get real
 destinations (X, YouTube, Instagram, Pinterest exist for Storeware?).
+
+### The media mirror was never in the repo — found and fixed
+
+`.gitignore` had `media/` for the Phase 7 report directory; an unanchored
+pattern matches at any depth, so `public/media/` — the 99 mirrored uploads
+and the social images — had been untracked since Phase 7 while every check
+passed against the working copy. Anchored to `/media/`; the mirror (50MB) is
+committed. A fresh clone or a Vercel build now has every image the static
+pages reference, rather than depending on the `/media/` proxy for all of them.
