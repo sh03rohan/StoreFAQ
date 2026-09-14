@@ -92,9 +92,11 @@
 }
 @media (min-width: 1280px) { .header__link { font-size: 1.125rem; } }
 .header__link:hover { color: var(--color-brand); }
-/* Note: the original gives the current page no distinct style. aria-current
- * is still emitted for screen readers; colouring it is deferred to the
- * content-fix pass so the Phase 9 diff stays honest. */
+/* The current section's item in the brand green — the hover colour — and an
+ * open submenu's current entry underlined. The original marks nothing;
+ * added at the client's request (2026-09-14). `aria-current` carries it. */
+.header__link[aria-current="page"] { color: var(--color-brand); }
+.header__submenu-link[aria-current="page"] { text-decoration: underline; text-underline-offset: 3px; }
 
 .header__submenu-toggle {
   display: inline-flex;
@@ -200,7 +202,7 @@
 
   .header__link,
   .header__submenu-toggle { color: var(--color-white); font-size: 1rem; }
-  .header__link:hover { color: var(--color-cream); }
+  .header__link:hover, .header__link[aria-current="page"] { color: var(--color-cream); }
 
   .header__submenu {
     position: static;

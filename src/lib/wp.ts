@@ -93,16 +93,46 @@ interface Raw {
   };
 }
 
-async function api<T>(path: string, params: Record<string, string | number | undefined>): Promise<{ data: T; total: number; totalPages: number }> {
+/* ---------- cache ----------
+ * WordPress answers a REST call in one to three seconds, and a post page
+ * needs four of them plus one per post for the view counts. In production
+ * ISR holds the finished page, so only the first visitor after a purge pays;
+ * in development every reload did, and the blog felt broken. This is a
+ * per-process memory cache with stale-while-revalidate: a fresh entry is
+ * returned as is, a stale one is returned immediately while it refreshes in
+ * the background, and identical concurrent calls share one request.
+ */
+const TTL = { list: 60_000, terms: 10 * 60_000, views: 10 * 60_000 };
+const STALE_FOR = 30 * 60_000;
+const cache = new Map<string, { at: number; value: unknown; pending?: Promise<unknown> }>();
+
+async function cached<T>(key: string, ttl: number, load: () => Promise<T>): Promise<T> {
+  const hit = cache.get(key);
+  const now = Date.now();
+  if (hit && now - hit.at < ttl) return hit.value as T;
+  if (hit && now - hit.at < STALE_FOR) {
+    if (!hit.pending) hit.pending = load().then((v) => { cache.set(key, { at: Date.now(), value: v }); return v; }).catch(() => { hit.pending = undefined; });
+    return hit.value as T;
+  }
+  if (hit?.pending) return hit.pending as Promise<T>;
+  const pending = load().then((v) => { cache.set(key, { at: Date.now(), value: v }); return v; })
+    .catch((e) => { cache.delete(key); throw e; });
+  cache.set(key, { at: hit?.at ?? 0, value: hit?.value, pending });
+  return pending;
+}
+
+async function api<T>(path: string, params: Record<string, string | number | undefined>, ttl = TTL.list): Promise<{ data: T; total: number; totalPages: number }> {
   const url = new URL(`${API}/${path}`);
   for (const [k, v] of Object.entries(params)) if (v !== undefined && v !== '') url.searchParams.set(k, String(v));
-  const res = await fetch(url, { headers: { Accept: 'application/json' } });
-  if (!res.ok) throw new WpError(`WordPress ${res.status} for ${url.pathname}`, res.status);
-  return {
-    data: (await res.json()) as T,
-    total: Number(res.headers.get('x-wp-total') ?? 0),
-    totalPages: Number(res.headers.get('x-wp-totalpages') ?? 0),
-  };
+  return cached(url.href, ttl, async () => {
+    const res = await fetch(url, { headers: { Accept: 'application/json' } });
+    if (!res.ok) throw new WpError(`WordPress ${res.status} for ${url.pathname}`, res.status);
+    return {
+      data: (await res.json()) as T,
+      total: Number(res.headers.get('x-wp-total') ?? 0),
+      totalPages: Number(res.headers.get('x-wp-totalpages') ?? 0),
+    };
+  });
 }
 
 export class WpError extends Error {
@@ -211,12 +241,12 @@ export async function getPost(slug: string): Promise<Post | null> {
 export async function getCategories(): Promise<PostCategory[]> {
   const { data } = await api<{ id: number; slug: string; name: string; count: number }[]>('categories', {
     per_page: 100, hide_empty: 'true', orderby: 'name', _fields: 'id,slug,name,count',
-  });
+  }, TTL.terms);
   return data.filter((c) => c.slug !== 'uncategorized').map(({ id, slug, name }) => ({ id, slug, name: decode(name) }));
 }
 
 export async function getCategory(slug: string): Promise<PostCategory | null> {
-  const { data } = await api<{ id: number; slug: string; name: string }[]>('categories', { slug, _fields: 'id,slug,name' });
+  const { data } = await api<{ id: number; slug: string; name: string }[]>('categories', { slug, _fields: 'id,slug,name' }, TTL.terms);
   return data[0] ? { id: data[0].id, slug: data[0].slug, name: decode(data[0].name) } : null;
 }
 
@@ -234,10 +264,10 @@ export const getRecent = (n = 3, exclude?: number) =>
 export async function getPopular(n = 3): Promise<PostSummary[]> {
   const all = await getPosts({ perPage: 100 });
   try {
-    const views = await Promise.all(all.items.map(async (p) => {
+    const views = await Promise.all(all.items.map((p) => cached(`views:${p.id}`, TTL.views, async () => {
       const res = await fetch(`${WP_URL}/wp-json/post-views-counter/get-post-views/${p.id}`);
       return res.ok ? Number(await res.json()) || 0 : 0;
-    }));
+    })));
     return all.items.map((p, i) => [p, views[i]] as const).sort((a, b) => b[1] - a[1]).slice(0, n).map(([p]) => p);
   } catch {
     return all.items.slice(0, n);

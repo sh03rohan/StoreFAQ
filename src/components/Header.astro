@@ -7,7 +7,18 @@ import { primaryNav, headerCta } from '../data/nav';
 import { routes } from '../lib/routes';
 
 const path = Astro.url.pathname;
-const isCurrent = (href: string) => href === path;
+/* The item for the SECTION the page is in, not only the page itself: a post
+ * lights "Blog", a doc or a docs category lights "Documentation", and a
+ * parent lights when one of its children is current. Home is exact. */
+const inSection = (href: string) => {
+  if (href === path) return true;
+  if (href === routes.home() || /^https?:/.test(href)) return false;
+  if (href === routes.blog()) return path.startsWith('/blog/') || path.startsWith('/category/');
+  if (href === routes.docs()) return path.startsWith('/docs/') || path.startsWith('/docs-category/');
+  return path.startsWith(href);
+};
+const isCurrent = (href: string, children?: { href: string }[]) =>
+  inSection(href) || (children ?? []).some((c) => inSection(c.href));
 ---
 <header class="header">
   <Container class="header__row">
@@ -52,7 +63,7 @@ const isCurrent = (href: string) => href === path;
             <a
               class="header__link"
               href={item.href}
-              aria-current={isCurrent(item.href) ? 'page' : undefined}
+              aria-current={isCurrent(item.href, item.children) ? 'page' : undefined}
               {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
             >{item.label}</a>
 

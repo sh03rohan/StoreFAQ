@@ -1877,3 +1877,24 @@ same element — but it reads as a mistake, and the client asked for it to go.
 The upper half now takes `--newsletter-above`, white by default and slate
 when the section follows the timeline. Known difference from the original,
 by request.
+
+### Blog speed, and an active colour in the header (2026-09-14)
+
+**The blog was slow.** WordPress answers a REST call in one to three seconds
+and a post page needs four of them plus one per post for the view counts —
+5.5s a page in development, every reload. In production ISR holds the
+finished page, so only the first visitor after a purge pays; but the first
+visitor should not pay 5s either. `wp.ts` now has a per-process cache with
+stale-while-revalidate (lists 60s, terms and view counts 10 minutes, stale
+served for up to 30 minutes while it refreshes behind), and identical
+concurrent calls share one request. Second hit on any blog page: ~10ms.
+The trade: in development a post edited in WordPress can take up to a
+minute to show; in production the purge-on-publish bypasses ISR but this
+cache still answers from memory for up to 60s on a warm instance.
+
+**The header now marks the current section** in the brand green (the hover
+colour): a post or category lights "Blog", a doc or docs category lights
+"Documentation", the changelog lights "Support" and underlines "Changelog"
+inside the panel; cream in the phone overlay. The original marks nothing —
+this was deferred from Phase 5 and is added at the client's request. The
+chrome diff does not read `aria-current`, so it still measures 0px.
