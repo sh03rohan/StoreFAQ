@@ -140,8 +140,8 @@
 .fx .feature[data-spot]::before { background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.16), transparent 60%); }
 
 /* ---------- links ---------- */
-/* Nav and footer links get a drawn underline. */
-.fx .header__link, .fx .footer__link {
+/* Nav links get a drawn underline. */
+.fx .header__link {
   background-image: linear-gradient(currentColor, currentColor);
   background-repeat: no-repeat;
   background-size: 0% 1px;
@@ -149,7 +149,18 @@
   transition: background-size 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.25s ease;
 }
 @media (hover: hover) {
-  .fx .header__link:hover, .fx .footer__link:hover { background-size: 100% 1px; }
+  .fx .header__link:hover { background-size: 100% 1px; }
+}
+/* Footer links are block-level (the whole column line), so theirs is a real
+ * text underline fading in — it fits the words, not the column. */
+.fx .footer__link {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.3s ease, color 0.25s ease;
+}
+@media (hover: hover) {
+  .fx .footer__link:hover { text-decoration-color: currentColor; }
 }
 
 /* ---------- header ---------- */
