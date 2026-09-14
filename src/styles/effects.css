@@ -116,8 +116,10 @@
  * clipping box carries the same corners, or the zoomed image would show
  * square ones. */
 .fx .pcard__media, .fx .fcard__band { overflow: hidden; }
-.fx .pcard__media { border-radius: 4px; }
-.fx .fpost__thumb { overflow: hidden; border-radius: 2px; }
+/* clip-path as well as the radius: Chrome can drop a rounded overflow clip
+ * on a composited (scaling) child, and clip-path never does. */
+.fx .pcard__media { border-radius: 4px; clip-path: inset(0 round 4px); isolation: isolate; }
+.fx .fpost__thumb { overflow: hidden; border-radius: 2px; clip-path: inset(0 round 2px); isolation: isolate; }
 .fx .pcard__img, .fx .fcard__band img, .fx .feature__media img, .fx .fpost__thumb img {
   transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
