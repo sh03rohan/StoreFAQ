@@ -53,7 +53,12 @@ const read = (page, S) => page.evaluate((S) => {
   for (const [k, sel] of Object.entries(S.paint)) out.paint[k] = paint(q(sel));
   const ph = q(S.placeholder); if (ph) { const c = cs(ph); const pc = ph.tagName === 'INPUT' ? getComputedStyle(ph, '::placeholder').color : c.color;
     out.type.placeholder = [c.fontFamily.split(',')[0].replace(/"/g, ''), c.fontSize, c.fontWeight, pc].join(' '); }
-  out.paint.gradient = cs(q(S.boxes.card)).backgroundImage;
+  /* The gradient and the corner blur: the original paints them on two
+   * elements, this build on one. Both layers are read and the blur is
+   * compared by file name. */
+  const layers = [q(S.boxes.card), q(S.overlay)].filter(Boolean).map((e) => cs(e).backgroundImage).join(', ');
+  out.paint.gradient = [...new Set(layers.split(/,\s*(?=url|linear)/).filter((l) => l && l !== 'none'))]
+    .map((l) => l.replace(/url\("[^"]*\/([^/"]+)"\)/, 'url($1)')).sort().join(' + ');
   const act = q(S.activeTab); out.paint.activeTab = act && [cs(act).color, cs(act).borderBottomWidth, cs(act).borderBottomColor].join(' ');
   const glass = q(S.glass); out.paint.glass = glass && [cs(glass).fill === 'rgb(0, 0, 0)' ? cs(glass).color : cs(glass).fill].join(' ');
   const img = q(S.thumb); out.paint.thumb = img && [cs(img).objectFit, cs(img).borderRadius].join(' ');
@@ -74,6 +79,7 @@ const REF = {
     btn: '.adv-search-btn', cardTitle: '.ebpg-entry-title a', pager: '.ebpg-pagination-item.show:not(.active)', pagerActive: '.ebpg-pagination-item.active' },
   paint: { card: '.eb-wrapper-4nrb5', form: 'form.eb-adv-searchform', field: '.eb-adv-search-input-wrap', btn: '.adv-search-btn', filter: '.eb-post-grid-category-filter',
     pager: '.ebpg-pagination-item.show:not(.active)', pagerActive: '.ebpg-pagination-item.active' },
+  overlay: '.eb-row-8f7bj',
   placeholder: '.eb-adv-search-input-wrap input', activeTab: '.ebpg-category-filter-list-item.active', glass: '.eb-adv-search-icon', thumb: '.ebpg-entry-thumbnail img',
   card: '.ebpg-grid-post', cardImg: '.ebpg-entry-thumbnail img', cardTitle: '.ebpg-entry-title a', tab: '.ebpg-category-filter-list-item',
   pagerItem: '.ebpg-pagination button.show, .ebpg-pagination button[class*="item-"]',
@@ -89,6 +95,7 @@ const MINE = {
     btn: '.blog-search__submit', cardTitle: '.pcard__link', pager: 'a.pager__item:not(.pager__item--arrow)', pagerActive: '.pager__item.is-active' },
   paint: { card: '.blog-hero__card', form: '.blog-search', field: '.blog-search__field', btn: '.blog-search__submit', filter: '.cattabs',
     pager: 'a.pager__item:not(.pager__item--arrow)', pagerActive: '.pager__item.is-active' },
+  overlay: '.blog-hero__card',
   placeholder: '.blog-search__input', activeTab: '.cattabs__link.is-active', glass: '.blog-search__icon', thumb: '.pcard__img',
   card: '.pcard', cardImg: '.pcard__img', cardTitle: '.pcard__link', tab: '.cattabs__link',
   pagerItem: '.pager__item',
