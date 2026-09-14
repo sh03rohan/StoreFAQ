@@ -1943,3 +1943,10 @@ in-page anchors; changelog entries drift in and the lit dot breathes; the
 newsletter card carries a slow sheen. Reviewed and adjusted: the home hero
 image keeps only its original entrance (no tilt, float, shadow or unmask),
 and the footer's hover underline fits the words rather than the column.
+
+### CTA band: the screenshot's 8px radius — reported and fixed (2026-09-14)
+
+The original clips the app-store screenshot in the CTA band to an 8px radius
+(a wrapper with `overflow: hidden`); this build had it square. The only
+rounded image block on the home and features pages, so the one place it was
+missed. Crop-verified against the live site.

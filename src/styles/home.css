@@ -668,7 +668,9 @@
 @media (min-width: 1280px) { .cta__link { font-size: 1.125rem; } }  /* 18/18 */
 .cta__link:hover { opacity: 0.8; }
 
-.cta__media img { display: block; width: 100%; height: auto; }
+/* The screenshot is clipped to an 8px radius on the original (a wrapper with
+ * overflow hidden) — the one rounded image block on the site. */
+.cta__media img { display: block; width: 100%; height: auto; border-radius: 8px; }
 
 /* ---------- testimonials ---------- */
 .tm {
