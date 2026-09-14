@@ -1,5 +1,6 @@
 ---
-/**
+
+import Words from '../components/Words.astro';/**
  * The theme's 404: a Cardo "Page Not Found", the theme's own sentence, and a
  * search form. The form searched WordPress; here it searches the blog, which
  * is where an unknown path on this site most likely wanted to go. Served
@@ -15,7 +16,7 @@ import { routes } from '../lib/routes';
 <BaseLayout title="Page not found – storefaq.io" description="The page you are looking for does not exist, or it has been moved." robots="noindex, follow">
   <Header />
   <main class="nf">
-    <h1 class="nf__title">Page Not Found</h1>
+    <Words as="h1" class="nf__title" html="Page Not Found" now />
     <p class="nf__text">The page you are looking for does not exist, or it has been moved. Please try searching using the form below.</p>
     <form class="nf__form" role="search" action={routes.blog()} method="get">
       <label class="sr-only" for="nf-q">Search</label>

@@ -1,5 +1,6 @@
 ---
-import Container from '../Container.astro';
+
+import Words from '../Words.astro';import Container from '../Container.astro';
 import { external } from '../../lib/routes';
 import { testimonialColumns } from '../../data/home-testimonials';
 
@@ -12,7 +13,7 @@ const STAR =
 ---
 <section class="tm">
   <Container>
-    <h2 class="tm__title" data-anim="heading">Here’s What Our Users Say</h2>
+    <Words class="tm__title" html="Here’s What Our Users Say" />
 
     <div class="tm__grid">
       {testimonialColumns.map((column) => (

@@ -1,5 +1,6 @@
 ---
-import { Image } from 'astro:assets';
+
+import Words from '../Words.astro';import { Image } from 'astro:assets';
 import Container from '../Container.astro';
 import swoosh from '../../assets/home/Group-39473.png';
 import { leadFeature, features } from '../../data/home-features';
@@ -17,9 +18,7 @@ const lead = at >= 0
     <div class="feature-lead">
       <div class="feature-lead__text">
         <Image class="feature-lead__swoosh" data-anim="chip" src={swoosh} alt="" width={58} height={54} loading="lazy" />
-        <h2 class="feature-lead__title" data-anim="heading">
-          {lead.before}<mark>{lead.mark}</mark>{lead.after}
-        </h2>
+        <Words class="feature-lead__title" html={`${lead.before}<mark>${lead.mark}</mark>${lead.after}`} />
         <p class="feature-lead__sub" data-anim="text">{leadFeature.sub}</p>
       </div>
       <div class="feature-lead__media" data-anim="media">
@@ -37,7 +36,7 @@ const lead = at >= 0
     <ul class="feature-grid">
       {features.map((f) => (
         <li class="feature" data-anim="card" style={`--card-bg:${f.bg ?? 'var(--color-cream)'};--card-gap:${f.gap ?? 30}px`}>
-          <h2 class="feature__title">{f.title}</h2>
+          <Words class="feature__title" html={f.title} />
           <p class="feature__sub">{f.sub}</p>
           <Image
             class="feature__media"

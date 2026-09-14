@@ -1,5 +1,6 @@
 ---
-import { Image } from 'astro:assets';
+
+import Words from '../Words.astro';import { Image } from 'astro:assets';
 import LearnMore from '../LearnMore.astro';
 import { featureCards } from '../../data/features';
 
@@ -18,7 +19,7 @@ const pick = (name: string) => images[`../../assets/features/${name}`].default;
         <Image src={pick(c.img)} alt={c.alt} widths={[362, 738]} sizes="(min-width: 1280px) 33vw, 100vw" loading="lazy" />
       </div>
       <div class="fcard__body">
-        <h3 class="fcard__title">{c.title}</h3>
+        <Words as="h3" class="fcard__title" html={c.title} />
         <p class="fcard__desc">{c.desc}</p>
         <LearnMore slug={c.slug} />
       </div>

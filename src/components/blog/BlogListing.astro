@@ -42,7 +42,7 @@ pages.push('…');
   <Container>
     <div class="blog-hero__card">
       <div class="blog-hero__col">
-        <h1 class="blog-hero__title" set:html={splitWords('StoreFAQ Blog: Subscribe For Shopify FAQ Guides, Hacks, Customer Support Strategies, And Latest Updates!', 0.05)} />
+        <h1 class="blog-hero__title fx-words is-in" set:html={splitWords('StoreFAQ Blog: Subscribe For Shopify FAQ Guides, Hacks, Customer Support Strategies, And Latest Updates!', 0.05)} />
         <!-- The original posts to WordPress's /?s=; this one searches the
              blog in place and stays on the blog. -->
         <form class="blog-search" role="search" action={routes.blogSearch()} method="get"

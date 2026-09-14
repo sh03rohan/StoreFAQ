@@ -1,5 +1,6 @@
 ---
-/**
+
+import Words from '../Words.astro';/**
  * The sidebar's "Featured Posts" card: three tabs over a list of three. The
  * original swaps the list in JavaScript; here all three lists are rendered
  * and a radio group picks one, so the widget works without a script and
@@ -28,7 +29,7 @@ const tabs = [
 ];
 ---
 <section class="fpost" aria-labelledby="fpost-title">
-  <h2 class="fpost__title" id="fpost-title">Featured Posts</h2>
+  <Words class="fpost__title" id="fpost-title" html="Featured Posts" />
   <div class="fpost__tabs" role="tablist">
     {tabs.map((t, i) => (
       <>

@@ -16,6 +16,15 @@
     gsap.registerPlugin(ScrollTrigger);
     const hovers = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
+    /* ---- headings: play the word reveal as each comes into view ---- */
+    const words = document.querySelectorAll<HTMLElement>('.fx-words:not(.is-in)');
+    if (words.length) {
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+      }, { threshold: 0.2, rootMargin: '0px 0px -8% 0px' });
+      words.forEach((h) => io.observe(h));
+    }
+
     /* ---- header: glass once scrolled ---- */
     const header = document.querySelector<HTMLElement>('.header');
     if (header) {

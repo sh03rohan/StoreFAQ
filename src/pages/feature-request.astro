@@ -1,5 +1,6 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+
+import Words from '../components/Words.astro';import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Container from '../components/Container.astro';
@@ -8,12 +9,12 @@ import FormField from '../components/FormField.astro';
 <BaseLayout route="/feature-request/">
   <Header />
   <main class="plain">
-    <h1 class="plain__title" data-anim="heading" data-anim-intro style="--anim-d:.05s;--anim-y:24px">Feature Request</h1>
+    <Words as="h1" class="plain__title" html="Feature Request" now delay={0.05} />
     <div class="plain__body">
       <section class="frq">
         <Container width="content" class="frq__row">
           <div class="frq__col">
-            <h2 class="frq__title" data-anim="heading">Feature Requests</h2>
+            <Words class="frq__title" html="Feature Requests" />
             <p class="frq__intro" data-anim="text">
               Cannot find your favorite feature in StoreFAQ? We are all ears! Let us know your
               ideas or suggestions; we are always trying to improve StoreFAQ and would love to

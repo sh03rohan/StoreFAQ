@@ -1,5 +1,6 @@
 ---
-import Container from '../Container.astro';
+
+import Words from '../Words.astro';import Container from '../Container.astro';
 import { changelog } from '../../data/changelog';
 
 /* Font Awesome 6 Free "circle" (regular), viewBox 512x512 — the original
@@ -46,7 +47,7 @@ const iso = (s: string) => {
           </div>
 
           <div class="cl__body">
-            <h2 class="cl__version">{entry.version}</h2>
+            <Words class="cl__version" html={entry.version} />
             <div class="cl__notes">
               {entry.sections.map((s) => (
                 <>

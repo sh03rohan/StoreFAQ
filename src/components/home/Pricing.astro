@@ -1,5 +1,6 @@
 ---
-import Container from '../Container.astro';
+
+import Words from '../Words.astro';import Container from '../Container.astro';
 import { plans, pricingRows } from '../../data/home-pricing';
 import { go } from '../../lib/routes';
 
@@ -13,7 +14,7 @@ const HEADER_ROW = 2;
 ---
 <section class="pricing">
   <Container>
-    <h2 class="pricing__heading" data-anim="heading">Choose The Plan That Best Fits Your Store’s Requirements</h2>
+    <Words class="pricing__heading" html="Choose The Plan That Best Fits Your Store’s Requirements" />
 
     <div class="pricing__table" data-anim="card">
       <!-- Draws the table's border/radius from the header row down, so the

@@ -47,7 +47,10 @@
  * outer is inline-block so it wraps exactly where the word did. */
 .fx-w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.12em; margin-bottom: -0.12em; }
 .fx-w > span { display: inline-block; }
-.fx .fx-w > span {
+/* Hidden until the heading is in view (`is-in`, from Effects.astro — set in
+ * the markup for headings above the fold), then each word rises in turn. */
+.fx .fx-words:not(.is-in) .fx-w > span { opacity: 0; transform: translateY(110%) rotate(2deg); }
+.fx .fx-words.is-in .fx-w > span {
   animation: fx-word 0.9s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--fx-d, 0s) + var(--fx-i, 0) * 0.045s) both;
 }
 @keyframes fx-word {

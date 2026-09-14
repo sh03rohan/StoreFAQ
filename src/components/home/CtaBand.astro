@@ -1,5 +1,6 @@
 ---
-import { Image } from 'astro:assets';
+
+import Words from '../Words.astro';import { Image } from 'astro:assets';
 import Container from '../Container.astro';
 import swoosh from '../../assets/home/Group-39473.png';
 import cta from '../../assets/home/cta.jpg';
@@ -8,7 +9,7 @@ import { external } from '../../lib/routes';
 <section class="cta">
   <Container class="cta__card">
     <div class="cta__text">
-      <h2 class="cta__title" data-anim="heading">Ready To Build Stunning FAQs?&nbsp;Get Started With StoreFAQ Today!</h2>
+      <Words class="cta__title" html="Ready To Build Stunning FAQs?&nbsp;Get Started With StoreFAQ Today!" />
       <Image class="cta__swoosh" data-anim="chip" src={swoosh} alt="" width={58} height={54} loading="lazy" />
       <a class="cta__link" data-anim="chip" href={external.shopifyApp} target="_blank" rel="noopener noreferrer">
         Try StoreFAQ Today

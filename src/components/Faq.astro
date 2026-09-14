@@ -1,5 +1,6 @@
 ---
-import { Image } from 'astro:assets';
+
+import Words from './Words.astro';import { Image } from 'astro:assets';
 import Container from './Container.astro';
 import swoosh from '../assets/home/Group-39473.png';
 import { faqEntries, type FaqEntry } from '../data/home-faq';
@@ -34,7 +35,7 @@ const ANGLE_DOWN =
     <div class="faq__row">
       <div class="faq__intro">
         <div class="faq__lead">
-          <h2 class="faq__title" data-anim="heading">Frequently Asked Questions</h2>
+          <Words class="faq__title" html="Frequently Asked Questions" />
           <p class="faq__sub" data-anim="text">{sub}</p>
         </div>
         <div class="faq__swoosh" data-anim="chip">

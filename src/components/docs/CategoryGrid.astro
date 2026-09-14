@@ -1,5 +1,6 @@
 ---
-import { Image } from 'astro:assets';
+
+import Words from '../Words.astro';import { Image } from 'astro:assets';
 import Container from '../Container.astro';
 import { routes } from '../../lib/routes';
 import { getDocsCategories } from '../../data/docs-categories';
@@ -14,7 +15,7 @@ const docsCategories = await getDocsCategories();
             <span class="docs-cat__icon">
               <Image src={c.icon} alt="" width={32} height={32} loading="lazy" />
             </span>
-            <h2 class="docs-cat__title">{c.title}</h2>
+            <Words class="docs-cat__title" html={c.title} />
             <span class="docs-cat__count">{c.count} Docs</span>
             <span class="docs-cat__updated">Last Updated: {c.updated}</span>
           </a>

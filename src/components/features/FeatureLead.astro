@@ -1,5 +1,6 @@
 ---
-import { Image } from 'astro:assets';
+
+import Words from '../Words.astro';import { Image } from 'astro:assets';
 import LearnMore from '../LearnMore.astro';
 import swoosh from '../../assets/home/Group-39473.png';
 import media from '../../assets/home/Component-1.png';
@@ -10,9 +11,7 @@ import media from '../../assets/home/Component-1.png';
       <Image src={swoosh} alt="" width={58} height={54} loading="lazy" />
     </div>
     <div class="flead__head">
-      <h2 class="flead__title" data-anim="heading">
-        Write <span class="flead__mark">Frequently Answered Questions</span> With The Magic Of AI
-      </h2>
+      <Words class="flead__title" html={'Write <span class="flead__mark">Frequently Answered Questions</span> With The Magic Of AI'} />
       <p class="flead__sub" data-anim="text">Answer your common customer questions&nbsp; faster than ever with the help of AI.</p>
     </div>
     <div data-anim="chip"><LearnMore slug="generate-faqs-using-ai-autowrite" /></div>

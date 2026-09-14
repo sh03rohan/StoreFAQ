@@ -1,0 +1,19 @@
+---
+/**
+ * A heading whose words rise in one after another. `as` is the tag, `html`
+ * the text (inline markup allowed). Above the fold, pass `now` and a delay
+ * so it plays on load; otherwise it plays when scrolled into view.
+ */
+import { splitWords } from '../lib/split';
+
+export interface Props {
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p';
+  html: string;
+  class?: string;
+  now?: boolean;
+  delay?: number;
+  id?: string;
+}
+const { as: Tag = 'h2', html, class: className, now = false, delay = 0, id } = Astro.props;
+---
+<Tag class:list={['fx-words', now && 'is-in', className]} id={id} set:html={splitWords(html, delay)} />
