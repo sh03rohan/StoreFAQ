@@ -112,8 +112,12 @@
   .fx .faq__item:hover { border-color: var(--color-brand); }
   .fx .cta__card:hover { box-shadow: 0 30px 60px -24px rgba(47, 70, 33, 0.6); }
 }
-/* The image inside a card zooms, clipped to the card's own radius. */
+/* The image inside a card zooms, clipped to the image's own radius — the
+ * clipping box carries the same corners, or the zoomed image would show
+ * square ones. */
 .fx .pcard__media, .fx .fcard__band { overflow: hidden; }
+.fx .pcard__media { border-radius: 4px; }
+.fx .fpost__thumb { overflow: hidden; border-radius: 2px; }
 .fx .pcard__img, .fx .fcard__band img, .fx .feature__media img, .fx .fpost__thumb img {
   transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
