@@ -104,34 +104,54 @@
   margin-left: 4px;
 }
 
-/* Submenu — brand-green panel, white 16px, 5px radius (measured). */
+/* Submenu — brand-green panel, white 16px, 5px radius (measured: 127 wide,
+ * 5px of padding on every side but the left, one pixel left of the item).
+ * The original snaps in with a 0.1s linear fade; this one eases in over
+ * 0.16s with a 4px rise — reported as not smooth (2026-09-14), and the one
+ * place the chrome knowingly moves differently from the original. */
 .header__submenu {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: -1px;
   z-index: 20;
   min-width: 127px;
   margin: 0;
-  padding: 5px 0;
+  padding: 5px 5px 5px 0;
   list-style: none;
   background: var(--color-brand);
   border-radius: 5px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.1s linear, visibility 0.1s linear;
+  transform: translateY(-4px);
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s linear 0.16s;
 }
 .header__item:hover > .header__submenu,
-.header__item.is-open > .header__submenu { opacity: 1; visibility: visible; }
+.header__item:focus-within > .header__submenu,
+.header__item.is-open > .header__submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .header__submenu { transform: none; transition: opacity 0.1s linear, visibility 0s linear 0.1s; }
+}
 
+/* 35px tall: 16px on a 1.2 line plus 8px above and below (measured). An
+ * item does not change on hover on the original — white on green stays
+ * white on green — and the dark ground this build had put under it was its
+ * own invention; reported and removed. */
 .header__submenu-link {
   display: block;
   padding: 8px 16px;
   font-family: var(--font-heading);
   font-size: 1rem;
+  line-height: 1.2;
   font-weight: 500;
   color: var(--color-white);
+  white-space: nowrap;
 }
-.header__submenu-link:hover { background: var(--color-brand-dark); }
+.header__submenu-link:hover { color: var(--color-white); }
 
 .header__burger,
 .header__close { display: none; color: var(--color-ink-mid); }
@@ -191,6 +211,8 @@
     margin-top: 5px;
     background: transparent;
     padding: 0 0 0 15px;
+    transform: none;
+    transition: none;
   }
   .header__item.is-open > .header__submenu { display: block; }
   .header__submenu-link { padding: 8px 0; }

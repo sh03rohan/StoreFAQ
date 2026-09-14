@@ -1852,3 +1852,16 @@ viewport, holds there while the article carries on, and leaves with the end
 of the row. `position: sticky; bottom: 0` on a column aligned to the row's
 end — at the top of the page that resolves to the row's top, so nothing
 measured moves.
+
+### Header dropdown: hover colour and smoothness — reported and fixed (2026-09-14)
+
+Measured the original's open panel for the first time in three states. Two
+things this build had invented: a **dark-green ground under a hovered item**
+(the original changes nothing on hover — white on green stays white on
+green), and items 41px tall on a 24.8px line where the original's are 35px
+on a 19.2px line, which made the panel 51px instead of 45. Both corrected;
+the panel now measures 127x45 at 886,66 with a 122x35 item, exactly the
+original's. The one deliberate deviation: the original snaps in with a
+0.1s linear fade and was reported as not smooth, so this one eases in over
+0.16s with a 4px rise (and no rise under `prefers-reduced-motion`). The
+panel also opens on keyboard focus now, which the original's does not.
