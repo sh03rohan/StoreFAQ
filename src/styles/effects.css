@@ -41,13 +41,6 @@
 @keyframes fx-drift-a { from { transform: translate(0, 0) scale(1); } to { transform: translate(6vw, 4vw) scale(1.12); } }
 @keyframes fx-drift-b { from { transform: translate(0, 0) scale(1.05); } to { transform: translate(-5vw, -6vw) scale(0.95); } }
 
-/* The hero image floats. */
-.fx .hero__media img {
-  animation: fx-float 6s ease-in-out infinite;
-  filter: drop-shadow(0 24px 40px rgba(22, 37, 14, 0.14));
-  will-change: transform;
-}
-@keyframes fx-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
 
 /* ---------- word-by-word title reveal ---------- */
 /* `.fx-w` wraps each word; the inner span rises out of a clipped box. The
